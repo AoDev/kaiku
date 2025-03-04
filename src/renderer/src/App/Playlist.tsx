@@ -23,7 +23,7 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
     <div className="playlist library__col" onClick={handlePlaySongFromPlaylist}>
       {musicPlayer.playlist.map((song, index) => (
         <div
-          className={`${musicPlayer.playlistIndex === index ? 'row--playing' : 'row'}`}
+          className={`pad-left-0 ${musicPlayer.playlistIndex === index ? 'row--playing' : 'row'}`}
           key={index}
           data-file-path={song.filePath}
           data-song-index={index}

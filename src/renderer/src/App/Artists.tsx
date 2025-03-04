@@ -1,5 +1,4 @@
 import {observer} from 'mobx-react'
-
 import type {RootStore} from '@renderer/stores/RootStore'
 
 export const Artists = observer(({rootStore}: {rootStore: RootStore}) => {
@@ -11,7 +10,6 @@ export const Artists = observer(({rootStore}: {rootStore: RootStore}) => {
       const artistId = target.dataset.artistId
       if (artistId) {
         const clickCount = event.detail
-        console.log('Selected Artist:', artistId)
         if (clickCount === 1) {
           musicLibrary.selectArtist(artistId)
         } else if (clickCount === 2) {

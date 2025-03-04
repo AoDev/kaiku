@@ -1,5 +1,5 @@
 import {debounce} from 'lodash'
-import {makeAutoObservable} from 'mobx'
+import {action, makeAutoObservable} from 'mobx'
 import type {Artist, Album, Song, AudioLibrary} from '../../../types/Song'
 
 // Define the scan progress type
@@ -57,18 +57,8 @@ export class MusicLibrary {
   folderPath = ''
   filter: RegExp | null = null
 
-  // Scan progress tracking
-  scanProgress: ScanProgress = {
-    count: 0,
-    status: 'idle',
-  }
-
-  // Metadata parsing progress tracking
-  metadataProgress: MetadataProgress = {
-    completed: 0,
-    total: 0,
-    status: 'idle',
-  }
+  scanProgress: ScanProgress = {count: 0, status: 'idle'}
+  metadataProgress: MetadataProgress = {completed: 0, total: 0, status: 'idle'}
 
   artistSelected = ''
   albumSelected = ''
@@ -169,16 +159,16 @@ export class MusicLibrary {
 
     const scanListener = window.electron.ipcRenderer.on(
       'scan-progress-update',
-      (_event, progress: ScanProgress) => {
+      action((_event, progress: ScanProgress) => {
         this.scanProgress = progress
-      }
+      })
     )
 
     const metadataListener = window.electron.ipcRenderer.on(
       'metadata-progress-update',
-      (_event, progress: MetadataProgress) => {
+      action((_event, progress: MetadataProgress) => {
         this.metadataProgress = progress
-      }
+      })
     )
 
     this.cleanupListeners = () => {
@@ -239,6 +229,11 @@ export class MusicLibrary {
     this.songSelected = ''
   }
 
+  resetProgress() {
+    this.scanProgress = {count: 0, status: 'idle'}
+    this.metadataProgress = {completed: 0, total: 0, status: 'idle'}
+  }
+
   destroy() {
     // Clean up listeners
     this.cleanupListeners?.()
@@ -254,15 +249,7 @@ export class MusicLibrary {
     this.artistPlaying = null
     this.albumPlaying = null
     this.songPlaying = null
-    this.scanProgress = {
-      count: 0,
-      status: 'idle',
-    }
-    this.metadataProgress = {
-      completed: 0,
-      total: 0,
-      status: 'processing',
-    }
+    this.resetProgress()
   }
 
   constructor() {

@@ -50,8 +50,6 @@ export class MusicPlayer {
     const index = isNumber(newIndex) ? newIndex : this.playlistIndex
     const song = this.playlist[index]
 
-    console.log({index, song})
-
     if (song) {
       if (this.howl) {
         this.howl.stop()

@@ -180,7 +180,7 @@ each(@container-values, .(@cvalue) {
 each(@spacer-values, .(@svalue) {
   each(@spacer-directions, .(@direction) {
     .pad-@{direction}-@{svalue} {
-      padding-@{direction}: @base-gap * @svalue;
+      padding-@{direction}: @base-gap * @svalue !important;
     }
   })
 });
