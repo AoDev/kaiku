@@ -1,5 +1,6 @@
 import {observer} from 'mobx-react'
 import type {RootStore} from '@renderer/stores/RootStore'
+import {Button, Icon} from '@ui'
 
 export const ScanProgress = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicLibrary} = rootStore
@@ -41,7 +42,12 @@ export const ScanProgress = observer(({rootStore}: {rootStore: RootStore}) => {
 
       {scanProgress.status === 'complete' && metadataProgress.status === 'complete' && (
         <div className="">
-          <h3 className="h3 margin-0">Scan complete</h3>
+          <div className="flex-row-center justify-between">
+            <h3 className="h3 margin-0">Scan complete</h3>
+            <Button variant="icon" onClick={musicLibrary.resetProgress}>
+              <Icon name="check-circle" size={20} color="var(--color-green-aim)" />
+            </Button>
+          </div>
           <div>
             <span className="txt-good">{scanProgress.count}</span> audio files processed
           </div>
