@@ -17,6 +17,12 @@ export default defineConfig({
     preload: {},
     // renderer
     renderer: {
+      resolve: {
+        alias: {
+          lib: resolve(__dirname, 'src', 'lib'),
+          '@ui': resolve(__dirname, 'src', 'renderer', 'src', 'ui-framework'),
+        },
+      },
       plugins: [
         pluginReact(),
         pluginLess(),

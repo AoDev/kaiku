@@ -6,16 +6,17 @@
     "src/renderer/src/**/*.tsx",
     "src/preload/*.d.ts",
     "src/types/*.ts",
-    "src/lib/**/*.ts"
+    "src/lib/**/*.ts",
+    "src/lib/**/*.tsx"
   ],
   "compilerOptions": {
     "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@renderer/*": [
-        "src/renderer/src/*"
-      ]
+      "@renderer/*": ["src/renderer/src/*"],
+      "lib/*": ["src/lib/*"],
+      "@ui": ["src/renderer/src/ui-framework"]
     }
   }
 }
