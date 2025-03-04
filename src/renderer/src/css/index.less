@@ -2,3 +2,122 @@
 @import '../ui-framework/styles/index.less';
 
 @import '../App/ScanProgress/ScanProgress.less';
+
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  display: grid;
+  grid-template-rows: minmax(0, 80px) 1fr;
+  width: 100%;
+  gap: 16px;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 8px;
+  background-color: #201f22;
+}
+
+.library {
+  display: grid;
+  grid-template-columns: 16% 20% 32% 32%;
+  gap: 16px;
+}
+
+.library__col {
+  height: calc(100dvh - 110px);
+  overflow-y: auto;
+  background-color: #201f22;
+}
+
+.row--playing,
+.row {
+  padding: 0 8px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.row--playing {
+  background-color: blueviolet;
+}
+
+.row:hover {
+  background-color: var(--ev-c-gray-1);
+}
+
+.row.selected,
+.row.selected:hover {
+  background-color: red;
+}
+
+.audio-player {
+  justify-self: end;
+}
+
+.btn--add {
+  background-color: #fff;
+  border: 0;
+  height: 54px;
+  border-radius: 27px;
+  font-size: 16px;
+  padding: 0 24px;
+  cursor: pointer;
+}
+
+.player__btn {
+  background-color: transparent;
+  border: 0;
+  /* height: 32px;
+  width: 32px; */
+  font-size: 16px;
+  fill: #fff;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.player__times {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 4px;
+}
+
+.flex-row-center {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.self-end {
+  justify-self: flex-end;
+}
+
+.playlist__index {
+  background-color: var(--color-bg-alternative);
+  color: var(--color-txt-default);
+  padding: 2px 4px;
+  width: 3ch;
+  display: inline-block;
+}
