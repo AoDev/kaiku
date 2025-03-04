@@ -71,8 +71,12 @@ export class MusicLibrary {
   }
 
   selectArtist(artistId: string) {
-    this.artistSelected = this.artistSelected === artistId ? '' : artistId
+    this.artistSelected = artistId
     this.albumSelected = ''
+  }
+
+  selectSong(filePath: string) {
+    this.songSelected = filePath
   }
 
   get filteredSongs() {
@@ -166,6 +170,9 @@ export class MusicLibrary {
 
     // Ensure status is set to complete when done
     this.scanProgress.status = 'complete'
+    this.artistSelected = this.artists[0]?.id ?? ''
+    this.albumSelected = ''
+    this.songSelected = ''
   }
 
   destroy() {

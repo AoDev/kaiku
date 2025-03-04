@@ -11,11 +11,9 @@ export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
       const albumId = target.dataset.albumId
       if (albumId) {
         const clickCount = event.detail
-        console.log('Selected album:', albumId)
         if (clickCount === 1) {
           musicLibrary.selectAlbum(albumId)
         } else if (clickCount === 2) {
-          musicLibrary.selectAlbum(albumId)
           musicPlayer.replacePlaylist(musicLibrary.songs.filter((song) => song.albumId === albumId))
           musicPlayer.play()
         }
