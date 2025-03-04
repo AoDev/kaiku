@@ -1,0 +1,141 @@
+@import './base.css';
+
+body {
+  overflow: hidden;
+  background-size: cover;
+  user-select: none;
+}
+
+.background {
+  top: calc(-1 * var(72px));
+  z-index: -1;
+  filter: blur(2px);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 100%;
+  position: absolute;
+  left: 0;
+}
+
+code {
+  font-weight: 600;
+  padding: 3px 5px;
+  border-radius: 2px;
+  background-color: var(--color-background-mute);
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace;
+  font-size: 85%;
+}
+
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 80px;
+}
+
+.app {
+  display: grid;
+  grid-template-rows: minmax(0, 80px) 1fr;
+  width: 100%;
+  gap: 16px;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 8px;
+  background-color: #201f22;
+}
+
+.library {
+  display: grid;
+  grid-template-columns: 16% 20% 32% 32%;
+  gap: 16px;
+}
+
+.library__col {
+  height: calc(100dvh - 110px);
+  overflow-y: auto;
+  background-color: #201f22;
+}
+
+.row--playing,
+.row {
+  padding: 0 8px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.row--playing {
+  background-color: blueviolet;
+}
+
+.row:hover {
+  background-color: var(--ev-c-gray-1);
+}
+
+.row.selected,
+.row.selected:hover {
+  background-color: red;
+}
+
+.audio-player {
+  justify-self: end;
+}
+
+.btn--add {
+  background-color: #fff;
+  border: 0;
+  height: 54px;
+  border-radius: 27px;
+  font-size: 16px;
+  padding: 0 24px;
+  cursor: pointer;
+}
+
+.player__btn {
+  background-color: transparent;
+  border: 0;
+  /* height: 32px;
+  width: 32px; */
+  font-size: 16px;
+  fill: #fff;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.player__times {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 4px;
+}
+
+.flex-row-center {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.self-end {
+  justify-self: flex-end;
+}
+
+.playlist__index {
+  background-color: var(--color-bg-alternative);
+  color: var(--color-txt-default);
+  padding: 2px 4px;
+  width: 3ch;
+  display: inline-block;
+}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Electron-Rsbuild</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    /> -->
+
+    <script>
+      const theme = localStorage.getItem('theme') || 'dark'
+      const htmlBody = window.document.querySelector('html')
+      htmlBody.setAttribute('theme', theme)
+      console.log('theme', theme)
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

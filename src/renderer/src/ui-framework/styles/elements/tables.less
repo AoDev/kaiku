@@ -1,0 +1,93 @@
+.table,
+.table--fixed,
+.table--narrow,
+.table--responsive {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    border-top: 1px solid var(--color-table-separator);
+  }
+
+  tr:first-child {
+    td {
+      border-top: none;
+    }
+  }
+}
+
+.table-variant(@padding) {
+  th,
+  td {
+    padding: @padding @padding * 1.5 @padding @padding * 1.5;
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 0;
+  }
+
+  th:last-child,
+  td:last-child {
+    padding-right: 0;
+  }
+}
+
+.table,
+.table--fixed,
+.table--responsive {
+  .table-variant(8px);
+}
+
+.table--responsive {
+  @media @screen-max-2x {
+    th,
+    td {
+      padding: 8px 6px;
+    }
+  }
+}
+
+.table--narrow {
+  .table-variant(4px);
+}
+
+.table--fixed-height {
+  tbody tr {
+    height: 54px;
+  }
+}
+
+.table--fixed {
+  table-layout: fixed;
+}
+
+.tbody-margin-top-1::before {
+  content: '';
+  display: table-row;
+  height: 16px;
+}
+
+.table__head,
+.table__head--fixed {
+  background-color: var(--color-bg-default);
+  color: var(--color-txt-default);
+  font-size: 14px;
+  font-weight: bold;
+  min-height: 32px;
+  position: sticky;
+  text-transform: uppercase;
+  top: 0;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  z-index: 1; // prevent content in the table to go above it on scroll.
+}
+
+.table__separator-row {
+  background-color: var(--color-bg-alternative);
+
+  > td {
+    border-top: 0;
+    border-bottom: 0;
+  }
+}

@@ -1,0 +1,72 @@
+html {
+  box-sizing: border-box;
+  height: 100%;
+  color: var(--color-txt-default);
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--color-bg-default);
+  // line-height: 1.5;
+}
+
+*,
+*::before,
+*::after {
+  touch-action: manipulation; // No zoom, etc in mobile browsers - Safari does not support "none"
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-size: 16px;
+  font-family: @font-default;
+  background-color: var(--color-body-bg);
+  min-height: 100%;
+  overscroll-behavior: contain; // prevent pull to refresh browser action
+  scrollbar-gutter: stable;
+}
+
+// Prevent images from shrinking by default in a display flex container
+img {
+  flex-shrink: 0;
+}
+
+pre {
+  margin: 0;
+}
+
+// --- Reset form elements
+
+// Seems to fix issue where an input won't shrink/accomodate to the place available in a flex container
+// It also fixes an issue when a select is a child of a grid and expands outside of it
+input,
+select {
+  min-width: 0;
+}
+
+select {
+  // vertical align seems different accross browser, this should help having a select aligned with input
+  vertical-align: bottom;
+  width: fit-content;
+}
+
+select,
+textarea,
+input {
+  font-size: inherit;
+  color: inherit;
+
+  &:focus {
+    outline: 0;
+    box-shadow: inset 0 0 2px var(--color-blue-aim);
+  }
+}
+
+[type='checkbox'] {
+  cursor: pointer;
+}
+
+[type='radio'] {
+  // Radio buttons look ugly with the default inset box-shadow set before
+  &:focus {
+    box-shadow: none;
+  }
+}

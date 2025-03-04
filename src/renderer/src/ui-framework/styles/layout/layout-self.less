@@ -1,0 +1,422 @@
+// SPACERS -------------------------------------------------------------- //
+// generates classes like margin-top-1, margin-bottom-2, margin-left-3, ...
+@spacer-directions: top, right, bottom, left;
+@spacer-values: 0, 1, 2, 3, 4;
+
+each(@spacer-values, .(@svalue) {
+  each(@spacer-directions, .(@direction) {
+    .margin-@{direction}-@{svalue} {
+      margin-@{direction}: @base-gap * @svalue;
+    }
+  })
+});
+
+/* stylelint-disable-next-line less/no-duplicate-variables */
+each(@spacer-directions, .(@direction) {
+  .margin-@{direction}-05 {
+    margin-@{direction}: @base-gap * 0.5;
+  }
+});
+
+.margin-top-default {
+  margin-top: var(--grid-gap);
+}
+
+.margin-bottom-default {
+  margin-bottom: var(--grid-gap);
+}
+
+// When needed to add a char space between words in two spans for example.
+.margin-left-1ch {
+  margin-left: 1ch;
+}
+
+.margin-right-1ch {
+  margin-right: 1ch;
+}
+
+.margin-right-05ch {
+  margin-right: 0.5ch;
+}
+
+.margin-h-1ch {
+  margin-left: 1ch;
+  margin-right: 1ch;
+}
+
+.margin-0 {
+  margin: 0 !important;
+}
+
+.margin-1 {
+  margin: @base-gap !important;
+}
+
+.margin-v-05 {
+  margin-top: @base-gap * 0.5;
+  margin-bottom: @base-gap * 0.5;
+}
+
+.margin-v-1 {
+  margin-top: @base-gap;
+  margin-bottom: @base-gap;
+}
+
+.margin-v-2 {
+  margin-top: @base-gap * 2;
+  margin-bottom: @base-gap * 2;
+}
+
+.margin-h-1 {
+  margin-left: @base-gap;
+  margin-right: @base-gap;
+}
+
+// HEIGHT & WIDTH -------------------------------------------------------------- //
+.width-50p {
+  width: 50%;
+}
+
+.width-100p {
+  width: 100%;
+}
+
+.width-100p-strict {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.width-100vw {
+  width: 100vw;
+}
+
+.height-100p {
+  height: 100%;
+}
+
+@media @screen-1x {
+  .height-full-1x {
+    min-height: calc(100dvh - @header-height - 2 * var(--grid-gap));
+  }
+}
+
+.width--fit-content {
+  width: fit-content;
+}
+
+// Note, browser vendors have broken the vh units. Can't really use this on mobile browsers.
+// https://nicolas-hoizey.com/2015/02/viewport-height-is-taller-than-the-visible-part-of-the-document-in-some-mobile-browsers.html
+.height-100vh {
+  height: 100vh;
+}
+
+.height-100dvh {
+  height: 100dvh;
+}
+
+.width-optimal-txt-length {
+  max-width: 32em;
+}
+
+.max-width-100p {
+  max-width: 100%;
+}
+
+// Use this for content that should always have horizontal padding with the screen border
+// useful when used with center-optimal
+.width-1x-r {
+  max-width: 320px;
+}
+
+@media @screen-min-2x {
+  .width-1x-r {
+    max-width: 360px;
+  }
+}
+
+.max-w-fit {
+  max-width: fit-content;
+}
+
+.max-width-1x {
+  max-width: 320px;
+}
+
+.max-width-2x {
+  max-width: 640px;
+}
+
+.max-width-3x {
+  max-width: 960px;
+}
+
+.max-width-4x {
+  max-width: 1280px;
+}
+
+@width-values: 6ch, 4em, 8em, 12em, 16em;
+/* stylelint-disable-next-line */
+each(@width-values, .(@value) {
+  .width-@{value} {
+    width: @value;
+  }
+});
+
+// Containers
+@container-values: 16em, 24em, 32em, 48em, 64em;
+
+/* stylelint-disable-next-line */
+each(@container-values, .(@cvalue) {
+  .max-width-@{cvalue} {
+    max-width: @cvalue;
+  }
+});
+
+// PADDING -------------------------------------------------------------- //
+// - There are responsive versions for small screens,
+//   where padding is reduced to have more content space.
+
+/* stylelint-disable-next-line less/no-duplicate-variables */
+each(@spacer-values, .(@svalue) {
+  each(@spacer-directions, .(@direction) {
+    .pad-@{direction}-@{svalue} {
+      padding-@{direction}: @base-gap * @svalue;
+    }
+  })
+});
+
+/* stylelint-disable-next-line less/no-duplicate-variables */
+each(@spacer-directions, .(@direction) {
+  .pad-@{direction}-05 {
+    padding-@{direction}: @base-gap * 0.5;
+  }
+});
+
+.pad-0 {
+  padding: 0 !important;
+}
+
+.pad-v-02 {
+  padding-top: @base-gap * 0.2 !important;
+  padding-bottom: @base-gap * 0.2 !important;
+}
+
+.pad-05 {
+  padding: @base-gap * 0.5;
+}
+
+.pad-1 {
+  padding: @base-gap !important;
+}
+
+.pad-2 {
+  padding: @base-gap * 2;
+}
+
+.pad-right-0 {
+  padding-right: 0 !important;
+}
+
+.pad-page {
+  padding: var(--grid-gap);
+}
+
+// Horizontal padding is bigger on bigger screen
+.pad-default {
+  padding: (@base-gap * 2) @base-gap (@base-gap * 2) @base-gap;
+
+  @media @screen-min-2x {
+    padding-left: @base-gap * 2;
+    padding-right: @base-gap * 2;
+  }
+}
+
+.pad-h-default {
+  padding-left: @base-gap;
+  padding-right: @base-gap;
+
+  @media @screen-min-2x {
+    padding-left: @base-gap * 2;
+    padding-right: @base-gap * 2;
+  }
+}
+
+.pad-h-2-2x {
+  padding-left: @base-gap;
+  padding-right: @base-gap;
+}
+
+.pad-v-2-2x {
+  padding-top: @base-gap;
+  padding-bottom: @base-gap;
+}
+
+@media @screen-min-2x {
+  .pad-h-2-2x {
+    padding-left: @base-gap * 2;
+    padding-right: @base-gap * 2;
+  }
+
+  .pad-v-2-2x {
+    padding-top: @base-gap * 2;
+    padding-bottom: @base-gap * 2;
+  }
+}
+
+// Horizontal or vertical only padding. Note that we define in one direction only
+// because we don't want to override the padding on the other axis. (so no shorthand padding: 0 16px)
+.pad-v-1 {
+  padding-top: @base-gap;
+  padding-bottom: @base-gap;
+}
+
+.pad-v-2 {
+  padding-top: @base-gap * 2;
+  padding-bottom: @base-gap * 2;
+}
+
+.pad-h-1 {
+  padding-left: @base-gap;
+  padding-right: @base-gap;
+}
+
+.pad-h-2 {
+  padding-left: @base-gap * 2;
+  padding-right: @base-gap * 2;
+}
+
+// OVERFLOW -------------------------------------------------------------- //
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+// Useful to remove the default overflow: hidden on some elements like panels.
+.overflow-initial {
+  overflow: initial !important;
+}
+
+.scroll-x {
+  overflow-x: auto;
+}
+
+.scroll-y {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+// mainly used to prevent scrolling of the whole page when there is a modal
+.dimensions-locked {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+// POSITIONING -------------------------------------------------------------- //
+.center-block {
+  display: block !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pos-rel {
+  position: relative;
+}
+
+.pos-abs {
+  position: absolute;
+}
+
+.float-right {
+  float: right;
+}
+
+.block {
+  display: block !important;
+  width: 100%; // for buttons/inputs https://stackoverflow.com/questions/16584890/why-does-displayblock-not-stretch-buttons-or-input-elements
+}
+
+.inline-block {
+  display: inline-block;
+
+  & + .btn {
+    margin-left: 16px;
+    vertical-align: baseline;
+  }
+}
+
+.vertical-align-top {
+  vertical-align: top;
+}
+
+// FLEX
+.flex-fill {
+  flex-grow: 1;
+}
+
+.flex-row-end {
+  margin-left: auto;
+}
+
+.flex-col-end {
+  margin-top: auto;
+}
+
+.flex-span-equal {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.no-shrink {
+  flex-shrink: 0;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.rotate-0 {
+  transform: rotate(0deg);
+  transition: transform 0.2s ease-out;
+}
+
+.rotate-45 {
+  transform: rotate(45deg);
+  transition: transform 0.2s ease-out;
+}
+
+// Scroll margin
+// .scroll-margin-1, ...
+
+/* stylelint-disable-next-line */
+each(@spacer-values, .(@svalue) {
+  .scroll-margin-@{svalue} {
+    scroll-margin: @base-gap * @svalue;
+  }
+});
+
+// others
+
+.fullscreen--fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 3;
+}
+
+.justify-self-end {
+  justify-self: end;
+}
+
+.self-center {
+  align-self: center;
+}
+
+.self-start {
+  align-self: start;
+}

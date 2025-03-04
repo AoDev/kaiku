@@ -1,0 +1,66 @@
+.bg-white {
+  background-color: #fff;
+}
+
+.bg-default {
+  background-color: var(--color-bg-default);
+}
+
+.bg-alternative {
+  background-color: var(--color-bg-alternative);
+}
+
+.bg-neutral-soft {
+  background-color: var(--color-bg-neutral-soft);
+}
+
+.bg-blue-soft {
+  background-color: var(--color-bg-blue-soft);
+}
+
+.bg-red-soft {
+  background-color: var(--color-bg-red-soft);
+}
+
+.bg-green-soft {
+  background-color: var(--color-bg-green-soft);
+}
+
+.bg-orange-soft {
+  background-color: var(--color-bg-orange-soft);
+}
+
+.bg--hover {
+  &.focus,
+  &:hover,
+  &:focus {
+    background-color: var(--color-bg-alternative);
+  }
+}
+
+.bg-body {
+  background: var(--bg-body) !important;
+}
+
+.bg-body-like {
+  background: var(--bg-body);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: var(--color-bg-default);
+    z-index: -1;
+    opacity: 0.6;
+  }
+}
+
+:root[theme='dark'] {
+  .bg-body-like {
+    &::before {
+      opacity: 0.8;
+    }
+  }
+}

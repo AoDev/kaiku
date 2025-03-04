@@ -1,0 +1,196 @@
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.truncate--inline {
+  &:extend(.truncate);
+
+  display: inline-flex;
+}
+
+.txt-09 {
+  font-size: 0.9em;
+}
+
+.txt-1 {
+  font-size: 1em;
+}
+
+.txt-11 {
+  font-size: 1.1em;
+}
+
+.txt-12 {
+  font-size: 1.2em;
+}
+
+.txt-15 {
+  font-size: 1.5em;
+}
+
+.txt-2 {
+  font-size: 2em;
+}
+
+.txt-left {
+  text-align: left;
+}
+
+.txt-right {
+  text-align: right;
+}
+
+.txt-center {
+  text-align: center;
+}
+
+.txt-blue {
+  color: var(--color-blue-aim);
+}
+
+.txt-gray {
+  color: var(--color-gray-aim);
+}
+
+.txt-black {
+  color: #000;
+}
+
+.txt-white {
+  color: #fff;
+}
+
+.txt-good {
+  color: var(--color-green-aim);
+}
+
+.txt-bad {
+  color: var(--color-red-aim);
+}
+
+.txt-warning {
+  color: var(--color-orange-aim);
+}
+
+.txt-italic {
+  font-style: italic;
+}
+
+.txt-bold {
+  font-weight: bold;
+}
+
+.txt-normal {
+  font-weight: normal;
+}
+
+.txt-placeholder {
+  color: var(--color-txt-placeholder);
+}
+
+.txt-muted {
+  color: var(--color-txt-muted);
+}
+
+.txt-line-through {
+  text-decoration: line-through;
+}
+
+.txt-underline {
+  text-decoration: underline;
+}
+
+.txt-uppercase {
+  text-transform: uppercase;
+}
+
+.txt-mono {
+  font-family: @font-mono;
+  font-size: 1em; // current mono font on mac is bigger; but need to check on other OS
+}
+
+.line-height-12 {
+  line-height: 1.2;
+}
+
+.line-height-13 {
+  line-height: 1.3;
+}
+
+.line-height-14 {
+  line-height: 1.4;
+}
+
+.line-height-15 {
+  line-height: 1.5;
+}
+
+.txt-capitalize {
+  text-transform: capitalize;
+}
+
+.txt-wrap-break {
+  word-wrap: break-word;
+}
+
+.heading-section {
+  letter-spacing: 1px;
+  font-size: 1.1em;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.h3,
+.h4 {
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.txt-read {
+  line-height: 1.4;
+  max-width: 32em;
+}
+
+.txt-default {
+  color: var(--color-txt-default);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.pre {
+  white-space: pre;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.align-txt-top {
+  vertical-align: top;
+}
+
+// For text that is used to indicate a currency or a unit like '%' '°C'
+.txt-unit {
+  font-size: 0.8em;
+  color: var(--color-txt-muted);
+  text-transform: uppercase;
+  margin: 0;
+  font-weight: normal;
+  max-width: 8ch;
+}
+
+.font-size-15 {
+  font-size: 15px;
+}
+
+.word-spacing-05 {
+  word-spacing: @base-gap * 0.5;
+}
+
+.word-spacing-1 {
+  word-spacing: @base-gap;
+}

@@ -1,0 +1,53 @@
+// reset
+:root {
+  --color-link: var(--color-purple-aim);
+  --color-link-hover: var(--color-purple-hover);
+}
+
+:root[theme='dark'] {
+  --color-link: var(--color-green-vivid);
+  --color-link-hover: var(--color-green-hover);
+}
+
+a {
+  color: var(--color-link);
+  text-underline-offset: 0.3em;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.link,
+.link--discreet {
+  color: var(--color-link);
+  text-decoration: underline;
+
+  &.focus,
+  &:focus,
+  &:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+}
+
+.link--discreet {
+  text-decoration: none;
+}
+
+.link--invisible,
+.link--invisible:hover {
+  text-decoration: none;
+  color: currentcolor;
+}
+
+.link--simple-text {
+  color: var(--color-link);
+  text-decoration: none;
+
+  &:focus,
+  &:hover {
+    text-decoration: none;
+    color: var(--color-link-hover);
+  }
+}

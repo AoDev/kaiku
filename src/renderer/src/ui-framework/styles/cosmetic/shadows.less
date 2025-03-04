@@ -1,0 +1,23 @@
+:root {
+  --shadow-btn: none;
+}
+
+:root[theme='dark'] {
+  --shadow-btn: 0 0 24px 2px var(--color-shadow);
+}
+
+.shadow-modal {
+  box-shadow: 0 0 80px -24px var(--color-shadow);
+}
+
+.shadow-popover {
+  box-shadow: 0 0 40px -10px var(--color-shadow);
+}
+
+.shadow-button {
+  box-shadow: var(--shadow-btn);
+}
+
+.shadow-panel {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.04);
+}

@@ -1,0 +1,58 @@
+.group {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+.unselectable {
+  .noselect;
+
+  cursor: default;
+}
+
+.clickable {
+  &:extend(.unselectable);
+
+  cursor: pointer;
+}
+
+.clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.visible-1x,
+.hidden-min-2x {
+  @media @screen-min-2x {
+    display: none !important;
+  }
+}
+
+@media @screen-max-2x {
+  .visible-min-3x {
+    display: none !important;
+  }
+}

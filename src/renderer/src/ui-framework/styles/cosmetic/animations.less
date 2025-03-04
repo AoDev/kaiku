@@ -1,0 +1,220 @@
+/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */
+
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    transform: scale3d(1.25, 1.25, 1.25);
+  }
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse {
+  animation-name: pulse;
+}
+
+.ripple {
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #000 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition:
+      transform 0.5s,
+      opacity 1s;
+  }
+
+  &:active::after {
+    transform: scale(0, 0);
+    opacity: 0.2;
+    transition: 0s;
+  }
+}
+
+@keyframes zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale3d(0.8, 0.8, 0.8);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-out {
+  0% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale3d(0.8, 0.8, 0.8);
+  }
+}
+
+.zoom-in {
+  animation-name: zoom-in;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+
+.zoom-out {
+  animation-name: zoom-out;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(359deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.spin {
+  animation-duration: 1s;
+  animation-name: spin;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.hover--grow2p {
+  transition: transform 0.2s ease-out;
+
+  &.not(.disabled) {
+    &.focus,
+    &:hover,
+    &:focus-visible {
+      transform: scale(1.02);
+    }
+  }
+}
+
+.hover--grow10p {
+  transition: transform 0.2s ease-out;
+
+  &:not(.disabled) {
+    &.focus,
+    &:hover,
+    &:focus-visible {
+      transform: scale(1.1);
+    }
+  }
+}
+
+/* The element to be animated */
+.fade-in {
+  opacity: 0;
+  animation: fade-in 0.5s forwards;
+}
+
+/* The animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* The element to be animated */
+.fade-out {
+  opacity: 1;
+  animation: fade-out 0.5s forwards;
+}
+
+/* The animation */
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.slide-in {
+  transform: translateY(3%); /* Start off the screen */
+  animation: slide-in 0.5s; /* Animate over 0.5 seconds */
+  animation-fill-mode: forwards; /* Keep the animation state after completion */
+}
+
+/* The animation */
+@keyframes slide-in {
+  from {
+    transform: translateY(3%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.slide-in-opacity {
+  transform: translateY(-10%); /* Start off the screen */
+  animation: slide-in-opacity 0.2s; /* Animate over 0.5 seconds */
+  animation-fill-mode: forwards; /* Keep the animation state after completion */
+}
+
+/* The animation */
+@keyframes slide-in-opacity {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The element to be animated */
+.zoom-in-opacity {
+  // opacity: 0; /* Start with 0 opacity */
+  transform: scale(0.9); /* Start at 0 scale */
+  animation: zoom-in-opacity 0.5s; /* Animate over 0.5 seconds */
+  animation-fill-mode: forwards; /* Keep the animation state after completion */
+  transform-origin: center;
+}
+
+/* The animation */
+@keyframes zoom-in-opacity {
+  from {
+    // opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    // opacity: 1;
+    transform: scale(1);
+  }
+}

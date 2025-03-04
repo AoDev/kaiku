@@ -1,0 +1,24 @@
+.panel--simple,
+.panel--alternative {
+  .border-rounded;
+}
+
+.panel--simple {
+  .shadow-panel;
+  background-color: var(--color-bg-default);
+}
+
+.panel--alternative {
+  background-color: var(--color-bg-alternative);
+}
+
+:root[theme='dark'] {
+  .panel--simple {
+    box-shadow: none;
+  }
+}
+
+.panel__header {
+  .flex-row-center;
+  height: 57px;
+}

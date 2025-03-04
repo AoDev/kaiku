@@ -1,0 +1,33 @@
+.textarea {
+  box-shadow: none;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid var(--color-line-separator);
+  background-color: transparent;
+  padding: 3px;
+  transition: background 0.2s ease-in-out;
+
+  &:focus,
+  &:hover {
+    box-shadow: none;
+    background: var(--color-bg-alternative);
+  }
+
+  // .scrollbarThumb(var(--color-scrollbar-thumb-discreet), var(--color-scrollbar-thumb-discreet));
+}
+
+.textarea-no-wrap {
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+}
+
+.textarea--auto-height {
+  resize: none;
+  overflow-y: hidden;
+  min-height: 50px;
+}
+
+.textarea--no-resize {
+  resize: none;
+}

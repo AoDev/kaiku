@@ -1,0 +1,80 @@
+// No borders
+.border-0,
+.border-0:focus,
+.border-0:hover {
+  border: 0 !important;
+}
+
+.border-1 {
+  border: 1px solid var(--color-line-separator);
+}
+
+.border-rounded {
+  // border: 1px solid var(--color-line-separator);
+  border-radius: var(--border-radius-default);
+}
+
+.border-rounded-50p {
+  border-radius: 50%;
+}
+
+.lg-border-rounded {
+  border: 1px solid var(--color-line-separator);
+
+  @media @screen-min-3x {
+    border-radius: @border-radius-base;
+  }
+}
+
+.border-top {
+  border-top: 1px solid var(--color-line-separator);
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--color-line-separator);
+}
+
+.border-bottom--dashed {
+  border-bottom: 1px dashed;
+}
+
+.border-v {
+  border-top: 1px solid var(--color-line-separator);
+  border-bottom: 1px solid var(--color-line-separator);
+}
+
+.border-top-0 {
+  border-top: 0;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.border-bottom-radius-0 {
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+// Rounding
+.border-radius-0 {
+  border-radius: 0 !important;
+}
+
+.border-radius-top-0 {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.border-radius-bottom-0 {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.border-top-radius-1 {
+  border-top-right-radius: @border-radius-base;
+  border-top-left-radius: @border-radius-base;
+}
+
+.border-bottom-radius-1 {
+  border-bottom-right-radius: @border-radius-base;
+  border-bottom-left-radius: @border-radius-base;
+}

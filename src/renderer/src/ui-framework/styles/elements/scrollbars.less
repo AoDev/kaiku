@@ -1,0 +1,98 @@
+@scrollbar-track-width: 4px;
+
+// Theme colors
+:root {
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: #0004;
+  --color-scrollbar-thumb-discreet: var(--color-purple-aim);
+}
+
+:root[theme='dark'] {
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: #fff2;
+  --color-scrollbar-thumb-discreet: #6b54e9;
+}
+
+// Scrollbars
+::-webkit-scrollbar {
+  width: @scrollbar-track-width;
+  height: @scrollbar-track-width;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: var(--color-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 4px;
+  border-radius: 10px;
+}
+
+// Scrollbar thumb mixin for colors
+.scrollbarThumb(@color, @colorHover) {
+  &::-webkit-scrollbar-thumb {
+    background: @color;
+
+    &:hover {
+      background: @colorHover;
+    }
+  }
+}
+
+// Global scrollbar thumb color
+.scrollbarThumb(var(--color-scrollbar-thumb), var(--color-scrollbar-thumb));
+
+::-webkit-scrollbar-thumb:window-inactive {
+  /* stylelint-disable */
+  background: var(--color-scrollbar-track); // hides the scrollbar thumb when the window is inactive
+}
+
+::-webkit-scrollbar:vertical {
+  display: none;
+
+  @media @hover-support {
+    display: block;
+  }
+}
+
+// discreet scrollnbars only appear on hover and try not to displace content
+.scrollbar-discreet-x {
+  overflow-y: hidden;
+  overflow-x: auto;
+  overflow-x: overlay;
+  overscroll-behavior-x: contain;
+  scrollbar-gutter: stable;
+
+  @media @hover-support {
+    overflow-x: hidden;
+
+    &:hover {
+      overflow-x: auto;
+      overflow-x: overlay;
+    }
+  }
+}
+
+.scrollbar-discreet-y {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-y: overlay;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  margin-right: -@scrollbar-track-width * 2; // compensates the width of the scrollbar which is added with scrollbar-gutter: stable;
+  padding-right: @scrollbar-track-width;
+
+  .scrollbarThumb(var(--color-scrollbar-thumb-discreet), var(--color-scrollbar-thumb-discreet));
+
+  @media @hover-support {
+    overflow-y: hidden;
+
+    &:hover {
+      overflow-y: auto;
+      overflow-y: overlay;
+    }
+  }
+}

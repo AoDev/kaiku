@@ -1,0 +1,408 @@
+/* stylelint-disable */
+
+// Reset
+button {
+  cursor: pointer;
+
+  &:focus,
+  &:hover {
+    outline: 0;
+  }
+
+  &.disabled,
+  &[disabled] {
+    cursor: not-allowed;
+
+    &:focus,
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.btn {
+  .noselect;
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  // overflow: hidden; // not sure why I needed this, will see if that causes problems
+  vertical-align: bottom;
+  line-height: 1;
+  font-size: 16px;
+
+  &.hover,
+  &.active {
+    text-decoration: none;
+    cursor: default;
+  }
+}
+
+// Mixin for style variant
+.btn-variant-plain (@txt-color, @bg-color, @active-bgcolor: @bg-color) {
+  border: 1px solid @bg-color;
+  background-color: @bg-color;
+  border-radius: 22px;
+  color: @txt-color;
+  transition-property: background-color, border-color, transform, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+
+  &.disabled {
+    color: var(--color-btn-disabled-txt);
+    background-color: var(--color-btn-disabled-bg);
+    border-color: var(--color-btn-disabled-bg);
+    box-shadow: none;
+
+    .icon-svg {
+      fill: var(--color-btn-disabled-txt);
+    }
+  }
+
+  .loader-bar {
+    background-color: @txt-color;
+  }
+
+  .icon-svg {
+    fill: @txt-color;
+  }
+}
+
+.btn-plain-hover(@txt-color, @color-bg, @color-border: @color-bg) {
+  &.focus,
+  &:focus-visible,
+  &:hover {
+    color: @txt-color;
+    text-decoration: none; // in case we decorate a link
+    background-color: @color-bg;
+    border-color: @color-border;
+    &.disabled,
+    &:disabled {
+      color: var(--color-btn-disabled-txt);
+      border-color: var(--color-btn-disabled-bg);
+      background-color: var(--color-btn-disabled-bg);
+      box-shadow: none;
+    }
+  }
+}
+
+.btn--blue {
+  .btn-variant-plain(var(--color-txt-inverse), var(--color-blue-aim));
+  .btn-plain-hover(var(--color-txt-inverse), var(--color-blue-hover));
+}
+
+.btn--green {
+  .btn-variant-plain(var(--color-txt-inverse), var(--color-green-aim));
+  .btn-plain-hover(var(--color-txt-inverse), var(--color-green-hover));
+}
+
+.btn--red {
+  .btn-variant-plain(var(--color-txt-inverse), var(--color-red-aim));
+  .btn-plain-hover(var(--color-txt-inverse), var(--color-red-hover));
+}
+
+.btn--neutral {
+  .btn-variant-plain(var(--color-txt-inverse), var(--color-neutral-aim));
+  .btn-plain-hover(var(--color-txt-inverse), var(--color-neutral-hover));
+}
+
+.btn--discreet {
+  .btn-variant-plain(var(--color-txt-default), var(--color-bg-alternative), var(--color-green-aim));
+  .btn-plain-hover(var(--color-txt-default), transparent, var(--color-txt-default));
+
+  &.focus,
+  &:focus-visible,
+  &:hover {
+    .shadow-button;
+  }
+}
+
+.btn--blackwhite {
+  .btn-variant-plain(var(--color-txt-max-contrast), var(--color-bg-max-contrast));
+  // .btn-plain-hover(var(--color-txt-inverse), var(--color-blue-hover));
+}
+
+// Keep these before btn--link so that padding and height are overwritten
+.btn--medium {
+  height: 44px;
+  padding: 0 @base-gap * 1.5;
+}
+
+.btn--narrow {
+  padding: 8px 10px;
+  height: auto;
+}
+
+.btn--text {
+  background: transparent;
+  border: 0;
+  color: var(--color-txt-default);
+  height: auto;
+  line-height: 1.15;
+  padding: 0;
+  vertical-align: baseline;
+  position: relative;
+
+  .icon-svg {
+    fill: var(--color-txt-default);
+  }
+
+  .loader-bar {
+    background-color: var(--color-txt-default);
+  }
+
+  &.disabled,
+  &[disabled] {
+    color: var(--color-gray-aim);
+    text-decoration: none;
+  }
+}
+
+.btn--menu {
+  &:extend(.btn--neutral all);
+
+  color: var(--color-txt-default);
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  display: block;
+  width: 100%;
+  text-align: left;
+
+  &.focus,
+  &:hover,
+  &:focus {
+    border: 0;
+    border-radius: 8px;
+    box-shadow: none;
+    color: var(--color-txt-default);
+    background-color: var(--color-bg-alternative);
+  }
+
+  &.active,
+  &.active:hover,
+  &.active:focus,
+  &.active.focus {
+    color: var(--color-blue-aim);
+    background-color: transparent;
+  }
+}
+
+.btn--link {
+  background: transparent;
+  border: 0;
+  color: var(--color-link);
+  height: auto;
+  line-height: 1.15;
+  padding: 0;
+  vertical-align: baseline;
+  position: relative;
+
+  .icon-svg {
+    fill: var(--color-link);
+  }
+
+  &.focus,
+  &:focus,
+  &:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+
+  .loader-bar {
+    background-color: var(--color-link);
+  }
+
+  &.disabled,
+  &[disabled] {
+    color: var(--color-gray-aim);
+    text-decoration: none;
+  }
+}
+
+// TODO: might rething this
+.btn--link.link {
+  padding: 0;
+  height: auto;
+  text-decoration: underline;
+  vertical-align: baseline;
+}
+
+.btn--icon,
+.btn--invisible {
+  height: auto;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+  color: var(--color-txt-default);
+
+  &.disabled,
+  &[disabled] {
+    opacity: 0.5;
+  }
+}
+
+.btn--tab {
+  border: 0;
+  color: var(--color-txt-default);
+  border-bottom: 2px solid transparent;
+  background-color: transparent;
+  text-transform: uppercase;
+  font-size: 13px;
+  padding: 0;
+
+  &::after {
+    content: '';
+    position: relative;
+    top: 8px;
+    display: block;
+    border-bottom: 3px solid transparent;
+    margin: 0 16px;
+    transition: border 0.2s ease-out;
+  }
+
+  &:hover,
+  &:focus,
+  &.focus {
+    &:after {
+      border-bottom: 3px solid var(--color-action--hover);
+    }
+  }
+
+  &.active {
+    &::after {
+      border-bottom: 3px solid var(--color-action);
+      transition: border 0.2s ease-out;
+    }
+  }
+}
+
+a.btn {
+  line-height: 2.7; // Needed when the class is set on a link to align text
+}
+
+.btn--sticked-horizontal,
+.btn--sticked-horizontal-same-width {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+
+  > .btn {
+    flex-shrink: 0;
+    flex: auto;
+  }
+
+  > .btn:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  > .btn:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.btn--sticked-horizontal-same-width {
+  > .btn {
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+}
+
+.btn--sticked-vertical {
+  > .btn {
+    display: block;
+  }
+
+  > .btn:not(:last-child) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  > .btn:not(:first-child) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: 0;
+  }
+}
+
+.btn-round,
+.btn-square {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.btn--narrow {
+    height: 32px;
+    width: 32px;
+    padding: 6px;
+  }
+}
+
+.btn-round {
+  border-radius: 50%;
+}
+
+.btn-loading {
+  color: transparent !important;
+  min-width: 44px; // for loader width
+
+  &.btn-round {
+    min-width: unset;
+  }
+}
+
+.btn--theader {
+  background: transparent;
+  color: var(--color-txt-default);
+  text-transform: uppercase;
+  border: 0;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0;
+  letter-spacing: 0.05em;
+  height: 100%;
+}
+
+.btn--with-caret {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.btn__caret-right {
+  position: absolute;
+  right: 14px;
+}
+
+.btn--underlined {
+  border-bottom: 2px solid;
+  padding: 10px 0 6px;
+}
+
+// Because btn--tab(s) are centered by default, override this to have left aligned tabs
+.tabs--left {
+  .btn--tab {
+    padding: 0;
+
+    &:after {
+      margin: 0;
+    }
+  }
+  .btn--tab + .btn--tab {
+    margin-left: @base-gap;
+  }
+}
+
+// catch attention
+.btn__dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-red-aim);
+}

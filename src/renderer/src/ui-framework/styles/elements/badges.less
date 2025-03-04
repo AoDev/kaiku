@@ -1,0 +1,59 @@
+.badge {
+  display: inline-block;
+  padding: 0 4px;
+  border-radius: 11px;
+  color: #fff;
+  transition: background-color ease-out 0.2s;
+  text-align: center;
+  height: 22px;
+  line-height: 1.3;
+}
+
+.badge-variant(@txtColor, @bgColor) {
+  &:extend(.badge);
+
+  background-color: @bgColor;
+  color: @txtColor;
+}
+
+.badge--green,
+.badge--positive {
+  .badge-variant(var(--color-txt-inverse), var(--color-green-aim));
+}
+
+.badge--blue {
+  .badge-variant(var(--color-txt-inverse), var(--color-blue-aim));
+}
+
+.badge--red,
+.badge--negative {
+  .badge-variant(var(--color-txt-inverse), var(--color-red-aim));
+}
+
+.badge--dark {
+  .badge-variant(#fff, #14042a);
+}
+
+.badge--light {
+  .badge-variant(#000, #fff);
+
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 10%);
+}
+
+.badge--neutral {
+  .badge-variant(var(--color-txt-inverse), var(--color-neutral-aim));
+}
+
+.badge--yellow {
+  .badge-variant(#000, #ffe75f);
+}
+
+.badge-count {
+  background-color: var(--color-red-aim);
+  height: 22px;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1;
+  padding: 2px 4px;
+  border: 1px solid #380a77;
+}

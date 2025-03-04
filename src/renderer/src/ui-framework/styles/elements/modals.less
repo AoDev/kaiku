@@ -1,0 +1,118 @@
+// Modal can have a max width depending on the width 1x, 2x, 3x
+// Modal must never be wider or taller than the screen
+// Modal can be fullscreen
+// Modal can have an overlay, which may or may not be visible
+
+@modal-width-base: 256px;
+
+// all modals except 1x are fullscreen on small screens
+.modal--2x,
+.modal--3x,
+.modal--4x,
+.modal--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+}
+
+// all modals except fullscreen (on big screens) have default background, shadow and border
+.modal--1x,
+.modal--2x,
+.modal--3x,
+.modal--4x {
+  background: var(--color-bg-modal);
+  overscroll-behavior-y: contain;
+  .shadow-modal;
+  .border-1;
+}
+
+.modal--1x {
+  @height: 226px;
+  @width: @modal-width-base;
+
+  position: fixed;
+  top: calc(45% - @height / 2);
+  left: calc(50% - @width / 2);
+  width: @width;
+  z-index: 5;
+  border-radius: @border-radius-base;
+}
+
+.modal--2x {
+  @height: 75%;
+  @width: @modal-width-base * 2;
+
+  @media @screen-min-2x {
+    top: calc(45% - @height / 2);
+    left: calc(50% - @width / 2);
+    height: @height;
+    width: @width;
+    border-radius: @border-radius-base;
+  }
+}
+
+.modal--3x {
+  @height: 75%;
+  @width: @modal-width-base * 3;
+
+  @media @screen-min-2x {
+    top: calc(45% - @height / 2);
+    left: calc(50% - @width / 2);
+    height: @height;
+    width: @width;
+    border-radius: @border-radius-base;
+  }
+}
+
+.modal--4x {
+  @height: 75%;
+  @width: @modal-width-base * 4;
+
+  @media @screen-min-3x {
+    top: calc(45% - @height / 2);
+    left: calc(50% - @width / 2);
+    height: @height;
+    width: @width;
+    border-radius: @border-radius-base;
+  }
+}
+
+.modal--right {
+  border-color: transparent;
+  @media @screen-min-2x {
+    top: 0;
+    right: 0;
+    left: unset;
+    height: unset;
+    bottom: 0;
+    border-radius: 0;
+  }
+}
+
+// modal fullscreen has default app background
+.modal--fullscreen {
+  &:extend(.bg-body all);
+}
+
+.modal-overlay,
+.modal-overlay--invisible {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+}
+
+.modal-overlay {
+  background-color: rgb(0 0 0 / 50%);
+}
+
+.modal__btn {
+  height: 44px;
+  text-align: center;
+  flex: 1;
+}
