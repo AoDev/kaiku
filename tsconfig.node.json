@@ -7,7 +7,8 @@
     "electron.rsbuild.config.ts",
     "rsbuild-main.config.ts",
     "src/types/*.ts",
-    "tools/**/*.ts"
+    "tools/**/*.ts",
+    "src/lib/**/*.ts"
   ],
   "compilerOptions": {
     "composite": true
