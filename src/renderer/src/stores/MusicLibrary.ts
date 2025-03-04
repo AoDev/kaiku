@@ -127,9 +127,42 @@ export class MusicLibrary {
 
     const {folderPath, songs, artists, albums} = await getSongListFromFolder()
     this.folderPath = folderPath
-    this.songs = this.songs.concat(songs)
-    this.artists = this.artists.concat(artists)
-    this.albums = this.albums.concat(albums)
+
+    // Create indexes using plain objects
+    const songIndex: Record<string, Song> = {}
+    const artistIndex: Record<string, Artist> = {}
+    const albumIndex: Record<string, Album> = {}
+
+    // Index existing items
+    for (const song of this.songs) {
+      songIndex[song.filePath] = song
+    }
+
+    for (const artist of this.artists) {
+      artistIndex[artist.id] = artist
+    }
+
+    for (const album of this.albums) {
+      albumIndex[album.id] = album
+    }
+
+    // Update with new items
+    for (const song of songs) {
+      songIndex[song.filePath] = song
+    }
+
+    for (const artist of artists) {
+      artistIndex[artist.id] = artist
+    }
+
+    for (const album of albums) {
+      albumIndex[album.id] = album
+    }
+
+    // Update the collections with the indexed items
+    this.songs = Object.values(songIndex)
+    this.artists = Object.values(artistIndex)
+    this.albums = Object.values(albumIndex)
 
     // Ensure status is set to complete when done
     this.scanProgress.status = 'complete'
