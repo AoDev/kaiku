@@ -141,8 +141,8 @@ async function handleListAudioFiles(event, path: string): Promise<AudioLibrary> 
       audioFiles,
       async (file) => {
         const metadata = await parseFile(file)
-        const artistName = metadata.common.artist ?? ''
-        const albumName = metadata.common.album ?? ''
+        const artistName = metadata.common.artist ?? 'Unknown Artist'
+        const albumName = metadata.common.album ?? 'Unknown Album'
 
         // Generate IDs
         const artistId = generateId(artistName)
