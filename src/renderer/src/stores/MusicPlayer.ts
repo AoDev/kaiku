@@ -63,7 +63,7 @@ export class MusicPlayer {
       this.isPlaying = true
 
       this.howl = new Howl({
-        src: [`media://${song.filePath}`],
+        src: [`media://${encodeURI(song.filePath)}`],
         html5: true,
         autoplay: true,
         volume: this.volume,
