@@ -1,5 +1,5 @@
-import {CSSProperties} from 'react'
-import {IconName} from './iconNames.d'
+import type {CSSProperties} from 'react'
+import type {IconName} from './iconNames.d'
 
 export interface IProps extends React.AllHTMLAttributes<HTMLSpanElement> {
   /** The icon background color; valid html/hex color */
@@ -55,10 +55,10 @@ export function Icon(props: IProps) {
   const wrapperStyle: CSSProperties = {
     width: width || size,
     height: height || size,
-    top: top + 'px',
-    left: left + 'px',
+    top: `${top}px`,
+    left: `${left}px`,
     backgroundColor: bgColor,
-    padding: bgPadding ? bgPadding + 'px' : undefined,
+    padding: bgPadding ? `${bgPadding}px` : undefined,
     fontSize: 0, // needed because of character white space
   }
 
@@ -71,6 +71,7 @@ export function Icon(props: IProps) {
 
   return (
     <span style={wrapperStyle} className={`icon pos-rel ${className}`} {...otherProps}>
+      {/* biome-ignore lint/a11y/noSvgWithoutTitle: alt text should be provided in the parent component */}
       <svg width="100%" height="100%" {...renderMode} style={svgStyle} className="icon-svg">
         <use xlinkHref={`#${name}`} />
       </svg>
