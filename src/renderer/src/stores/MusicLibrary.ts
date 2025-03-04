@@ -1,3 +1,4 @@
+import {debounce} from 'lodash'
 import {makeAutoObservable} from 'mobx'
 import type {Artist, Album, Song, AudioLibrary} from '../../../types/Song'
 
@@ -12,6 +13,19 @@ interface MetadataProgress {
   completed: number
   total: number
   status: 'processing' | 'complete' | 'idle'
+}
+
+const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
+
+// This list is there to be able to ignore variants of characters in searches.
+const CHAR_RANGES = {
+  a: '[aáäâàå]',
+  e: '[eéëêè]',
+  i: '[iíïîì]',
+  o: '[oöô]',
+  u: '[uüû]',
+  y: '[yýÝ]',
+  l: '[lł]',
 }
 
 async function getSongListFromFolder(): Promise<
@@ -41,6 +55,7 @@ export class MusicLibrary {
   albums: Album[] = []
   songs: Song[] = []
   folderPath = ''
+  filter: RegExp | null = null
 
   // Scan progress tracking
   scanProgress: ScanProgress = {
@@ -63,6 +78,46 @@ export class MusicLibrary {
   albumPlaying: Album | null = null
   songPlaying: Song | null = null
 
+  get filteredArtists() {
+    const filter = this.filter
+    if (!filter) {
+      return this.artists
+    }
+    return this.artists.filter((artist) => filter.test(artist.name))
+  }
+
+  get filteredSongs() {
+    if (this.albumSelected) {
+      return this.songs.filter((song) => song.albumId === this.albumSelected)
+    }
+
+    if (this.artistSelected) {
+      return this.songs.filter((song) => song.artistId === this.artistSelected)
+    }
+
+    const filter = this.filter
+    if (filter) {
+      return this.songs.filter((song) => filter.test(song.title))
+    }
+
+    // Avoid displaying all songs if, for some mistake, there is no
+    // filtering criteria.
+    return []
+  }
+
+  get filteredAlbums() {
+    if (this.artistSelected) {
+      return this.albums.filter((album) => album.artistId === this.artistSelected)
+    }
+
+    const filter = this.filter
+    if (filter) {
+      return this.albums.filter((album) => filter.test(album.name))
+    }
+
+    return this.albums
+  }
+
   // Cleanup function for IPC listeners
   private cleanupListeners: (() => void) | null = null
 
@@ -79,25 +134,34 @@ export class MusicLibrary {
     this.songSelected = filePath
   }
 
-  get filteredSongs() {
-    if (this.albumSelected) {
-      return this.songs.filter((song) => song.albumId === this.albumSelected)
+  setFilter(filter: string) {
+    if (filter.length < 2) {
+      this.filter = null
+      this.artistSelected = this.artists[0]?.id || ''
+      this.albumSelected = ''
+      this.songSelected = ''
+      return
     }
 
-    if (this.artistSelected) {
-      return this.songs.filter((song) => song.artistId === this.artistSelected)
-    }
+    const utf8Filter = Array.prototype.map
+      .call(filter, (char) => {
+        return CHAR_RANGES[char] ? CHAR_RANGES[char] : char
+      })
+      .join('')
 
-    return this.songs
+    this.filter = new RegExp(utf8Filter, 'i')
+    this.artistSelected = ''
+    this.albumSelected = ''
+    this.songSelected = ''
   }
 
-  get filteredAlbums() {
-    if (this.artistSelected) {
-      return this.albums.filter((album) => album.artistId === this.artistSelected)
-    }
-
-    return this.albums
-  }
+  setFilterDebounced = debounce(
+    (filter: string) => {
+      this.setFilter(filter)
+    },
+    300,
+    {trailing: true}
+  )
 
   // Setup IPC listeners for scan progress updates
   setupScanProgressListener() {
@@ -165,7 +229,7 @@ export class MusicLibrary {
 
     // Update the collections with the indexed items
     this.songs = Object.values(songIndex)
-    this.artists = Object.values(artistIndex)
+    this.artists = Object.values(artistIndex).sort((a, b) => compareArtistName(a.name, b.name))
     this.albums = Object.values(albumIndex)
 
     // Ensure status is set to complete when done

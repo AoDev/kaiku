@@ -27,7 +27,7 @@ export const Artists = observer(({rootStore}: {rootStore: RootStore}) => {
 
   return (
     <div className="artists library__col" onClick={handleArtistSelect}>
-      {musicLibrary.artists.map((artist) => (
+      {musicLibrary.filteredArtists.map((artist) => (
         <div
           className={`artist ${musicLibrary.artistSelected === artist.id ? 'selected' : ''} ${musicPlayer.song?.artistId === artist.id ? 'row--playing' : 'row'}`}
           key={artist.id}
@@ -36,6 +36,8 @@ export const Artists = observer(({rootStore}: {rootStore: RootStore}) => {
           {artist.name}
         </div>
       ))}
+
+      {musicLibrary.filteredArtists.length === 0 && <i className="txt-muted pad-h-1">No artists</i>}
     </div>
   )
 })

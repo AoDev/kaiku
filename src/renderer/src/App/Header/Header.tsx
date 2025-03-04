@@ -1,5 +1,7 @@
 import {observer} from 'mobx-react'
+import {InputClearButton, Button, Icon} from '@ui'
 import type {HeaderVM} from './HeaderVM'
+import {InputX} from '@renderer/ui-framework'
 import {Player} from './Player'
 
 export const Header = observer(({vm}: {vm: HeaderVM}) => {
@@ -7,10 +9,15 @@ export const Header = observer(({vm}: {vm: HeaderVM}) => {
 
   return (
     <div className="header">
-      <div>
-        <button className="btn--add" type="button" onClick={musicLibrary.loadFromFolder}>
+      <div className="flex-row-center gap-1">
+        <Button className="nowrap" variant="neutral" onClick={musicLibrary.loadFromFolder}>
           Add Songs
-        </button>
+        </Button>
+        <Icon name="magnifier" size={18} color="var(--color-txt-muted)" />
+        <div className="flex-row-center pos-rel">
+          <InputX vm={vm} name="iSearch" />
+          <InputClearButton vm={vm} prop="iSearch" />
+        </div>
         {/* {musicLibrary.folderPath && <p>Selected: {musicLibrary.folderPath}</p>} */}
       </div>
       <div>

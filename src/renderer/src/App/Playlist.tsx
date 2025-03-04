@@ -1,5 +1,4 @@
 import {observer} from 'mobx-react'
-
 import type {RootStore} from '@renderer/stores/RootStore'
 
 export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {

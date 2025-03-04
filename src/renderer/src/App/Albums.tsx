@@ -32,6 +32,8 @@ export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
           {album.name}
         </div>
       ))}
+
+      {musicLibrary.filteredAlbums.length === 0 && <i className="txt-muted pad-h-1">No albums</i>}
     </div>
   )
 })
