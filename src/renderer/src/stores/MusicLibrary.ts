@@ -74,6 +74,19 @@ export class MusicLibrary {
     this.albums = this.albums.concat(albums)
   }
 
+  destroy() {
+    this.artists = []
+    this.albums = []
+    this.songs = []
+    this.folderPath = ''
+    this.artistSelected = ''
+    this.albumSelected = ''
+    this.songSelected = ''
+    this.artistPlaying = null
+    this.albumPlaying = null
+    this.songPlaying = null
+  }
+
   constructor() {
     makeAutoObservable(this, undefined, {deep: false, autoBind: true})
   }

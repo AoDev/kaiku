@@ -1,3 +1,4 @@
+import 'virtual:svg-icons-register'
 import './assets/main.css'
 import './css/index.less'
 
