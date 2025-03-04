@@ -6,6 +6,7 @@ import {Artists} from './Artists'
 import {Albums} from './Albums'
 import {Songs} from './Songs'
 import {Playlist} from './Playlist'
+import {ScanProgress} from './ScanProgress'
 
 export const App = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicLibrary, musicPlayer} = rootStore
@@ -41,6 +42,8 @@ export const App = observer(({rootStore}: {rootStore: RootStore}) => {
         <Songs rootStore={rootStore} />
         <Playlist rootStore={rootStore} />
       </div>
+
+      <ScanProgress rootStore={rootStore} />
     </div>
   )
 })

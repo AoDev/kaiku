@@ -1,6 +1,19 @@
 import {makeAutoObservable} from 'mobx'
 import type {Artist, Album, Song, AudioLibrary} from '../../../types/Song'
 
+// Define the scan progress type
+interface ScanProgress {
+  count: number
+  status: 'starting' | 'scanning' | 'complete' | 'idle'
+}
+
+// Define the metadata progress type
+interface MetadataProgress {
+  completed: number
+  total: number
+  status: 'processing' | 'complete' | 'idle'
+}
+
 async function getSongListFromFolder(): Promise<
   AudioLibrary & {
     folderPath: string
@@ -29,6 +42,19 @@ export class MusicLibrary {
   songs: Song[] = []
   folderPath = ''
 
+  // Scan progress tracking
+  scanProgress: ScanProgress = {
+    count: 0,
+    status: 'idle',
+  }
+
+  // Metadata parsing progress tracking
+  metadataProgress: MetadataProgress = {
+    completed: 0,
+    total: 0,
+    status: 'idle',
+  }
+
   artistSelected = ''
   albumSelected = ''
   songSelected = ''
@@ -36,6 +62,9 @@ export class MusicLibrary {
   artistPlaying: Artist | null = null
   albumPlaying: Album | null = null
   songPlaying: Song | null = null
+
+  // Cleanup function for IPC listeners
+  private cleanupListeners: (() => void) | null = null
 
   selectAlbum(albumId: string) {
     this.albumSelected = this.albumSelected === albumId ? '' : albumId
@@ -66,15 +95,51 @@ export class MusicLibrary {
     return this.albums
   }
 
+  // Setup IPC listeners for scan progress updates
+  setupScanProgressListener() {
+    this.cleanupListeners?.()
+
+    const scanListener = window.electron.ipcRenderer.on(
+      'scan-progress-update',
+      (_event, progress: ScanProgress) => {
+        this.scanProgress = progress
+      }
+    )
+
+    const metadataListener = window.electron.ipcRenderer.on(
+      'metadata-progress-update',
+      (_event, progress: MetadataProgress) => {
+        this.metadataProgress = progress
+      }
+    )
+
+    this.cleanupListeners = () => {
+      scanListener()
+      metadataListener()
+    }
+  }
+
   async loadFromFolder() {
+    this.setupScanProgressListener()
+
+    // Reset scan progress
+    this.scanProgress = {count: 0, status: 'idle'}
+
     const {folderPath, songs, artists, albums} = await getSongListFromFolder()
     this.folderPath = folderPath
     this.songs = this.songs.concat(songs)
     this.artists = this.artists.concat(artists)
     this.albums = this.albums.concat(albums)
+
+    // Ensure status is set to complete when done
+    this.scanProgress.status = 'complete'
   }
 
   destroy() {
+    // Clean up listeners
+    this.cleanupListeners?.()
+    this.cleanupListeners = null
+
     this.artists = []
     this.albums = []
     this.songs = []
@@ -85,9 +150,19 @@ export class MusicLibrary {
     this.artistPlaying = null
     this.albumPlaying = null
     this.songPlaying = null
+    this.scanProgress = {
+      count: 0,
+      status: 'idle',
+    }
+    this.metadataProgress = {
+      completed: 0,
+      total: 0,
+      status: 'processing',
+    }
   }
 
   constructor() {
     makeAutoObservable(this, undefined, {deep: false, autoBind: true})
+    this.setupScanProgressListener()
   }
 }
