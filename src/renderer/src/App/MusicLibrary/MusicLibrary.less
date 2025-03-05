@@ -1,0 +1,54 @@
+.library {
+  display: grid;
+  grid-template-columns: minmax(0, 26%) minmax(0, 33%) minmax(0, 41%);
+  gap: 16px;
+}
+
+.library__col {
+  height: calc(100dvh - 110px);
+  overflow-y: auto;
+  background-color: #201f22;
+}
+
+.row--playing,
+.row {
+  padding: 0 8px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.row--playing {
+  background-color: blueviolet;
+}
+
+.row:hover {
+  background-color: var(--ev-c-gray-1);
+}
+
+.row.selected,
+.row.selected:hover {
+  background-color: var(--color-bg-alternative);
+}
+
+.album {
+  cursor: pointer;
+  margin-bottom: 8px;
+  line-height: 1.3;
+
+  &.selected {
+    background-color: var(--color-bg-alternative);
+  }
+}
+
+.album__cover {
+  width: 100%;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}

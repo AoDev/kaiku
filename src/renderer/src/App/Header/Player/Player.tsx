@@ -37,7 +37,6 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
   }
   return (
     <div>
-      {/* <audio className="audio-player" ref={audioRef} controls /> */}
       <div>
         <div className="flex-row-center">
           <Button

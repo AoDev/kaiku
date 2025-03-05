@@ -112,7 +112,6 @@ export class MusicLibrary {
       if (song) {
         const cover = await window.electron.ipcRenderer.invoke('extractCoverFromSong', song)
         if (isAlbumCoverDetails(cover)) {
-          console.log('cover', cover)
           album.coverExtension = cover.fileExtension
         }
       }

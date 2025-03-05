@@ -68,7 +68,6 @@ export class MusicPlayer {
         onplay: action(() => {
           this.isPlaying = true
           this.duration = this.howl?.duration() ?? 0
-          console.log('onplay')
         }),
         onpause: action(() => {
           this.isPlaying = false
@@ -79,7 +78,6 @@ export class MusicPlayer {
         onend: action(() => {
           this.isPlaying = false
           this.next()
-          console.log('onend')
         }),
       })
 

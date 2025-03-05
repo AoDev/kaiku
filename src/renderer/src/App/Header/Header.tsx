@@ -1,11 +1,11 @@
-import {observer} from 'mobx-react'
-import {InputClearButton, Button, Icon} from '@ui'
-import type {HeaderVM} from './HeaderVM'
 import {InputX} from '@renderer/ui-framework'
+import {Button, Icon, InputClearButton} from '@ui'
+import {observer} from 'mobx-react'
+import type {HeaderVM} from './HeaderVM'
 import {Player} from './Player'
 
 export const Header = observer(({vm}: {vm: HeaderVM}) => {
-  const {musicLibrary, musicPlayer} = vm.rootStore
+  const {musicLibrary} = vm.rootStore
 
   return (
     <div className="header">
@@ -20,18 +20,7 @@ export const Header = observer(({vm}: {vm: HeaderVM}) => {
         </div>
         {/* {musicLibrary.folderPath && <p>Selected: {musicLibrary.folderPath}</p>} */}
       </div>
-      <div>
-        {musicPlayer.song && (
-          <>
-            <b>{musicPlayer.song.title}</b>
-            <div>
-              <span className="txt-unit">by</span> {musicPlayer.song.artist}{' '}
-              <span className="txt-unit">on</span> {musicPlayer.song.album}
-            </div>
-          </>
-        )}
-      </div>
-      <div className="self-end">
+      <div className="justify-self-end">
         <Player rootStore={vm.rootStore} />
       </div>
     </div>
