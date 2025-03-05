@@ -108,3 +108,20 @@ body {
   width: 4.2ch;
   display: inline-block;
 }
+
+.album {
+  cursor: pointer;
+  margin-bottom: 8px;
+  line-height: 1.3;
+
+  &.selected {
+    background-color: red;
+  }
+}
+
+.album__cover {
+  width: 100%;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}

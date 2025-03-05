@@ -142,6 +142,7 @@ export async function listAudioFiles(
             name: albumName,
             artistId,
             year: metadata.common.year ?? 0,
+            coverExtension: '',
           })
         }
 

@@ -1,8 +1,9 @@
 import {BrowserWindow, type IpcMainInvokeEvent, dialog, ipcMain} from 'electron'
 import type {AudioLibrary} from '../../types/Song'
 import type {ScanProgress} from '../../types/ScanProgress'
+import {extractCoverFromSong} from './extractCoverFromSong'
 import {listAudioFiles} from './listAudioFiles'
-
+import {COVER_FOLDER} from '../config'
 /**
  * Use the native OS dialog to select a directory
  */
@@ -33,4 +34,8 @@ export async function handleListAudioFiles(
 export function setupFileSystemHandlers(): void {
   ipcMain.handle('selectDirectory', selectDirectory)
   ipcMain.handle('listAudioFiles', handleListAudioFiles)
+  ipcMain.handle('extractCoverFromSong', (_, song: {albumId: string; filePath: string}) =>
+    extractCoverFromSong(song)
+  )
+  ipcMain.handle('getCoverFolderPath', () => COVER_FOLDER)
 }

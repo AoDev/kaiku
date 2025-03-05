@@ -7,6 +7,8 @@ import {App} from './App'
 import {RootStore} from './stores/RootStore'
 
 const rootStore = new RootStore()
+rootStore.init()
+
 createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider rootStore={rootStore}>
     <App rootStore={rootStore} />

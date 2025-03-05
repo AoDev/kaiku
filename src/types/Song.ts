@@ -8,6 +8,7 @@ export type Album = {
   artistId: string
   name: string
   year: number
+  coverExtension: string
 }
 
 export type Song = {

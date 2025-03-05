@@ -2,6 +2,9 @@ import {debounce} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'
 import type {Artist, Album, Song, AudioLibrary} from '../../../types/Song'
 import type {ScanProgress} from '../../../types/ScanProgress'
+import * as store from 'lib/mobx/store.helpers'
+import {isAlbumCoverDetails} from '../../../types/Cover'
+import {keyBy} from 'lodash'
 
 const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
 
@@ -39,6 +42,7 @@ async function getSongListFromFolder(): Promise<
 }
 
 export class MusicLibrary {
+  assign: store.AssignMethod<MusicLibrary>
   artists: Artist[] = []
   albums: Album[] = []
   songs: Song[] = []
@@ -102,9 +106,28 @@ export class MusicLibrary {
     this.albumSelected = this.albumSelected === albumId ? '' : albumId
   }
 
-  selectArtist(artistId: string) {
-    this.artistSelected = artistId
-    this.albumSelected = ''
+  async updateAlbumCovers(albums: Album[]) {
+    for (const album of albums) {
+      const song = this.songs.find((song) => song.albumId === album.id)
+      if (song) {
+        const cover = await window.electron.ipcRenderer.invoke('extractCoverFromSong', song)
+        if (isAlbumCoverDetails(cover)) {
+          console.log('cover', cover)
+          album.coverExtension = cover.fileExtension
+        }
+      }
+    }
+    const indexedUpdatedAlbums = keyBy(albums, 'id')
+    this.assign({albums: this.albums.map((album) => indexedUpdatedAlbums[album.id] ?? album)})
+  }
+
+  async selectArtist(artistId: string) {
+    this.assign({artistSelected: artistId, albumSelected: ''})
+
+    const albumsWithoutCover = this.albums.filter(
+      (album) => album.artistId === artistId && !album.coverExtension
+    )
+    this.updateAlbumCovers(albumsWithoutCover)
   }
 
   selectSong(filePath: string) {
@@ -232,6 +255,7 @@ export class MusicLibrary {
 
   constructor() {
     makeAutoObservable(this, undefined, {deep: false, autoBind: true})
+    this.assign = store.assignMethod<MusicLibrary>(this)
     this.setupScanProgressListener()
   }
 }
