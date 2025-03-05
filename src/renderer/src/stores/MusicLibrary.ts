@@ -1,19 +1,7 @@
 import {debounce} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'
 import type {Artist, Album, Song, AudioLibrary} from '../../../types/Song'
-
-// Define the scan progress type
-interface ScanProgress {
-  count: number
-  status: 'starting' | 'scanning' | 'complete' | 'idle'
-}
-
-// Define the metadata progress type
-interface MetadataProgress {
-  completed: number
-  total: number
-  status: 'processing' | 'complete' | 'idle'
-}
+import type {ScanProgress} from '../../../types/ScanProgress'
 
 const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
 
@@ -34,7 +22,7 @@ async function getSongListFromFolder(): Promise<
   }
 > {
   try {
-    const selectedPath: string = await window.electron.ipcRenderer.invoke('select-directory')
+    const selectedPath: string = await window.electron.ipcRenderer.invoke('selectDirectory')
     if (selectedPath) {
       // Automatically list files after selection
       const audioLibrary: AudioLibrary = await window.electron.ipcRenderer.invoke(
@@ -57,8 +45,7 @@ export class MusicLibrary {
   folderPath = ''
   filter: RegExp | null = null
 
-  scanProgress: ScanProgress = {count: 0, status: 'idle'}
-  metadataProgress: MetadataProgress = {completed: 0, total: 0, status: 'idle'}
+  scanProgress: ScanProgress = {completed: 0, total: 0, status: 'idle'}
 
   artistSelected = ''
   albumSelected = ''
@@ -164,16 +151,8 @@ export class MusicLibrary {
       })
     )
 
-    const metadataListener = window.electron.ipcRenderer.on(
-      'metadata-progress-update',
-      action((_event, progress: MetadataProgress) => {
-        this.metadataProgress = progress
-      })
-    )
-
     this.cleanupListeners = () => {
       scanListener()
-      metadataListener()
     }
   }
 
@@ -181,7 +160,7 @@ export class MusicLibrary {
     this.setupScanProgressListener()
 
     // Reset scan progress
-    this.scanProgress = {count: 0, status: 'idle'}
+    this.scanProgress = {completed: 0, total: 0, status: 'idle'}
 
     const {folderPath, songs, artists, albums} = await getSongListFromFolder()
     this.folderPath = folderPath
@@ -230,8 +209,7 @@ export class MusicLibrary {
   }
 
   resetProgress() {
-    this.scanProgress = {count: 0, status: 'idle'}
-    this.metadataProgress = {completed: 0, total: 0, status: 'idle'}
+    this.scanProgress = {completed: 0, total: 0, status: 'idle'}
   }
 
   destroy() {
