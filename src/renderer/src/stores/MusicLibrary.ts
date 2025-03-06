@@ -129,7 +129,10 @@ export class MusicLibrary {
   }
 
   async selectArtist(artistId: string) {
-    this.assign({artistSelected: artistId, albumSelected: ''})
+    this.assign({
+      artistSelected: this.artistSelected === artistId ? '' : artistId,
+      albumSelected: '',
+    })
 
     const albumsWithoutCover = this.albums.filter(
       (album) => album.artistId === artistId && !album.coverExtension,
@@ -144,9 +147,6 @@ export class MusicLibrary {
   setFilter(filter: string) {
     if (filter.length < 2) {
       this.filter = null
-      this.artistSelected = this.artists[0]?.id || ''
-      this.albumSelected = ''
-      this.songSelected = ''
       return
     }
 

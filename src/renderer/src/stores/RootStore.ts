@@ -17,6 +17,36 @@ export class RootStore {
   storage: {settings: SettingsDataStore}
   unexpectedError: Error | null = null
 
+  revealArtist(toArtistId?: string) {
+    const {musicLibrary, musicPlayer} = this
+    const artistsDomNode = document.querySelector('.artists')
+    if (!artistsDomNode) {
+      return
+    }
+    const artistId = toArtistId || musicLibrary.artistSelected || musicPlayer.song?.artistId
+    if (!artistId) {
+      return
+    }
+    const artistNode = artistsDomNode.querySelector(`[data-artist-id="${artistId}"]`)
+    if (artistNode) {
+      setTimeout(() => {
+        artistNode.scrollIntoView({behavior: 'smooth', block: 'center'})
+        if (musicLibrary.artistSelected !== artistId) {
+          musicLibrary.selectArtist(artistId)
+        }
+      }, 10)
+    }
+  }
+
+  revealArtistPlaying() {
+    const {musicPlayer} = this
+    const artistId = musicPlayer.song?.artistId
+    if (!artistId) {
+      return
+    }
+    this.revealArtist(artistId)
+  }
+
   async init() {
     try {
       const coverPath = await window.electron.ipcRenderer.invoke('getCoverFolderPath')

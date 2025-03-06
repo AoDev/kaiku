@@ -29,7 +29,11 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
         {musicPlayer.song && (
           <>
             {/* biome-ignore lint/a11y/useAltText: We do not have text description of each cover */}
-            <img className="playlist__cover" src={coverPath} />
+            <img
+              className="playlist__cover"
+              src={coverPath}
+              onClick={rootStore.revealArtistPlaying}
+            />
             <b>{musicPlayer.song.title}</b>
             <div>
               <span className="txt-unit">by</span> {musicPlayer.song.artist}{' '}

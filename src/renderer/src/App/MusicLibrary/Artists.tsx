@@ -1,5 +1,6 @@
 import type {RootStore} from '@renderer/stores/RootStore'
 import {observer} from 'mobx-react'
+import {useEffect} from 'react'
 
 export const Artists = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicLibrary, musicPlayer} = rootStore
@@ -22,6 +23,13 @@ export const Artists = observer(({rootStore}: {rootStore: RootStore}) => {
       }
     }
   }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we only want to run this when the filter changes
+  useEffect(() => {
+    if (!musicLibrary.filter) {
+      rootStore.revealArtist()
+    }
+  }, [musicLibrary.filter])
 
   return (
     <div className="artists library__col" onClick={handleArtistSelect}>

@@ -5,7 +5,7 @@ import {observer} from 'mobx-react'
 export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicLibrary, musicPlayer} = rootStore
   const {indexedArtists, filter} = musicLibrary
-  const needArtistDetails = filter !== null
+  const needArtistDetails = filter !== null && musicLibrary.artistSelected === null
 
   const handleAlbumSelect = (event: React.MouseEvent<HTMLDivElement>) => {
     let target = event.target as HTMLElement
@@ -29,12 +29,14 @@ export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
     <div className="albums library__col" onClick={handleAlbumSelect}>
       {musicLibrary.filteredAlbums.map((album) => {
         const coverPath = getAlbumCover(album)
+        const cssClass =
+          musicPlayer.song?.albumId === album.id
+            ? 'album--playing'
+            : musicLibrary.albumSelected === album.id
+              ? 'album--selected'
+              : ''
         return (
-          <div
-            className={`album ${musicLibrary.albumSelected === album.id ? 'selected' : ''} ${musicPlayer.song?.albumId === album.id ? 'album--playing' : ''}`}
-            key={album.id}
-            data-album-id={album.id}
-          >
+          <div className={`album ${cssClass}`} key={album.id} data-album-id={album.id}>
             <div className="flex-row-center gap-1">
               {/* biome-ignore lint/a11y/useAltText: We do not have text description of each cover */}
               <img className="album__cover" src={coverPath} />

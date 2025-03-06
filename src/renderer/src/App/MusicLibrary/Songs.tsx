@@ -4,7 +4,7 @@ import {observer} from 'mobx-react'
 export const Songs = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicLibrary, musicPlayer} = rootStore
   const {indexedArtists, indexedAlbums, filter} = musicLibrary
-  const needsDetails = filter !== null
+  const needsDetails = filter !== null && musicLibrary.albumSelected === null
 
   const handleSongSelect = (event: React.MouseEvent<HTMLDivElement>) => {
     let target = event.target as HTMLElement
