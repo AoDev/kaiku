@@ -1,5 +1,5 @@
-import {autorun, type IReactionDisposer, makeAutoObservable} from 'mobx'
 import type {RootStore} from '@renderer/stores/RootStore'
+import {type IReactionDisposer, autorun, makeAutoObservable} from 'mobx'
 import * as store from '../../../../lib/mobx/store.helpers'
 
 export class HeaderVM {

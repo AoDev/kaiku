@@ -14,8 +14,10 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "@rootsrc/*": ["src/*"],
       "@renderer/*": ["src/renderer/src/*"],
-      "lib/*": ["src/lib/*"],
+      "@lib/*": ["src/lib/*"],
+      "@src/*": ["src/renderer/src/*"],
       "@ui": ["src/renderer/src/ui-framework"]
     }
   }

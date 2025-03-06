@@ -1,7 +1,7 @@
-import {memo, type CSSProperties} from 'react'
-import Loader from '../Loader'
+import {type CSSProperties, memo} from 'react'
+import {ButtonBasic, type IButtonBasicProps} from '../ButtonBasic'
 import {Icon} from '../Icon'
-import {type IButtonBasicProps, ButtonBasic} from '../ButtonBasic'
+import Loader from '../Loader'
 
 export type ButtonVariant =
   | 'blackwhite'
@@ -106,7 +106,7 @@ export const Button = memo(function Button<V>(props: IButtonProps<V>) {
     ...otherProps
   } = props
 
-  const variantClass = variant ? 'btn btn--' + variant : ''
+  const variantClass = variant ? `btn btn--${variant}` : ''
 
   let cssClasses = `${variantClass} ${className} btn--${sizing}`
   round && (cssClasses += ' btn-round')

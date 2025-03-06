@@ -1,4 +1,4 @@
-import {InputBasic, type IInputBasicProp, type InputType} from '../InputBasic'
+import {type IInputBasicProp, InputBasic, type InputType} from '../InputBasic'
 
 /**
  * We have specific css class for appearance of input types,

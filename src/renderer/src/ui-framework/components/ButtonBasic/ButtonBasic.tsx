@@ -74,7 +74,7 @@ export const ButtonBasic = memo(function ButtonBasic<V>(props: IButtonBasicProps
       onClickValue?.(value, event)
       onClickNameValue?.(name, value, event)
     },
-    [onClick, onClickNameValue, onClickValue, value, preventDefault, disabledMock]
+    [onClick, onClickNameValue, onClickValue, value, preventDefault, disabledMock],
   )
 
   return (

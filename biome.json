@@ -9,11 +9,15 @@
     "useIgnoreFile": true
   },
   "formatter": {
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "lineWidth": 100
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single"
+      "quoteStyle": "single",
+      "arrowParentheses": "always",
+      "semicolons": "asNeeded",
+      "bracketSpacing": false
     }
   },
   "css": {
@@ -25,8 +29,14 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "style": {
+        "useNumberNamespace": "off"
+      },
       "suspicious": {
         "noGlobalIsFinite": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off"
       }
     }
   }

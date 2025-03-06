@@ -12,7 +12,7 @@ export const ScanProgress = observer(({rootStore}: {rootStore: RootStore}) => {
 
   if (scanProgress.status === 'starting') {
     return (
-      <div className="scan-progress panel--simple pad-default txt-right">
+      <div className="scan-progress panel--simple pad-1 txt-right">
         <div>Starting scan...</div>
       </div>
     )
@@ -20,7 +20,7 @@ export const ScanProgress = observer(({rootStore}: {rootStore: RootStore}) => {
 
   if (scanProgress.status === 'scanning') {
     return (
-      <div className="scan-progress panel--simple pad-default txt-right">
+      <div className="scan-progress panel--simple pad-1 txt-right">
         <div className="flex-row-center justify-end gap-1">
           <h3 className="h3 margin-0">Scanning</h3>
           <div className="scan-progress__spinner" />
@@ -34,7 +34,7 @@ export const ScanProgress = observer(({rootStore}: {rootStore: RootStore}) => {
   }
 
   return (
-    <div className="scan-progress panel--simple pad-default txt-right">
+    <div className="scan-progress panel--simple pad-1 txt-right">
       <div className="flex-row-center justify-end gap-1">
         <h3 className="h3 margin-0">Scan complete</h3>
         <Button narrow variant="icon" onClick={musicLibrary.resetProgress}>

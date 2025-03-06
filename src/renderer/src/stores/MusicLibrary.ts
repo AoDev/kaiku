@@ -1,10 +1,10 @@
+import * as store from '@lib/mobx/store.helpers'
+import {isAlbumCoverDetails} from '@rootsrc/types/Cover'
+import type {ScanProgress} from '@rootsrc/types/ScanProgress'
+import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/Song'
 import {debounce} from 'lodash'
-import {action, makeAutoObservable} from 'mobx'
-import type {Artist, Album, Song, AudioLibrary} from '../../../types/Song'
-import type {ScanProgress} from '../../../types/ScanProgress'
-import * as store from 'lib/mobx/store.helpers'
-import {isAlbumCoverDetails} from '../../../types/Cover'
 import {keyBy} from 'lodash'
+import {action, makeAutoObservable} from 'mobx'
 
 const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
 
@@ -30,7 +30,7 @@ async function getSongListFromFolder(): Promise<
       // Automatically list files after selection
       const audioLibrary: AudioLibrary = await window.electron.ipcRenderer.invoke(
         'listAudioFiles',
-        selectedPath
+        selectedPath,
       )
       return {folderPath: selectedPath, ...audioLibrary}
     }
@@ -124,7 +124,7 @@ export class MusicLibrary {
     this.assign({artistSelected: artistId, albumSelected: ''})
 
     const albumsWithoutCover = this.albums.filter(
-      (album) => album.artistId === artistId && !album.coverExtension
+      (album) => album.artistId === artistId && !album.coverExtension,
     )
     this.updateAlbumCovers(albumsWithoutCover)
   }
@@ -159,7 +159,7 @@ export class MusicLibrary {
       this.setFilter(filter)
     },
     300,
-    {trailing: true}
+    {trailing: true},
   )
 
   // Setup IPC listeners for scan progress updates
@@ -170,7 +170,7 @@ export class MusicLibrary {
       'scan-progress-update',
       action((_event, progress: ScanProgress) => {
         this.scanProgress = progress
-      })
+      }),
     )
 
     this.cleanupListeners = () => {

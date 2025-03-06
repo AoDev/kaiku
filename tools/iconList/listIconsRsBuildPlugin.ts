@@ -1,7 +1,7 @@
-import type {RsbuildPlugin} from '@rsbuild/core'
-import {listFiles, writeFiles} from './listIcons'
 import {watch} from 'node:fs'
 import path from 'node:path'
+import type {RsbuildPlugin} from '@rsbuild/core'
+import {listFiles, writeFiles} from './listIcons'
 
 interface ListIconsPluginOptions {
   srcFolder: string

@@ -1,5 +1,5 @@
-import {DEFAULT_ALBUM_COVER} from '@renderer/config'
-import type {RootStore} from '@renderer/stores/RootStore'
+import {DEFAULT_ALBUM_COVER} from '@src/config'
+import type {RootStore} from '@src/stores'
 import {observer} from 'mobx-react'
 
 export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {

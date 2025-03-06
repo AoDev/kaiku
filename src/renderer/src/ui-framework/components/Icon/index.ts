@@ -1,2 +1,2 @@
-export {Icon} from './Icon'
-export type {IconName} from './iconNames'
+export * from './Icon'
+export * from './iconNames.d'

@@ -1,4 +1,4 @@
-import type {NonFunctionKeys} from 'lib/mobx/store.helpers'
+import type {NonFunctionKeys} from '@lib/mobx/store.helpers'
 import {observer} from 'mobx-react'
 import {Input} from '../Input'
 import type {IInputBasicProp} from '../InputBasic'

@@ -1,5 +1,5 @@
+import {Button, Icon, Input} from '@ui'
 import {observer} from 'mobx-react'
-import {Icon, Button, Input} from '@ui'
 
 import type {RootStore} from '@renderer/stores/RootStore'
 

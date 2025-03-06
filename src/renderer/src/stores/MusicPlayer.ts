@@ -1,7 +1,7 @@
+import {percentage} from '@lib/math'
+import type {Song} from '@rootsrc/types/Song'
 import {Howl} from 'howler'
 import {action, makeAutoObservable} from 'mobx'
-import type {Song} from '../../../types/Song'
-import {percentage} from '../../../lib/math'
 
 function isNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value)

@@ -1,6 +1,5 @@
-import {observer} from 'mobx-react'
-
 import type {RootStore} from '@renderer/stores/RootStore'
+import {observer} from 'mobx-react'
 
 export const Songs = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicLibrary, musicPlayer} = rootStore
@@ -15,7 +14,7 @@ export const Songs = observer(({rootStore}: {rootStore: RootStore}) => {
           musicLibrary.selectSong(filePath)
         } else if (clickCount === 2) {
           musicPlayer.replacePlaylist(
-            musicLibrary.songs.filter((song) => song.filePath === filePath)
+            musicLibrary.songs.filter((song) => song.filePath === filePath),
           )
           musicPlayer.play()
         }

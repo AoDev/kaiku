@@ -1,6 +1,6 @@
-import {observer} from 'mobx-react'
 import type {RootStore} from '@renderer/stores/RootStore'
-import {DEFAULT_ALBUM_COVER} from '@renderer/config'
+import {DEFAULT_ALBUM_COVER} from '@src/config'
+import {observer} from 'mobx-react'
 
 export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicPlayer, musicLibrary} = rootStore

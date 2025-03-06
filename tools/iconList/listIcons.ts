@@ -33,19 +33,19 @@ async function writeFiles({
     {
       ...prettierOptions,
       parser: 'typescript',
-    }
+    },
   )
   await fs.writeFile(destTsDefinitions, tsDefinitionsFormatted)
 
   if (destFile) {
     const iconListFormatted = await prettier.format(
       `/** Auto-generated file */\n import {IconName} from 'src/ui-framework/components/Icon/iconNames.d'\n const list: IconName[] = ${JSON.stringify(
-        svgFiles
+        svgFiles,
       )}; export default list`,
       {
         ...prettierOptions,
         parser: 'typescript',
-      }
+      },
     )
     await fs.writeFile(destFile, iconListFormatted)
   }

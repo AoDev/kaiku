@@ -19,8 +19,10 @@ export default defineConfig({
     renderer: {
       resolve: {
         alias: {
-          lib: resolve(__dirname, 'src', 'lib'),
+          '@lib': resolve(__dirname, 'src', 'lib'),
           '@ui': resolve(__dirname, 'src', 'renderer', 'src', 'ui-framework'),
+          '@src': resolve(__dirname, 'src', 'renderer', 'src'),
+          '@rootsrc': resolve(__dirname, 'src'),
         },
       },
       plugins: [
