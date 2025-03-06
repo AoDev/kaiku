@@ -1,6 +1,7 @@
 import {percentage} from '@lib/math'
 import type {Song} from '@rootsrc/types/Song'
 import {Howl} from 'howler'
+import {debounce} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'
 
 function isNumber(value: unknown): value is number {
@@ -17,7 +18,8 @@ export class MusicPlayer {
   playlist: Song[] = []
   playlistIndex = 0
   volume = 0.3
-  positionTimer?: NodeJS.Timeout
+  positionTimer?: Timer
+  positionTracking = true
 
   get positionInPercent() {
     return percentage(this.position, this.duration)
@@ -59,6 +61,8 @@ export class MusicPlayer {
       this.song = song
       this.playlistIndex = index
       this.isPlaying = true
+      this.position = 0
+      this.positionTracking = true
 
       this.howl = new Howl({
         src: [`media://${encodeURI(song.filePath)}`],
@@ -68,6 +72,9 @@ export class MusicPlayer {
         onplay: action(() => {
           this.isPlaying = true
           this.duration = this.howl?.duration() ?? 0
+        }),
+        onseek: action(() => {
+          this.position = this.howl?.seek() ?? 0
         }),
         onpause: action(() => {
           this.isPlaying = false
@@ -114,8 +121,19 @@ export class MusicPlayer {
   }
 
   updatePositionFromHowl() {
-    this.position = this.howl?.seek() ?? 0
+    if (this.positionTracking) {
+      this.position = this.howl?.seek() ?? 0
+    }
   }
+
+  setPositionDebounced = debounce(
+    (position: number) => {
+      this.howl?.seek(position)
+      this.positionTracking = true
+    },
+    200,
+    {trailing: true},
+  )
 
   setPositionFromPercent(percent: number) {
     let position = this.duration * (percent / 100)
@@ -124,7 +142,9 @@ export class MusicPlayer {
     } else if (position > this.duration) {
       position = this.duration
     }
-    this.howl?.seek(position)
+    this.position = position
+    this.positionTracking = false
+    this.setPositionDebounced(position)
   }
 
   setVolume(volume: number) {
@@ -134,6 +154,6 @@ export class MusicPlayer {
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true, deep: false})
-    this.positionTimer = setInterval(this.updatePositionFromHowl, 500)
+    this.positionTimer = setInterval(this.updatePositionFromHowl, 100)
   }
 }
