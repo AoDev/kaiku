@@ -1,5 +1,5 @@
 import type {RootStore} from '@renderer/stores/RootStore'
-import {Button, Modal} from '@ui'
+import {Modal} from '@ui'
 import {observer} from 'mobx-react'
 import AppSettings from './AppSettings'
 import Header from './Header'
@@ -16,8 +16,12 @@ export const App = observer(({rootStore}: {rootStore: RootStore}) => {
         <ScanProgress rootStore={rootStore} />
       </div>
       <Playlist rootStore={rootStore} />
-      <Button onClick={() => rootStore.uiStore.settingsDialog.show()}>Open settings</Button>
-      <Modal modalVM={rootStore.uiStore.settingsDialog} fullscreen className="pad-page">
+      <Modal
+        modalVM={rootStore.uiStore.settingsDialog}
+        fullscreen
+        className="pad-page"
+        withCloseButton
+      >
         <AppSettings />
       </Modal>
     </div>

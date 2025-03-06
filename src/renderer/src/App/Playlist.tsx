@@ -1,5 +1,5 @@
 import type {RootStore} from '@renderer/stores/RootStore'
-import {DEFAULT_ALBUM_COVER} from '@src/config'
+import {getAlbumCover} from '@src/config'
 import {observer} from 'mobx-react'
 
 export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
@@ -21,9 +21,7 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
   }
 
   const album = musicLibrary.albums.find((album) => album.id === musicPlayer.song?.albumId)
-  const coverPath = album?.coverExtension
-    ? `cover://${album.id}.${album.coverExtension}`
-    : DEFAULT_ALBUM_COVER
+  const coverPath = getAlbumCover(album)
 
   return (
     <div className="playlist" onClick={handlePlaySongFromPlaylist}>
@@ -47,7 +45,8 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
           data-file-path={song.filePath}
           data-song-index={index}
         >
-          <span className="playlist__index">{index + 1}</span> {song.trackNumber}. {song.title}
+          <span className="playlist__index">{index + 1}</span>{' '}
+          <span className="txt-muted">{song.trackNumber}.</span> {song.title}
         </div>
       ))}
     </div>

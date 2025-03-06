@@ -59,6 +59,14 @@ export class MusicLibrary {
   albumPlaying: Album | null = null
   songPlaying: Song | null = null
 
+  get indexedAlbums() {
+    return keyBy(this.albums, 'id')
+  }
+
+  get indexedArtists() {
+    return keyBy(this.artists, 'id')
+  }
+
   get filteredArtists() {
     const filter = this.filter
     if (!filter) {

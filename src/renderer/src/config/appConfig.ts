@@ -1,3 +1,4 @@
+import type {Album} from '@rootsrc/types/Song'
 import type {IconName} from '@ui'
 
 export const DEFAULT_ALBUM_COVER =
@@ -6,3 +7,10 @@ export const DEFAULT_ALBUM_COVER =
 export type Theme = 'light' | 'dark'
 
 export const themeIcons: Record<Theme, IconName> = {light: 'sun', dark: 'moon'}
+
+export const getAlbumCover = (album?: Album) => {
+  if (album?.coverExtension) {
+    return `cover://${album.id}.${album.coverExtension}`
+  }
+  return DEFAULT_ALBUM_COVER
+}

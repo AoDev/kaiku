@@ -1,9 +1,11 @@
-import {DEFAULT_ALBUM_COVER} from '@src/config'
+import {getAlbumCover} from '@src/config'
 import type {RootStore} from '@src/stores'
 import {observer} from 'mobx-react'
 
 export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicLibrary, musicPlayer} = rootStore
+  const {indexedArtists, filter} = musicLibrary
+  const needArtistDetails = filter !== null
 
   const handleAlbumSelect = (event: React.MouseEvent<HTMLDivElement>) => {
     let target = event.target as HTMLElement
@@ -26,9 +28,7 @@ export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
   return (
     <div className="albums library__col" onClick={handleAlbumSelect}>
       {musicLibrary.filteredAlbums.map((album) => {
-        const coverPath = album.coverExtension
-          ? `cover://${album.id}.${album.coverExtension}`
-          : DEFAULT_ALBUM_COVER
+        const coverPath = getAlbumCover(album)
         return (
           <div
             className={`album ${musicLibrary.albumSelected === album.id ? 'selected' : ''} ${musicPlayer.song?.albumId === album.id ? 'album--playing' : ''}`}
@@ -39,7 +39,14 @@ export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
               {/* biome-ignore lint/a11y/useAltText: We do not have text description of each cover */}
               <img className="album__cover" src={coverPath} />
               <span className="txt-muted">{album.year || '----'}</span>
-              {album.name}
+              <div>
+                {album.name}
+                {needArtistDetails ? (
+                  <div className="txt-muted">
+                    <span className="txt-unit">by</span> {indexedArtists[album.artistId].name}
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         )
