@@ -17,7 +17,8 @@
       "quoteStyle": "single",
       "arrowParentheses": "always",
       "semicolons": "asNeeded",
-      "bracketSpacing": false
+      "bracketSpacing": false,
+      "trailingCommas": "es5"
     }
   },
   "css": {

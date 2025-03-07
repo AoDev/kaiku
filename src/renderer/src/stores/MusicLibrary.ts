@@ -30,7 +30,7 @@ async function getSongListFromFolder(): Promise<
       // Automatically list files after selection
       const audioLibrary: AudioLibrary = await window.electron.ipcRenderer.invoke(
         'listAudioFiles',
-        selectedPath,
+        selectedPath
       )
       return {folderPath: selectedPath, ...audioLibrary}
     }
@@ -77,7 +77,9 @@ export class MusicLibrary {
 
   get filteredSongs() {
     if (this.albumSelected) {
-      return this.songs.filter((song) => song.albumId === this.albumSelected)
+      return this.songs
+        .filter((song) => song.albumId === this.albumSelected)
+        .sort((a, b) => a.trackNumber - b.trackNumber)
     }
 
     if (this.artistSelected) {
@@ -135,7 +137,7 @@ export class MusicLibrary {
     })
 
     const albumsWithoutCover = this.albums.filter(
-      (album) => album.artistId === artistId && !album.coverExtension,
+      (album) => album.artistId === artistId && !album.coverExtension
     )
     this.updateAlbumCovers(albumsWithoutCover)
   }
@@ -167,7 +169,7 @@ export class MusicLibrary {
       this.setFilter(filter)
     },
     300,
-    {trailing: true},
+    {trailing: true}
   )
 
   // Setup IPC listeners for scan progress updates
@@ -178,7 +180,7 @@ export class MusicLibrary {
       'scan-progress-update',
       action((_event, progress: ScanProgress) => {
         this.scanProgress = progress
-      }),
+      })
     )
 
     this.cleanupListeners = () => {

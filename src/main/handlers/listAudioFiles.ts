@@ -1,11 +1,11 @@
 import {createHash} from 'node:crypto'
 import {readdir} from 'node:fs/promises'
-import {join} from 'node:path'
-import {parseFile} from 'music-metadata'
-import type {Album, Artist, AudioLibrary, Song} from '../../types/Song'
 import {cpus} from 'node:os'
+import {dirname, join} from 'node:path'
+import {parseFile} from 'music-metadata'
 import {asyncMapLimitSettled} from '../../lib/async'
 import type {ScanProgress} from '../../types/ScanProgress'
+import type {Album, Artist, AudioLibrary, Song} from '../../types/Song'
 
 function generateId(str: string): string {
   return createHash('md5').update(str).digest('hex')
@@ -122,10 +122,15 @@ export async function listAudioFiles(
         const metadata = await parseFile(file, {skipCovers: true})
         const artistName = metadata.common.artist ?? 'Unknown Artist'
         const albumName = metadata.common.album ?? 'Unknown Album'
+        const year = metadata.common.year ?? 0
 
-        // Generate IDs
+        // Get the parent folder path
+        const parentFolder = dirname(file)
+
         const artistId = generateId(artistName)
-        const albumId = generateId(`${artistName}:${albumName}`)
+        // Use parent folder path + album name for albumId
+        // This ensures songs in the same folder with the same album name are grouped together
+        const albumId = generateId(`${parentFolder}:${albumName}`)
 
         // Store artist if new
         if (artistName && !artistsMap.has(artistId)) {
@@ -137,24 +142,25 @@ export async function listAudioFiles(
 
         // Store album if new
         if (albumName && !albumsMap.has(albumId)) {
+          // Use the current artist's ID directly
           albumsMap.set(albumId, {
+            artistId,
+            coverExtension: '',
             id: albumId,
             name: albumName,
-            artistId,
-            year: metadata.common.year ?? 0,
-            coverExtension: '',
+            year,
           })
         }
 
         return {
-          title: metadata.common.title ?? '',
-          artist: artistName,
-          artistId: artistId,
           album: albumName,
-          albumId: albumId,
-          year: metadata.common.year ?? 0,
-          trackNumber: metadata.common.track.no ?? 0,
+          albumId,
+          artist: artistName,
+          artistId,
           filePath: file,
+          title: metadata.common.title ?? '',
+          trackNumber: metadata.common.track.no ?? 0,
+          year,
         }
       },
       concurrencyLimit,

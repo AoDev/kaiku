@@ -1,9 +1,10 @@
 import {BrowserWindow, type IpcMainInvokeEvent, dialog, ipcMain} from 'electron'
-import type {AudioLibrary} from '../../types/Song'
 import type {ScanProgress} from '../../types/ScanProgress'
+import type {AudioLibrary} from '../../types/Song'
+import {COVER_FOLDER} from '../config'
 import {extractCoverFromSong} from './extractCoverFromSong'
 import {listAudioFiles} from './listAudioFiles'
-import {COVER_FOLDER} from '../config'
+
 /**
  * Use the native OS dialog to select a directory
  */
