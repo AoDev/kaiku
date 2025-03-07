@@ -1,7 +1,6 @@
+import type {RootStore} from '@renderer/stores/RootStore'
 import {Button, Icon, Input} from '@ui'
 import {observer} from 'mobx-react'
-
-import type {RootStore} from '@renderer/stores/RootStore'
 
 function padNumber(number: number) {
   if (number < 10) {
@@ -36,56 +35,56 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
     }
   }
   return (
-    <div>
-      <div>
-        <div className="flex-row-center">
-          <Button
-            variant="icon"
-            className="player__btn"
-            onClick={handlePrevSong}
-            title="Previous song"
-          >
-            <Icon name="previous" />
-          </Button>
-          <Button
-            variant="icon"
-            className="player__btn"
-            onClick={musicPlayer.togglePause}
-            title={musicPlayer.isPlaying ? 'Pause' : 'Play'}
-          >
-            <Icon name={musicPlayer.isPlaying ? 'pause' : 'play'} />
-          </Button>
-          <Button variant="icon" className="player__btn" onClick={handleNextSong} title="Next song">
-            <Icon name="next" />
-          </Button>
-          <Input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={musicPlayer.volume}
-            onChange={handleVolumeChange}
-            title="Volume control"
-          />
+    <div className="flex-row-center height-100p gap-1">
+      <div className="player__times">
+        <div className="player__time">
+          {positionInMinSec.minutes}:{padNumber(positionInMinSec.seconds)}
         </div>
+        /
+        <div className="player__time">
+          {durationInMinSec.minutes}:{padNumber(durationInMinSec.seconds)}
+        </div>
+        <Input
+          type="range"
+          className="player__track"
+          min="0"
+          max={100}
+          value={positionInPercent}
+          onChange={handlePositionChange}
+          title="Playback position"
+        />
+      </div>
 
-        <div className="player__times">
-          <div className="player__time">
-            {positionInMinSec.minutes}:{padNumber(positionInMinSec.seconds)}
-          </div>
-          /
-          <div className="player__time">
-            {durationInMinSec.minutes}:{padNumber(durationInMinSec.seconds)}
-          </div>
-          <Input
-            type="range"
-            min="0"
-            max={100}
-            value={positionInPercent}
-            onChange={handlePositionChange}
-            title="Playback position"
-          />
-        </div>
+      <div className="flex-row-center">
+        <Button
+          variant="icon"
+          className="player__btn"
+          onClick={handlePrevSong}
+          title="Previous song"
+        >
+          <Icon name="previous" />
+        </Button>
+        <Button
+          variant="icon"
+          className="player__btn"
+          onClick={musicPlayer.togglePause}
+          title={musicPlayer.isPlaying ? 'Pause' : 'Play'}
+        >
+          <Icon name={musicPlayer.isPlaying ? 'pause' : 'play'} />
+        </Button>
+        <Button variant="icon" className="player__btn" onClick={handleNextSong} title="Next song">
+          <Icon name="next" />
+        </Button>
+        <Input
+          type="range"
+          className="player__volume"
+          min="0"
+          max="1"
+          step="0.01"
+          value={musicPlayer.volume}
+          onChange={handleVolumeChange}
+          title="Volume control"
+        />
       </div>
     </div>
   )
