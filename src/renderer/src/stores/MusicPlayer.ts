@@ -132,7 +132,7 @@ export class MusicPlayer {
       this.positionTracking = true
     },
     200,
-    {trailing: true},
+    {trailing: true}
   )
 
   setPositionFromPercent(percent: number) {

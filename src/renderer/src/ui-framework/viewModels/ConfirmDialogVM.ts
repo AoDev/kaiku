@@ -20,7 +20,7 @@ export class ConfirmDialogVM extends DialogVM implements IConfirmDialogOptions {
   set<K extends keyof IConfirmDialogOptions>(
     this: IConfirmDialogOptions,
     prop: K,
-    value: IConfirmDialogOptions[K],
+    value: IConfirmDialogOptions[K]
   ) {
     this[prop] = value
   }

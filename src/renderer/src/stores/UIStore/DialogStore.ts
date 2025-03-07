@@ -19,7 +19,7 @@ export default class DialogStore {
 
   handleBackButton() {
     const mostRecentDialog = this.dialogs.findLast(
-      (dialog) => DialogVM.visibleStates.includes(dialog.state) && dialog.hideWithBackButton,
+      (dialog) => DialogVM.visibleStates.includes(dialog.state) && dialog.hideWithBackButton
     )
     if (mostRecentDialog?.hideWithBackButton) {
       mostRecentDialog.hide()
@@ -29,7 +29,7 @@ export default class DialogStore {
   handleEscapeKey(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       const mostRecentDialog = this.dialogs.findLast(
-        (dialog) => DialogVM.visibleStates.includes(dialog.state) && dialog.hideWithEscapeKey,
+        (dialog) => DialogVM.visibleStates.includes(dialog.state) && dialog.hideWithEscapeKey
       )
       if (mostRecentDialog?.hideWithEscapeKey) {
         mostRecentDialog.hide()

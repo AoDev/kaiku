@@ -85,7 +85,7 @@ export class RootStore {
     makeAutoObservable(
       this,
       {musicLibrary: false, settings: false, storage: false, uiStore: false},
-      {deep: false, autoBind: true},
+      {deep: false, autoBind: true}
     )
   }
 }

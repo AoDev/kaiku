@@ -25,7 +25,7 @@ export default class UIStore {
           htmlElement.setAttribute('theme', theme)
         }
       },
-      {name: 'autoUpdateBodyClass'},
+      {name: 'autoUpdateBodyClass'}
     )
   }
 

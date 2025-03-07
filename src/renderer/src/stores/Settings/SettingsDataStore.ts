@@ -36,7 +36,7 @@ export class SettingsDataStore {
         }
       },
       (settings) => this.saveSettings(settings),
-      {name: 'autoSaveSettings', delay: 200},
+      {name: 'autoSaveSettings', delay: 200}
     )
   }
 

@@ -85,7 +85,7 @@ export const InputBasic: FC<IInputBasicProp> = memo(
         onChangeValue?.(inputValue, event)
         onChangeNameValue?.(event.target.name, inputValue, event)
       },
-      [onChange, onChangeNameValue, onChangeValue],
+      [onChange, onChangeNameValue, onChangeValue]
     )
 
     const selectContent = useCallback((event: FocusEvent<HTMLInputElement>) => {
@@ -110,5 +110,5 @@ export const InputBasic: FC<IInputBasicProp> = memo(
         onChange={handleChange}
       />
     )
-  },
+  }
 )
