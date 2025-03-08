@@ -2,10 +2,10 @@ import {Modal} from '@ui'
 import {observer} from 'mobx-react'
 import AppSettings from './AppSettings'
 import type {AppVM} from './AppVM'
+import Footer from './Footer'
 import Header from './Header'
 import {MusicLibrary} from './MusicLibrary'
 import {Playlist} from './Playlist'
-import {ScanProgress} from './ScanProgress'
 
 export const App = observer(({vm}: {vm: AppVM}) => {
   return (
@@ -13,7 +13,7 @@ export const App = observer(({vm}: {vm: AppVM}) => {
       <div className="app">
         <Header />
         <MusicLibrary rootStore={vm.rootStore} />
-        <ScanProgress rootStore={vm.rootStore} />
+        <Footer />
       </div>
       <Playlist rootStore={vm.rootStore} />
       <Modal

@@ -240,14 +240,28 @@ export class MusicLibrary {
       albumIndex[album.id] = album
     }
 
+    const artistsUpdated = Object.values(artistIndex).sort((a, b) =>
+      compareArtistName(a.name, b.name)
+    )
+    const artistSelected = artistsUpdated[0]?.id ?? ''
+
     this.assign({
       songs: Object.values(songIndex),
-      artists: Object.values(artistIndex).sort((a, b) => compareArtistName(a.name, b.name)),
-      albums: Object.values(albumIndex),
-      artistSelected: this.artists[0]?.id ?? '',
+      artists: artistsUpdated,
+      albums: Object.values(albumIndex).sort((a, b) => a.year - b.year),
+      artistSelected,
       albumSelected: '',
       songSelected: '',
     })
+
+    if (artistSelected) {
+      setTimeout(() => {
+        const albumsWithoutCover = this.albums.filter(
+          (album) => album.artistId === artistSelected && !album.coverExtension
+        )
+        this.updateAlbumCovers(albumsWithoutCover)
+      }, 250)
+    }
   }
 
   resetProgress() {

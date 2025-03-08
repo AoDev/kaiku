@@ -4,8 +4,8 @@ import {getAlbumCover} from '@src/config'
 import {observer} from 'mobx-react'
 
 const dummySong: Song = {
-  album: '',
-  artist: '',
+  album: 'Unknown Album',
+  artist: 'Unknown Artist',
   title: '',
   filePath: '',
   trackNumber: 0,
@@ -60,12 +60,11 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
           data-file-path={song.filePath}
           data-song-index={index}
         >
-          <span className="playlist__index">{index + 1}</span>{' '}
-          <span className="txt-muted">{song.trackNumber}.</span> {song.title}
+          <span className="playlist__index">{index + 1}</span> {song.title}
         </div>
       ))}
       {musicPlayer.playlist.length === 0 && (
-        <div className="row">
+        <div className="pad-left-0 row">
           <span className="playlist__index">{1}</span>{' '}
           <i className="txt-muted">No songs in playlist</i>
         </div>
