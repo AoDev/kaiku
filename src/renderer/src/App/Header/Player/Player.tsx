@@ -72,19 +72,24 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
         >
           <Icon name={musicPlayer.isPlaying ? 'pause' : 'play'} />
         </Button>
+
         <Button variant="icon" className="player__btn" onClick={handleNextSong} title="Next song">
           <Icon name="next" />
         </Button>
-        <Input
-          type="range"
-          className="player__volume"
-          min="0"
-          max="1"
-          step="0.01"
-          value={musicPlayer.volume}
-          onChange={handleVolumeChange}
-          title="Volume control"
-        />
+        <div className="flex-row-center margin-left-05">
+          <Icon name="volume-up" />
+          <Input
+            type="range"
+            className="player__volume"
+            min="0"
+            max="1"
+            step="0.01"
+            value={musicPlayer.volume}
+            onChange={handleVolumeChange}
+            title="Volume control"
+          />
+          {/* <Icon name="volume-up" /> */}
+        </div>
       </div>
     </div>
   )

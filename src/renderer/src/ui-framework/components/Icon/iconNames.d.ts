@@ -29,4 +29,6 @@ export type IconName =
   | 'star'
   | 'sun'
   | 'ui-framework'
+  | 'volume-down'
+  | 'volume-up'
   | 'warning'

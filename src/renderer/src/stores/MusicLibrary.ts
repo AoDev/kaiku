@@ -91,8 +91,7 @@ export class MusicLibrary {
       return this.songs.filter((song) => filter.test(song.title))
     }
 
-    // Avoid displaying all songs if, for some mistake, there is no
-    // filtering criteria.
+    // Avoid displaying all songs if there is no filtering criteria.
     return []
   }
 
@@ -106,13 +105,18 @@ export class MusicLibrary {
       return this.albums.filter((album) => filter.test(album.name))
     }
 
-    return this.albums
+    // Avoid displaying all albums if there is no filtering criteria.
+    return []
   }
 
   // Cleanup function for IPC listeners
   private cleanupListeners: (() => void) | null = null
 
   selectAlbum(albumId: string) {
+    if (albumId === this.albumSelected && !this.filter) {
+      // Avoid deselecting album when there is no filter
+      return
+    }
     this.albumSelected = this.albumSelected === albumId ? '' : albumId
   }
 
@@ -131,6 +135,11 @@ export class MusicLibrary {
   }
 
   async selectArtist(artistId: string) {
+    if (artistId === this.artistSelected && !this.filter) {
+      // Avoid deselecting artist when there is no filter
+      return
+    }
+
     this.assign({
       artistSelected: this.artistSelected === artistId ? '' : artistId,
       albumSelected: '',
@@ -162,6 +171,9 @@ export class MusicLibrary {
     this.artistSelected = ''
     this.albumSelected = ''
     this.songSelected = ''
+
+    const albumsWithoutCover = this.filteredAlbums.filter((album) => !album.coverExtension)
+    this.updateAlbumCovers(albumsWithoutCover)
   }
 
   setFilterDebounced = debounce(
@@ -228,16 +240,14 @@ export class MusicLibrary {
       albumIndex[album.id] = album
     }
 
-    // Update the collections with the indexed items
-    this.songs = Object.values(songIndex)
-    this.artists = Object.values(artistIndex).sort((a, b) => compareArtistName(a.name, b.name))
-    this.albums = Object.values(albumIndex)
-
-    // Ensure status is set to complete when done
-    this.scanProgress.status = 'complete'
-    this.artistSelected = this.artists[0]?.id ?? ''
-    this.albumSelected = ''
-    this.songSelected = ''
+    this.assign({
+      songs: Object.values(songIndex),
+      artists: Object.values(artistIndex).sort((a, b) => compareArtistName(a.name, b.name)),
+      albums: Object.values(albumIndex),
+      artistSelected: this.artists[0]?.id ?? '',
+      albumSelected: '',
+      songSelected: '',
+    })
   }
 
   resetProgress() {
