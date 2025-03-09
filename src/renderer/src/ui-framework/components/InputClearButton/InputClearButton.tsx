@@ -15,7 +15,7 @@ const style: CSSProperties = {position: 'absolute', right: '-14px', bottom: '-5p
  * Must be placed in a pos-rel container
  */
 export const InputClearButton = observer(function InputClearButton<vm>({vm, prop}: IProps<vm>) {
-  const clear = useCallback(() => vm.set(prop, ''), [prop])
+  const clear = useCallback(() => vm.set(prop, ''), [prop, vm])
   const visible = vm[prop] !== ''
   if (!visible) {
     return null

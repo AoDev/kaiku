@@ -36,10 +36,14 @@
         "useNumberNamespace": "off"
       },
       "suspicious": {
-        "noGlobalIsFinite": "off"
+        "noGlobalIsFinite": "off",
+        "noExplicitAny": "warn"
       },
       "a11y": {
         "useKeyWithClickEvents": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "error"
       }
     }
   }

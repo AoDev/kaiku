@@ -47,30 +47,36 @@ export const InputBasic: FC<IInputBasicProp> = memo(
     type = 'text',
     ...otherProps
   }) => {
-    // https://tkdodo.eu/blog/avoiding-use-effect-with-callback-refs
-    const inputRef = useCallback((node: HTMLInputElement) => {
-      if (node) {
-        const isTouchDevice = 'ontouchstart' in window
+    const shouldConvertToNumber = type === 'number' || type === 'range' || typeof value === 'number'
 
-        if (focusOnMount && !isTouchDevice) {
-          node.focus()
+    // https://tkdodo.eu/blog/avoiding-use-effect-with-callback-refs
+    const inputRef = useCallback(
+      (node: HTMLInputElement) => {
+        if (node) {
+          const isTouchDevice = 'ontouchstart' in window
+
+          if (focusOnMount && !isTouchDevice) {
+            node.focus()
+          }
+          if (scrollToOnMount) {
+            node.scrollIntoView({behavior: 'smooth', block: 'center'})
+          }
+          if (fitContent) {
+            adjustWidth(node)
+          }
         }
-        if (scrollToOnMount) {
-          node.scrollIntoView({behavior: 'smooth', block: 'center'})
-        }
-        if (fitContent) {
-          adjustWidth(node)
-        }
-      }
-    }, [])
+      },
+      [fitContent, focusOnMount, scrollToOnMount]
+    )
 
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
         let inputValue: string | number | boolean = event.target.value
 
-        if (type === 'number' || type === 'range' || typeof value === 'number') {
+        if (shouldConvertToNumber) {
           if (inputValue.length > 0) {
             const convertedValue = Number(inputValue)
+            // biome-ignore lint/suspicious/noGlobalIsNan: convertedValue is a number
             if (!isNaN(convertedValue)) {
               inputValue = convertedValue
             }
@@ -85,7 +91,7 @@ export const InputBasic: FC<IInputBasicProp> = memo(
         onChangeValue?.(inputValue, event)
         onChangeNameValue?.(event.target.name, inputValue, event)
       },
-      [onChange, onChangeNameValue, onChangeValue]
+      [onChange, onChangeValue, onChangeNameValue, fitContent, type, shouldConvertToNumber]
     )
 
     const selectContent = useCallback((event: FocusEvent<HTMLInputElement>) => {

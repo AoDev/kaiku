@@ -109,13 +109,21 @@ export const Button = memo(function Button<V>(props: IButtonProps<V>) {
   const variantClass = variant ? `btn btn--${variant}` : ''
 
   let cssClasses = `${variantClass} ${className} btn--${sizing}`
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   round && (cssClasses += ' btn-round')
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   square && (cssClasses += ' btn-square')
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   active && (cssClasses += ' active')
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   focused && (cssClasses += ' focus')
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   disabled && (cssClasses += ' disabled')
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   isLoading && (cssClasses += ' btn-loading')
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   narrow && (cssClasses += ' btn--narrow')
+  // biome-ignore lint/suspicious/noAssignInExpressions: no worries
   variant === 'icon' && (cssClasses += ' bg--hover hover--grow10p')
 
   return (
