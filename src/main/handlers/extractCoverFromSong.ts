@@ -4,6 +4,14 @@ import {parseFile} from 'music-metadata'
 import type {AlbumCoverDetails} from '../../types/Cover'
 import {COVER_FOLDER} from '../config'
 
+const mimeTypes = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/gif': 'gif',
+  'image/webp': 'webp',
+  'image/jpg': 'jpg',
+}
+
 export async function createCoverFolder() {
   try {
     const stats = await fs.stat(COVER_FOLDER)
@@ -28,10 +36,14 @@ export async function extractCoverFromSong(song: {
   const pic = songMetadata.common.picture?.[0]
 
   if (pic) {
-    const ext = pic.format === 'image/jpeg' ? 'jpg' : pic.format
-    const filePath = join(COVER_FOLDER, `${song.albumId}.${ext}`)
+    const ext = mimeTypes[pic.format]
+    if (!ext) {
+      console.error(`Unsupported image format: ${pic.format} ${song.filePath}`)
+    }
+    const fileExtension = ext || pic.format
+    const filePath = join(COVER_FOLDER, `${song.albumId}.${fileExtension}`)
     await fs.writeFile(filePath, pic.data)
-    return {fileExtension: ext, filePath}
+    return {fileExtension, filePath}
   }
   return null
 }
