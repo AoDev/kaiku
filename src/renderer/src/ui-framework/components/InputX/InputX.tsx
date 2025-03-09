@@ -14,7 +14,7 @@ interface IProps<T> extends IInputBasicProp {
 export function InputX<vm>({vm, name, id, ...otherProps}: IProps<vm>) {
   return (
     <Input
-      id={id || (name as string) || undefined}
+      id={id || name || undefined}
       name={name}
       value={vm[name] as string | number | boolean | undefined}
       onChangeNameValue={vm.set}

@@ -35,7 +35,7 @@ export async function asyncMapLimit<T, R>(
   const total = items.length
 
   // Create a function to process the next item
-  async function processNext(workerIndex: number): Promise<void> {
+  async function processNext(): Promise<void> {
     while (nextIndex < items.length) {
       const currentIndex = nextIndex++
       try {
@@ -56,7 +56,7 @@ export async function asyncMapLimit<T, R>(
 
   // Create an array of worker promises
   const workerCount = Math.min(concurrency, items.length)
-  const workers = Array.from({length: workerCount}, (_, i) => processNext(i))
+  const workers = Array.from({length: workerCount}, () => processNext())
 
   // Wait for all workers to complete
   try {
