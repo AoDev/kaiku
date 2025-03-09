@@ -10,14 +10,16 @@
   },
   "formatter": {
     "indentStyle": "space",
+    "indentWidth": 2,
     "lineWidth": 100
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single",
       "arrowParentheses": "always",
-      "semicolons": "asNeeded",
       "bracketSpacing": false,
+      "jsxQuoteStyle": "double",
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
       "trailingCommas": "es5"
     }
   },

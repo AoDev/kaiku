@@ -7,7 +7,7 @@ interface ListIconsPluginOptions {
   srcFolder: string
   destFile?: string
   destTsDefinitions: string
-  formatCode?: (code: string, parser?: string) => Promise<string>
+  formatCode?: (code: string) => Promise<string>
 }
 
 export function listIconsPlugin(options: ListIconsPluginOptions): RsbuildPlugin {

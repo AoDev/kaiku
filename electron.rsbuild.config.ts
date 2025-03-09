@@ -2,17 +2,11 @@ import {resolve} from 'node:path'
 import {defineConfig} from '@rsbuild/core'
 import {pluginLess} from '@rsbuild/plugin-less'
 import {pluginReact} from '@rsbuild/plugin-react'
-import prettier from 'prettier'
 import {pluginSvgIcons} from 'rsbuild-plugin-svg-icons'
-import {listIconsPlugin} from './tools/iconList'
+import {biomeFormat, listIconsPlugin} from './tools/iconList'
 
 const RENDERER_FOLDER = resolve(__dirname, 'src', 'renderer', 'src')
 const ICON_FOLDER = resolve(RENDERER_FOLDER, 'ui-framework', 'components', 'Icon')
-
-const prettierFormat = async (code: string, parser?: string) => {
-  const options = await prettier.resolveConfig('.prettierrc')
-  return prettier.format(code, {...options, parser})
-}
 
 export default defineConfig({
   root: resolve(__dirname, '.'),
@@ -42,7 +36,7 @@ export default defineConfig({
           srcFolder: resolve(RENDERER_FOLDER, 'assets', 'svg-sprite'),
           // destFile: path.resolve(SRC_FOLDER, 'assets', 'svg-sprite', 'icons.ts'),
           destTsDefinitions: resolve(ICON_FOLDER, 'iconNames.d.ts'),
-          formatCode: prettierFormat,
+          formatCode: biomeFormat,
         }),
       ],
       html: {
