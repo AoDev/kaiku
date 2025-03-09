@@ -1,6 +1,5 @@
 import {promises as fs} from 'node:fs'
 import path from 'node:path'
-import prettier from 'prettier'
 
 async function listFiles(srcFolder: string): Promise<string[]> {
   try {
@@ -20,34 +19,29 @@ export interface WriteFilesOptions {
   svgFiles: string[]
   destFile?: string
   destTsDefinitions: string
+  formatCode?: (code: string, parser?: string) => Promise<string>
 }
 
 async function writeFiles({
   svgFiles,
   destFile,
   destTsDefinitions,
+  formatCode = (code) => Promise.resolve(code),
 }: WriteFilesOptions): Promise<void> {
-  const prettierOptions = await prettier.resolveConfig(path.resolve(__dirname, '..', '.prettierrc'))
-  const tsDefinitionsFormatted = await prettier.format(
-    `/** Auto-generated file */\n export type IconName = ${svgFiles.map((file) => JSON.stringify(file)).join('|')}`,
-    {
-      ...prettierOptions,
-      parser: 'typescript',
-    },
-  )
-  await fs.writeFile(destTsDefinitions, tsDefinitionsFormatted)
+  const tsDefinitions = `/** Auto-generated file */\n export type IconName = ${svgFiles
+    .map((file) => JSON.stringify(file))
+    .join('|')}`
+
+  const formattedTsDefinitions = await formatCode(tsDefinitions, 'typescript')
+  await fs.writeFile(destTsDefinitions, formattedTsDefinitions)
 
   if (destFile) {
-    const iconListFormatted = await prettier.format(
-      `/** Auto-generated file */\n import {IconName} from 'src/ui-framework/components/Icon/iconNames.d'\n const list: IconName[] = ${JSON.stringify(
-        svgFiles,
-      )}; export default list`,
-      {
-        ...prettierOptions,
-        parser: 'typescript',
-      },
-    )
-    await fs.writeFile(destFile, iconListFormatted)
+    const iconList = `/** Auto-generated file */\n import {IconName} from 'src/ui-framework/components/Icon/iconNames.d'\n const list: IconName[] = ${JSON.stringify(
+      svgFiles
+    )}; export default list`
+
+    const formattedIconList = await formatCode(iconList, 'typescript')
+    await fs.writeFile(destFile, formattedIconList)
   }
 }
 
