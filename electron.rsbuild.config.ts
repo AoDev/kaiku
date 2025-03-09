@@ -3,7 +3,8 @@ import {defineConfig} from '@rsbuild/core'
 import {pluginLess} from '@rsbuild/plugin-less'
 import {pluginReact} from '@rsbuild/plugin-react'
 import {pluginSvgIcons} from 'rsbuild-plugin-svg-icons'
-import {biomeFormat, listIconsPlugin} from './tools/iconList'
+import {listIconsPlugin} from './tools/iconList'
+import {biomeFormat} from './tools/iconList/formatters/biomeFormat'
 
 const RENDERER_FOLDER = resolve(__dirname, 'src', 'renderer', 'src')
 const ICON_FOLDER = resolve(RENDERER_FOLDER, 'ui-framework', 'components', 'Icon')
