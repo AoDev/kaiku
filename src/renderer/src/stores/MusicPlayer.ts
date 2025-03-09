@@ -22,7 +22,7 @@ export class MusicPlayer {
   positionTracking = true
 
   get positionInPercent() {
-    return percentage(this.position, this.duration)
+    return this.duration > 0 ? percentage(this.position, this.duration) : 0
   }
 
   get positionInMinSec() {
