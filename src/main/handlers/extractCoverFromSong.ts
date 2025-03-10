@@ -18,7 +18,7 @@ export async function createCoverFolder() {
     if (!stats.isDirectory()) {
       console.error('Covers path exists but is not a directory.')
     }
-  } catch (error) {
+  } catch {
     // Directory doesn't exist, create it
     console.log('Creating covers cache dir...')
     await fs.mkdir(COVER_FOLDER, {recursive: true})

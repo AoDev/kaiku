@@ -2,7 +2,7 @@ import {action} from 'mobx'
 
 // Utility type to exclude method keys
 export type NonFunctionKeys<T> = {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  // biome-ignore lint/complexity/noBannedTypes: Don't know how to fix this TS issue
   [K in keyof T]: T[K] extends Function ? never : K extends string ? K : never
 }[keyof T]
 
