@@ -1,5 +1,6 @@
 export * from './components/Button'
 export * from './components/ButtonBasic'
+export * from './components/ButtonMenu'
 export * from './components/Icon'
 export * from './components/Input'
 export * from './components/InputBasic'
