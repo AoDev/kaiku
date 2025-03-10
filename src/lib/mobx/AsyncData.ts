@@ -88,8 +88,9 @@ export default class AsyncData<T> implements IAsyncData<T> {
       this.assign({value, updatedAt: now})
       return value
     } catch (error) {
-      this.onError?.(error)
-      this.set('error', error)
+      const err = error instanceof Error ? error : new Error(String(error))
+      this.onError?.(err)
+      this.set('error', err)
       return error as Error
     } finally {
       this.assign({pending: false, lastAttempt: now})
