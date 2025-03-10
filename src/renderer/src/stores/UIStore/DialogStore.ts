@@ -17,7 +17,7 @@ export default class DialogStore {
     this.dialogs = this.dialogs.filter((dialog) => !modalsToRemove.includes(dialog))
   }
 
-  handleBackButton() {
+  private handleBackButton() {
     const mostRecentDialog = this.dialogs.findLast(
       (dialog) => DialogVM.visibleStates.includes(dialog.state) && dialog.hideWithBackButton
     )
@@ -26,7 +26,7 @@ export default class DialogStore {
     }
   }
 
-  handleEscapeKey(event: KeyboardEvent) {
+  private handleEscapeKey(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       const mostRecentDialog = this.dialogs.findLast(
         (dialog) => DialogVM.visibleStates.includes(dialog.state) && dialog.hideWithEscapeKey
@@ -37,7 +37,7 @@ export default class DialogStore {
     }
   }
 
-  handlePopState() {
+  private handlePopState() {
     this.handleBackButton()
   }
 
