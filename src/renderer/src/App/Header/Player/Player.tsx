@@ -1,49 +1,41 @@
 import type {RootStore} from '@renderer/stores/RootStore'
+import {padWithZero} from '@rootsrc/lib/number'
 import {Button, Icon, Input} from '@ui'
 import {observer} from 'mobx-react'
+import {useCallback} from 'react'
 
-function padNumber(number: number) {
-  if (number < 10) {
-    return `0${number}`
-  }
-  return number.toString()
+/**
+ * Formats a song time object into a string of minutes and seconds
+ */
+function formatTime(time: {minutes: number; seconds: number}) {
+  return `${time.minutes}:${padWithZero(time.seconds)}`
 }
 
 export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicPlayer} = rootStore
   const {positionInMinSec, durationInMinSec, positionInPercent} = musicPlayer
 
-  const handleNextSong = () => {
-    musicPlayer.next()
-  }
-
-  const handlePrevSong = () => {
-    musicPlayer.prev()
-  }
-
-  const handlePositionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: musicPlayer is immutable
+  const handlePositionChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const position = Number(event.target.value)
     if (isFinite(position)) {
       musicPlayer.setPositionFromPercent(position)
     }
-  }
+  }, [])
 
-  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: musicPlayer is immutable
+  const handleVolumeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const volume = Number(event.target.value)
     if (isFinite(volume)) {
       musicPlayer.setVolume(volume)
     }
-  }
+  }, [])
+
   return (
     <div className="flex-row-center height-100p gap-1">
       <div className="player__times">
-        <div className="player__time">
-          {positionInMinSec.minutes}:{padNumber(positionInMinSec.seconds)}
-        </div>
-        /
-        <div className="player__time">
-          {durationInMinSec.minutes}:{padNumber(durationInMinSec.seconds)}
-        </div>
+        <div className="player__time">{formatTime(positionInMinSec)}</div>/
+        <div className="player__time">{formatTime(durationInMinSec)}</div>
         <Input
           type="range"
           className="player__track"
@@ -59,7 +51,7 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
         <Button
           variant="icon"
           className="player__btn"
-          onClick={handlePrevSong}
+          onClick={musicPlayer.prev}
           title="Previous song"
         >
           <Icon name="previous" />
@@ -73,7 +65,7 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
           <Icon name={musicPlayer.isPlaying ? 'pause' : 'play'} />
         </Button>
 
-        <Button variant="icon" className="player__btn" onClick={handleNextSong} title="Next song">
+        <Button variant="icon" className="player__btn" onClick={musicPlayer.next} title="Next song">
           <Icon name="next" />
         </Button>
         <div className="flex-row-center margin-left-05">
@@ -88,7 +80,6 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
             onChange={handleVolumeChange}
             title="Volume control"
           />
-          {/* <Icon name="volume-up" /> */}
         </div>
       </div>
     </div>

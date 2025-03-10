@@ -3,7 +3,7 @@ import {makeAutoObservable} from 'mobx'
 import {MusicLibrary} from './MusicLibrary'
 import {MusicPlayer} from './MusicPlayer'
 import {SettingsDataStore, SettingsStore} from './Settings'
-import UIStore from './UIStore'
+import {UIStore} from './UIStore'
 
 export class RootStore {
   set: store.SetMethod<RootStore>

@@ -53,6 +53,7 @@ export class MusicLibrary {
 
   artistSelected = ''
   albumSelected = ''
+  // filePath of the song that is currently selected
   songSelected = ''
 
   artistPlaying: Artist | null = null

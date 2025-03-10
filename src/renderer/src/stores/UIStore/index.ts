@@ -1,1 +1,1 @@
-export {default} from './UIStore'
+export * from './UIStore'

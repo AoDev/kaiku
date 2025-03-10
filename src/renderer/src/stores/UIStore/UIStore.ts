@@ -5,7 +5,7 @@ import {autorun, makeAutoObservable} from 'mobx'
 import DialogStore from './DialogStore'
 import MediaQuery from './MediaQuery'
 
-export default class UIStore {
+export class UIStore {
   rootStore: RootStore
   media = new MediaQuery()
   dialogs = new DialogStore()
