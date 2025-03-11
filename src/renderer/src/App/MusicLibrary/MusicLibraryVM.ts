@@ -146,7 +146,7 @@ export class MusicLibraryVM {
     this.songMenuDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
     this.stopRevealArtist = reaction(
       () => this.rootStore.musicLibrary.filter,
-      () => this.rootStore.revealArtist()
+      () => setTimeout(() => this.rootStore.revealArtist(), 200)
     )
     document.addEventListener('click', this.onDocumentClick)
   }
