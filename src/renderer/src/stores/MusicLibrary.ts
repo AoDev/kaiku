@@ -141,9 +141,18 @@ export class MusicLibrary {
       albumSelected: '',
     })
 
-    const albumsWithoutCover = this.albums.filter(
-      (album) => album.artistId === artistId && !album.coverExtension
-    )
+    const artist = this.indexedArtists[artistId]
+    if (!artist) {
+      return
+    }
+    const albumsWithoutCover = artist.albums.reduce((acc: Album[], albumId) => {
+      const album = this.indexedAlbums[albumId]
+      if (!album.coverExtension) {
+        acc.push(album)
+      }
+      return acc
+    }, [])
+
     this.updateAlbumCovers(albumsWithoutCover)
   }
 
