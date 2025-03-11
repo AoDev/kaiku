@@ -1,64 +1,25 @@
 import {getAlbumCover} from '@src/config'
-import type {RootStore} from '@src/stores'
 import {observer} from 'mobx-react'
-import {useCallback} from 'react'
+import type {MusicLibraryVM} from './MusicLibraryVM'
 
-function getAlbumId(event: React.MouseEvent<HTMLDivElement>) {
-  let target = event.target as HTMLElement
-  let albumId: string | undefined
-  while (!albumId && target !== event.currentTarget && target.parentNode !== null) {
-    albumId = target.dataset.albumId
-    target = target.parentNode as HTMLElement
-  }
-  return albumId
-}
-
-export const Albums = observer(({rootStore}: {rootStore: RootStore}) => {
-  const {musicLibrary, musicPlayer} = rootStore
-  const {indexedArtists, filter} = musicLibrary
+export const Albums = observer(({vm}: {vm: MusicLibraryVM}) => {
+  const {musicLibrary, musicPlayer} = vm.rootStore
+  const {indexedArtists, filter, albumSelected} = musicLibrary
+  const {song} = musicPlayer
   const needArtistDetails = filter !== null && musicLibrary.artistSelected === ''
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: musicLibrary is immutable
-  const onAlbumClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    const albumId = getAlbumId(event)
-    if (!albumId) {
-      return
-    }
-    musicLibrary.selectAlbum(albumId)
-  }, [])
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: musicLibrary is immutable
-  const onAlbumDoubleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    const albumId = getAlbumId(event)
-    if (!albumId) {
-      return
-    }
-    if (musicLibrary.albumSelected !== albumId) {
-      musicLibrary.selectAlbum(albumId)
-    }
-    musicPlayer.replacePlaylist(
-      musicLibrary.songs
-        .filter((song) => song.albumId === albumId)
-        .sort((a, b) => a.trackNumber - b.trackNumber)
-    )
-    musicPlayer.play()
-  }, [])
-
   return (
-    <div className="albums library__col" onClick={onAlbumClick} onDoubleClick={onAlbumDoubleClick}>
+    <div className="library__col" onClick={vm.onAlbumClick}>
       {musicLibrary.filteredAlbums.map((album) => {
-        const coverPath = getAlbumCover(album)
-        const cssClass =
-          musicPlayer.song?.albumId === album.id
-            ? 'album--playing'
-            : musicLibrary.albumSelected === album.id
-              ? 'album--selected'
-              : ''
         return (
-          <div className={`album ${cssClass}`} key={album.id} data-album-id={album.id}>
+          <div
+            className={`album library-item ${song?.albumId === album.id ? 'playing' : ''} ${albumSelected === album.id ? 'selected' : ''}`}
+            key={album.id}
+            data-album-id={album.id}
+          >
             <div className="flex-row-center gap-1 noselect">
               {/* biome-ignore lint/a11y/useAltText: We do not have text description of each cover */}
-              <img className="album__cover" src={coverPath} />
+              <img className="album__cover" src={getAlbumCover(album)} />
               <span className="txt-muted nowrap">{album.year || '----'}</span>
               <div>
                 {album.name}

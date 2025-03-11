@@ -4,7 +4,7 @@ import AppSettings from './AppSettings'
 import type {AppVM} from './AppVM'
 import Footer from './Footer'
 import Header from './Header'
-import {MusicLibrary} from './MusicLibrary'
+import MusicLibrary from './MusicLibrary'
 import {Playlist} from './Playlist'
 
 export const App = observer(({vm}: {vm: AppVM}) => {
@@ -12,7 +12,7 @@ export const App = observer(({vm}: {vm: AppVM}) => {
     <div className="app-top">
       <div className="app">
         <Header />
-        <MusicLibrary rootStore={vm.rootStore} />
+        <MusicLibrary />
         <Footer />
       </div>
       <Playlist rootStore={vm.rootStore} />

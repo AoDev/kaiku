@@ -17,9 +17,12 @@ export class RootStore {
   storage: {settings: SettingsDataStore}
   unexpectedError: Error | null = null
 
+  /**
+   * Scrolls to the artist node and selects it if it's not already selected
+   */
   revealArtist(toArtistId?: string) {
     const {musicLibrary, musicPlayer} = this
-    const artistsDomNode = document.querySelector('.artists')
+    const artistsDomNode = document.querySelector('[data-artist-col="true"]')
     if (!artistsDomNode) {
       return
     }
@@ -38,6 +41,9 @@ export class RootStore {
     }
   }
 
+  /**
+   * Scrolls to the artist node of the song playing and selects it if it's not already selected
+   */
   revealArtistPlaying() {
     const {musicPlayer} = this
     const artistId = musicPlayer.song?.artistId

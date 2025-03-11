@@ -92,6 +92,11 @@ export class MusicPlayer {
     }
   }
 
+  replacePlaylistAndPlay(songs: Song[]) {
+    this.replacePlaylist(songs)
+    this.play()
+  }
+
   stop() {
     if (this.howl && this.isPlaying) {
       this.howl.stop()

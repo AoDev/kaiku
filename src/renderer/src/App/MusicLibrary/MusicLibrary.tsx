@@ -1,15 +1,15 @@
-import type {RootStore} from '@renderer/stores/RootStore'
-import {memo} from 'react'
+import {observer} from 'mobx-react'
 import {Albums} from './Albums'
 import {Artists} from './Artists'
+import type {MusicLibraryVM} from './MusicLibraryVM'
 import {Songs} from './Songs'
 
-export const MusicLibrary = memo(({rootStore}: {rootStore: RootStore}) => {
+export const MusicLibrary = observer(({vm}: {vm: MusicLibraryVM}) => {
   return (
     <div className="library">
-      <Artists rootStore={rootStore} />
-      <Albums rootStore={rootStore} />
-      <Songs rootStore={rootStore} />
+      <Artists vm={vm} />
+      <Albums vm={vm} />
+      <Songs vm={vm} />
     </div>
   )
 })

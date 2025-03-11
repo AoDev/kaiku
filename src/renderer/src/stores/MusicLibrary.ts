@@ -2,7 +2,7 @@ import * as store from '@lib/mobx/store.helpers'
 import {isAlbumCoverDetails} from '@rootsrc/types/Cover'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
 import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/Song'
-import {debounce} from 'lodash'
+import {debounce, groupBy} from 'lodash'
 import {keyBy} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'
 
@@ -84,12 +84,16 @@ export class MusicLibrary {
     }
 
     if (this.artistSelected) {
-      return this.songs.filter((song) => song.artistId === this.artistSelected)
+      return this.getArtistSongs(this.artistSelected)
     }
 
     const filter = this.filter
     if (filter) {
       return this.songs.filter((song) => filter.test(song.title))
+    }
+
+    if (this.songSelected) {
+      return this.songs.filter((song) => song.filePath === this.songSelected)
     }
 
     // Avoid displaying all songs if there is no filtering criteria.
@@ -106,6 +110,20 @@ export class MusicLibrary {
       return this.albums.filter((album) => filter.test(album.name))
     }
 
+    if (this.albumSelected) {
+      return this.albums.filter((album) => album.id === this.albumSelected)
+    }
+
+    if (this.songSelected) {
+      const song = this.songs.find((song) => song.filePath === this.songSelected)
+      if (song) {
+        const album = this.albums.find((album) => album.id === song.albumId)
+        if (album) {
+          return [album]
+        }
+      }
+    }
+
     // Avoid displaying all albums if there is no filtering criteria.
     return []
   }
@@ -114,7 +132,7 @@ export class MusicLibrary {
   private cleanupListeners: (() => void) | null = null
 
   selectAlbum(albumId: string) {
-    if (albumId === this.albumSelected && !this.filter) {
+    if (albumId === this.albumSelected && !this.filter && !this.artistSelected) {
       // Avoid deselecting album when there is no filter
       return
     }
@@ -184,6 +202,51 @@ export class MusicLibrary {
     300,
     {trailing: true}
   )
+
+  getSong(filePath: string) {
+    const song = this.songs.find((song) => song.filePath === filePath)
+    return song ? [song] : []
+  }
+
+  getAlbumSongs(albumId: string) {
+    return this.songs
+      .filter((song) => song.albumId === albumId)
+      .sort((a, b) => a.trackNumber - b.trackNumber)
+  }
+
+  getArtistSongs(artistId: string) {
+    const songsByAlbum = groupBy(
+      this.songs
+        .filter((song) => song.artistId === artistId)
+        .sort((a, b) => a.trackNumber - b.trackNumber),
+      'albumId'
+    )
+
+    return Object.entries(songsByAlbum)
+      .sort(
+        ([albumId1, _], [albumId2, __]) =>
+          this.indexedAlbums[albumId1].year - this.indexedAlbums[albumId2].year
+      )
+      .flatMap(([_, songs]) => songs)
+  }
+
+  /**
+   * Get songs grouped by album for an artist
+   */
+  getSongsByAlbum(artistId: string): [Album, Song[]][] {
+    const songs = this.artistSelected === artistId ? this.filteredSongs : this.songs
+    const songsByAlbum = groupBy(
+      songs
+        .filter((song) => song.artistId === artistId)
+        .sort((a, b) => a.trackNumber - b.trackNumber),
+      'albumId'
+    )
+
+    // Sort albums by year
+    return Object.keys(songsByAlbum)
+      .sort((a, b) => this.indexedAlbums[a].year - this.indexedAlbums[b].year)
+      .map((albumId) => [this.indexedAlbums[albumId], songsByAlbum[albumId]])
+  }
 
   // Setup IPC listeners for scan progress updates
   setupScanProgressListener() {
