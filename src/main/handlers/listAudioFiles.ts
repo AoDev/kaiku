@@ -4,8 +4,8 @@ import {cpus} from 'node:os'
 import {dirname, join} from 'node:path'
 import {parseFile} from 'music-metadata'
 import {asyncMapLimitSettled} from '../../lib/async'
+import type {Album, Artist, AudioLibrary, Song} from '../../types/MusicLibrary.types'
 import type {ScanProgress} from '../../types/ScanProgress'
-import type {Album, Artist, AudioLibrary, Song} from '../../types/Song'
 
 function generateId(str: string): string {
   return createHash('md5').update(str).digest('hex')

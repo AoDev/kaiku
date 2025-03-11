@@ -1,6 +1,6 @@
 import * as store from '@lib/mobx/store.helpers'
 import {getDatasetValue} from '@rootsrc/lib/dom/getDatasetValue'
-import type {Album, Song} from '@rootsrc/types/Song'
+import type {Album, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {RootStore} from '@src/stores'
 import type {DialogVM, IconName} from '@ui'
 import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'

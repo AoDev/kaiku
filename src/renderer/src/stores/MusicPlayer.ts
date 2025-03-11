@@ -1,5 +1,5 @@
 import {percentage} from '@lib/math'
-import type {Song} from '@rootsrc/types/Song'
+import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import {Howl} from 'howler'
 import {debounce} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'

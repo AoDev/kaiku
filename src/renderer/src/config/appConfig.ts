@@ -1,4 +1,4 @@
-import type {Album} from '@rootsrc/types/Song'
+import type {Album} from '@rootsrc/types/MusicLibrary.types'
 import type {IconName} from '@ui'
 
 export const DEFAULT_ALBUM_COVER =

@@ -1,7 +1,7 @@
 import * as store from '@lib/mobx/store.helpers'
 import {isAlbumCoverDetails} from '@rootsrc/types/Cover'
+import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
-import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/Song'
 import {debounce, groupBy} from 'lodash'
 import {keyBy} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'

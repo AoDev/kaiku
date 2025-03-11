@@ -1,5 +1,5 @@
 import type {RootStore} from '@renderer/stores/RootStore'
-import type {Song} from '@rootsrc/types/Song'
+import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import {getAlbumCover} from '@src/config'
 import {observer} from 'mobx-react'
 
