@@ -20,6 +20,7 @@ export type Song = {
   album: string
   albumId: string
   filePath: string
+  disk: {no: number; of: number}
   // duration: number
 }
 

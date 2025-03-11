@@ -25,6 +25,7 @@ export const Songs = observer(({vm}: {vm: MusicLibraryVM}) => {
                     key={song.filePath}
                     data-file-path={song.filePath}
                   >
+                    {song.disk.of > 1 && <span className="txt-unit">CD{song.disk.no} - </span>}
                     <span className="txt-muted">{song.trackNumber}.</span> {song.title}
                   </div>
                 ))}
@@ -36,7 +37,8 @@ export const Songs = observer(({vm}: {vm: MusicLibraryVM}) => {
                 key={song.filePath}
                 data-file-path={song.filePath}
               >
-                <span className="txt-muted">{song.trackNumber}.</span> {song.title}{' '}
+                {song.disk.of > 1 && <span className="txt-unit">CD{song.disk.no} - </span>}
+                <span className="txt-muted">{song.trackNumber}.</span> {song.title}
                 {needsDetails && (
                   <div className="margin-bottom-05 txt-muted">
                     <span className="txt-unit">by</span> {song.artist}{' '}

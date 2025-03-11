@@ -1,10 +1,11 @@
 import * as store from '@lib/mobx/store.helpers'
 import {isAlbumCoverDetails} from '@rootsrc/types/Cover'
-import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
+import type {Album, Artist, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
 import {debounce, groupBy} from 'lodash'
 import {keyBy} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'
+import {getSongListFromFolder, sortSongsByDiskAndTrack} from './MusicLibrary.helpers'
 
 const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
 
@@ -17,28 +18,6 @@ const CHAR_RANGES = {
   u: '[uüû]',
   y: '[yýÝ]',
   l: '[lł]',
-}
-
-async function getSongListFromFolder(): Promise<
-  AudioLibrary & {
-    folderPath: string
-  }
-> {
-  try {
-    const selectedPath: string = await window.electron.ipcRenderer.invoke('selectDirectory')
-    if (selectedPath) {
-      // Automatically list files after selection
-      const audioLibrary: AudioLibrary = await window.electron.ipcRenderer.invoke(
-        'listAudioFiles',
-        selectedPath
-      )
-      return {folderPath: selectedPath, ...audioLibrary}
-    }
-    return {folderPath: '', songs: [], artists: [], albums: []}
-  } catch (error) {
-    console.error('Error selecting directory:', error)
-    return {folderPath: '', songs: [], artists: [], albums: []}
-  }
 }
 
 export class MusicLibrary {
@@ -78,9 +57,7 @@ export class MusicLibrary {
 
   get filteredSongs() {
     if (this.albumSelected) {
-      return this.songs
-        .filter((song) => song.albumId === this.albumSelected)
-        .sort((a, b) => a.trackNumber - b.trackNumber)
+      return this.getAlbumSongs(this.albumSelected)
     }
 
     if (this.artistSelected) {
@@ -210,24 +187,16 @@ export class MusicLibrary {
   }
 
   getAlbumSongs(albumId: string) {
-    return this.songs
-      .filter((song) => song.albumId === albumId)
-      .sort((a, b) => a.trackNumber - b.trackNumber)
+    return this.songs.filter((song) => song.albumId === albumId).sort(sortSongsByDiskAndTrack)
   }
 
   getArtistSongs(artistId: string) {
     const songsByAlbum = groupBy(
-      this.songs
-        .filter((song) => song.artistId === artistId)
-        .sort((a, b) => a.trackNumber - b.trackNumber),
+      this.songs.filter((song) => song.artistId === artistId).sort(sortSongsByDiskAndTrack),
       'albumId'
     )
-
     return Object.entries(songsByAlbum)
-      .sort(
-        ([albumId1, _], [albumId2, __]) =>
-          this.indexedAlbums[albumId1].year - this.indexedAlbums[albumId2].year
-      )
+      .sort(([a], [b]) => this.indexedAlbums[a].year - this.indexedAlbums[b].year)
       .flatMap(([_, songs]) => songs)
   }
 
@@ -237,9 +206,7 @@ export class MusicLibrary {
   getSongsByAlbum(artistId: string): [Album, Song[]][] {
     const songs = this.artistSelected === artistId ? this.filteredSongs : this.songs
     const songsByAlbum = groupBy(
-      songs
-        .filter((song) => song.artistId === artistId)
-        .sort((a, b) => a.trackNumber - b.trackNumber),
+      songs.filter((song) => song.artistId === artistId).sort(sortSongsByDiskAndTrack),
       'albumId'
     )
 

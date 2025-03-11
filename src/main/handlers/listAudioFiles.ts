@@ -123,14 +123,26 @@ export async function listAudioFiles(
         const artistName = metadata.common.artist ?? 'Unknown Artist'
         const albumName = metadata.common.album ?? 'Unknown Album'
         const year = metadata.common.year ?? 0
+        if (metadata.common.track.no === 1) {
+          console.log(metadata.common.album, metadata.common)
+        }
 
         // Get the parent folder path
         const parentFolder = dirname(file)
 
+        // Check if the parent folder is a CD folder (CD1, CD2, Disc 1, etc.)
+        const cdPattern = /[\/\\](CD|Disc|Disk)\s*\d+$/i
+        let albumFolder = parentFolder
+
+        if (cdPattern.test(parentFolder)) {
+          // If it's a CD folder, use the parent of the CD folder instead
+          albumFolder = dirname(parentFolder)
+        }
+
         const artistId = generateId(artistName)
-        // Use parent folder path + album name for albumId
-        // This ensures songs in the same folder with the same album name are grouped together
-        const albumId = generateId(`${parentFolder}:${albumName}`)
+        // Use album folder path + album name for albumId
+        // This ensures songs in the same album (even across CD folders) are grouped together
+        const albumId = generateId(`${albumFolder}:${albumName}`)
 
         // Store artist if new
         if (artistName && !artistsMap.has(artistId)) {
@@ -157,6 +169,7 @@ export async function listAudioFiles(
           albumId,
           artist: artistName,
           artistId,
+          disk: {no: metadata.common.disk?.no ?? 1, of: metadata.common.disk?.of ?? 1},
           filePath: file,
           title: metadata.common.title ?? '',
           trackNumber: metadata.common.track.no ?? 0,
