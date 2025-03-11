@@ -156,6 +156,7 @@ export class MusicLibrary {
   async selectArtist(artistId: string) {
     if (artistId === this.artistSelected && !this.filter) {
       // Avoid deselecting artist when there is no filter
+      this.assign({albumSelected: ''})
       return
     }
 
