@@ -49,10 +49,7 @@ export class MusicLibrary {
 
   get filteredArtists() {
     const filter = this.filter
-    if (!filter) {
-      return this.artists
-    }
-    return this.artists.filter((artist) => filter.test(artist.name))
+    return filter ? this.artists.filter((artist) => filter.test(artist.name)) : this.artists
   }
 
   get filteredSongs() {
@@ -79,7 +76,9 @@ export class MusicLibrary {
 
   get filteredAlbums() {
     if (this.artistSelected) {
-      return this.albums.filter((album) => album.artistId === this.artistSelected)
+      return this.indexedArtists[this.artistSelected].albums.map(
+        (albumId) => this.indexedAlbums[albumId]
+      )
     }
 
     const filter = this.filter

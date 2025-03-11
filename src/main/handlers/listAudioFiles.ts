@@ -146,10 +146,7 @@ export async function listAudioFiles(
 
         // Store artist if new
         if (artistName && !artistsMap.has(artistId)) {
-          artistsMap.set(artistId, {
-            id: artistId,
-            name: artistName,
-          })
+          artistsMap.set(artistId, {id: artistId, name: artistName, albums: []})
         }
 
         // Store album if new
@@ -162,6 +159,11 @@ export async function listAudioFiles(
             name: albumName,
             year,
           })
+        }
+
+        const artist = artistsMap.get(artistId)
+        if (artist && !artist.albums.includes(albumId)) {
+          artist.albums.push(albumId)
         }
 
         return {

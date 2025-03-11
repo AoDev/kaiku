@@ -1,6 +1,8 @@
 export type Artist = {
   id: string
   name: string
+  /** Album IDs */
+  albums: string[]
 }
 
 export type Album = {
