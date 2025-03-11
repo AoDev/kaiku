@@ -50,6 +50,7 @@ export class RootStore {
     if (!artistId) {
       return
     }
+    this.musicLibrary.setFilterDebounced('')
     this.revealArtist(artistId)
   }
 
