@@ -11,7 +11,9 @@
     "src/lib/**/*.ts",
     "src/lib/**/*.tsx"
   ],
+  "exclude": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"],
   "compilerOptions": {
-    "composite": true
+    "composite": true,
+    "types": ["vitest/globals"]
   }
 }

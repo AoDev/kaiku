@@ -1,14 +1,15 @@
+import {describe, expect, it, vi} from 'vitest'
 import AsyncData from './AsyncData'
 
 describe('AsyncData', () => {
   it('loaded is false on initialization', () => {
-    const asyncData = new AsyncData<[]>([], jest.fn())
+    const asyncData = new AsyncData<[]>([], vi.fn())
 
     expect(asyncData.loaded).toEqual(false)
   })
 
   it('reset sets all values to its initial state', async () => {
-    const mockedFetchHandler = jest.fn(() => Promise.resolve(9999))
+    const mockedFetchHandler = vi.fn(() => Promise.resolve(9999))
     const asyncData = new AsyncData<number>(100, mockedFetchHandler)
 
     await asyncData.fetch(123)
@@ -24,7 +25,7 @@ describe('AsyncData', () => {
 
   describe('fetch', () => {
     it('calls fetchHandler with all arguments', async () => {
-      const mockedFetchHandler = jest.fn()
+      const mockedFetchHandler = vi.fn()
       const asyncData = new AsyncData<number>(0, mockedFetchHandler)
       const arg1 = 'hello'
       const arg2 = 'world'
@@ -37,7 +38,7 @@ describe('AsyncData', () => {
     })
 
     it('sets pending to true', async () => {
-      const asyncData = new AsyncData('', jest.fn())
+      const asyncData = new AsyncData('', vi.fn())
 
       const fetchPromise = asyncData.fetch()
 
@@ -48,8 +49,8 @@ describe('AsyncData', () => {
     it('when finished successfully sets value, last attempt, last updated and loaded', async () => {
       const currentDateTime = new Date('2020-01-15 15:30:14')
       const expectedValue = 'hello world'
-      jest.useFakeTimers().setSystemTime(currentDateTime)
-      const mockFetchHandler = jest.fn(() => Promise.resolve(expectedValue))
+      vi.useFakeTimers().setSystemTime(currentDateTime)
+      const mockFetchHandler = vi.fn(() => Promise.resolve(expectedValue))
       const asyncData = new AsyncData('', mockFetchHandler)
 
       const returnedValue = await asyncData.fetch()
@@ -64,10 +65,10 @@ describe('AsyncData', () => {
     describe('on error', () => {
       it('calls error handler with thrown error and sets error value and loaded', async () => {
         const expectedError = new Error('Something went wrong!')
-        const mockFetchHandler = jest.fn(() => {
+        const mockFetchHandler = vi.fn(() => {
           throw expectedError
         })
-        const mockOnError = jest.fn()
+        const mockOnError = vi.fn()
         const asyncData = new AsyncData<number>(0, mockFetchHandler, {onError: mockOnError})
 
         await asyncData.fetch()
@@ -79,8 +80,8 @@ describe('AsyncData', () => {
 
       it('logs error by default', async () => {
         const expectedError = new Error('Oopsie!')
-        console.error = jest.fn()
-        const mockFetchHandler = jest.fn(() => {
+        console.error = vi.fn()
+        const mockFetchHandler = vi.fn(() => {
           throw expectedError
         })
         const asyncData = new AsyncData<number>(0, mockFetchHandler)
