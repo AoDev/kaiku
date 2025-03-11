@@ -18,7 +18,7 @@ export class MusicPlayer {
   playlist: Song[] = []
   playlistIndex = 0
   volume = 0.3
-  positionTimer?: Timer
+  positionTimer?: ReturnType<typeof setInterval>
   positionTracking = true
 
   get positionInPercent() {
