@@ -14,4 +14,10 @@
 .playlist__cover {
   width: 100%;
   object-fit: cover;
+  transition: filter 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.3);
+  }
 }
