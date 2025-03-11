@@ -1,6 +1,6 @@
+import {isAbsolute, join} from 'node:path'
 import {protocol} from 'electron'
 import {COVER_FOLDER} from '../config'
-import {join, isAbsolute} from 'node:path'
 
 export function setupProtocolHandler(): void {
   // Register protocol for local media files

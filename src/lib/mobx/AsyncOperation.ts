@@ -13,7 +13,8 @@ export class AsyncOperation<R, T extends () => Promise<R>> {
     this.assign({pending: true, error: null})
     try {
       await this.fetchHandler()
-    } catch (error) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err))
       this.assign({error})
     } finally {
       this.assign({pending: false})

@@ -68,7 +68,7 @@ export const ButtonBasic = memo(function ButtonBasic<V>(props: IButtonBasicProps
       }
       event.stopPropagation()
       if (disabledMock) {
-        return false
+        return
       }
       onClick?.(event)
       onClickValue?.(value, event)

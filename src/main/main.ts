@@ -1,9 +1,9 @@
-import {app, BrowserWindow} from 'electron'
 import {electronApp, optimizer} from '@electron-toolkit/utils'
-import {createWindow} from './window'
+import {BrowserWindow, app} from 'electron'
+import {createCoverFolder} from './handlers/extractCoverFromSong'
 import {setupFileSystemHandlers} from './handlers/fileSystemHandlers'
 import {setupProtocolHandler} from './handlers/protocolHandler'
-import {createCoverFolder} from './handlers/extractCoverFromSong'
+import {createWindow} from './window'
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

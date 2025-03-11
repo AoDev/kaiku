@@ -1,5 +1,5 @@
-import {type ComponentType, type FC, memo, useEffect, useRef} from 'react'
 import * as mobxReact from 'mobx-react'
+import {type ComponentType, type FC, memo, useEffect, useRef} from 'react'
 
 interface IViewModel {
   destroyVM?: () => void

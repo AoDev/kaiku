@@ -12,6 +12,7 @@ const dummySong: Song = {
   year: 0,
   artistId: '',
   albumId: '',
+  disk: {no: 1, of: 1},
 }
 
 export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {

@@ -13,3 +13,6 @@ dist/
 .idea
 
 out
+
+# TypeScript build info
+*.tsbuildinfo

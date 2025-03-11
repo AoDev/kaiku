@@ -1,7 +1,6 @@
-import {BrowserWindow, shell} from 'electron'
 import {join} from 'node:path'
 import {is} from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import {BrowserWindow, shell} from 'electron'
 
 export function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -9,7 +8,6 @@ export function createWindow(): BrowserWindow {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? {icon} : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

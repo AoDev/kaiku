@@ -34,7 +34,7 @@ export function listIconsPlugin(options: ListIconsPluginOptions): RsbuildPlugin 
           if (isWatch && !watcher) {
             let debounceTimer: NodeJS.Timeout
 
-            watcher = watch(srcFolder, {recursive: true}, async (eventType, filename) => {
+            watcher = watch(srcFolder, {recursive: true}, async (_eventType, filename) => {
               if (filename && path.extname(filename).toLowerCase() === '.svg') {
                 // Debounce updates to handle multiple rapid changes
                 clearTimeout(debounceTimer)

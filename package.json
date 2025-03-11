@@ -18,7 +18,7 @@
     "dev": "electron-rsbuild dev",
     "format": "biome format --write",
     "inspect": "bun --inspect ./node_modules/electron-rsbuild/bin/electron-rsbuild.mjs dev",
-    "lint": "biome lint src --diagnostic-level error",
+    "lint": "biome check src --diagnostic-level error && tsc --build --noEmit",
     "preview": "electron-rsbuild preview",
     "rsbuild:build": "rsbuild build",
     "rsbuild:build-main": "rsbuild build -c electron.rsbuild.config.ts",
