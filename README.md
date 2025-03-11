@@ -1,49 +1,41 @@
-# electron-rsbuild-ts-demo
+# Kaiku (v2)
 
-An Electron application with React and TypeScript
+Desktop music player for local files.
 
-## Recommended IDE Setup
+**It's WIP**
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+* It works, if you have proper tags on your files.
+* At the moment I'm doing the bare minimum to suite my needs.
+* Feel free to open an issue if you are interested.
+* There is no downloadable version at the moment. You can clone the repo and run it locally.
 
-## Project Setup
 
-### Install
+## Why
 
-```bash
-pnpm install
-```
+It's 2025, kids probably don't know what an mp3 is and there are great online services. So...?
 
-### Development
+Well, I like to manage my music.
 
-```bash
-pnpm dev
-```
+**It's a rewrite**
 
-### Build
+I'm rewriting this [music player](https://github.com/AoDev/kaiku-music-player). It stopped working when I switched to an Apple Silicon computer. I'm using this as an opportunity to try some new things.
 
-测试 build 构建
+## Tech
 
-```bash
-pnpm run builder
+- [react](https://react.dev/)
+- [mobx](https://mobx.js.org/)
+- [less](https://lesscss.org/)
+- [rsbuild](https://rsbuild.dev/)
+- [electronjs](https://www.electronjs.org/)
+- [electron-rsbuild](https://github.com/electron-rsbuild/electron-rsbuild)
+- [biome](https://biomejs.dev/)
 
-# 将 main、preload、renderer 产物输出为 unpacked 的应用
-> electron-builder --dir
+## Get started
 
-  • electron-builder  version=24.13.3 os=10.0.22631
-  • writing effective config  file=dist\builder-effective-config.yaml
-  • packaging       platform=win32 arch=x64 electron=31.7.3 appOutDir=dist\win-unpacked
-  • default Electron icon is used  reason=application icon is not set
-
+I only tested it on OSX.
 
 ```
-
-### 国内用户加速
-
-在根目录创建 `.npmrc` 文件：
-
-```yml
-electron_mirror=https://npmmirror.com/mirrors/electron/
-electron_builder_binaries_mirror=https://npmmirror.com/mirrors/electron-builder-binaries/
-shamefully-hoist=true
+clone repo
+npm i
+npm run dev
 ```
