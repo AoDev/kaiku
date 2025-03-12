@@ -116,16 +116,13 @@ export async function listAudioFiles(
     const concurrencyLimit = Math.max(2, Math.min(8, cpus().length))
 
     // Use our new utility function with controlled concurrency
-    const results = await asyncMapLimitSettled(
+    const results = await asyncMapLimitSettled<string, Song>(
       audioFiles,
       async (file) => {
         const metadata = await parseFile(file, {skipCovers: true})
         const artistName = metadata.common.artist ?? 'Unknown Artist'
         const albumName = metadata.common.album ?? 'Unknown Album'
         const year = metadata.common.year ?? 0
-        if (metadata.common.track.no === 1) {
-          console.log(metadata.common.album, metadata.common)
-        }
 
         // Get the parent folder path
         const parentFolder = dirname(file)
