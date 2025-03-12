@@ -76,9 +76,9 @@ export class MusicLibrary {
 
   get filteredAlbums() {
     if (this.artistSelected) {
-      return this.indexedArtists[this.artistSelected].albums.map(
-        (albumId) => this.indexedAlbums[albumId]
-      )
+      return this.indexedArtists[this.artistSelected].albums
+        .map((albumId) => this.indexedAlbums[albumId])
+        .sort((a, b) => a.year - b.year)
     }
 
     const filter = this.filter
