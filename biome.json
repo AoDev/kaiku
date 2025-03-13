@@ -43,7 +43,8 @@
         "useKeyWithClickEvents": "off"
       },
       "correctness": {
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
       }
     }
   }
