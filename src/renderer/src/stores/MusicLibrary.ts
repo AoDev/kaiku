@@ -4,7 +4,7 @@ import type {Album, Artist, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
 import {debounce, groupBy} from 'lodash'
 import {keyBy} from 'lodash'
-import {type IReactionDisposer, action, autorun, makeAutoObservable, reaction} from 'mobx'
+import {type IReactionDisposer, action, makeAutoObservable, reaction} from 'mobx'
 import {getSongListFromFolder, sortSongsByDiskAndTrack} from './MusicLibrary.helpers'
 
 const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare

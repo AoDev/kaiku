@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react'
-import type {MusicLibraryVM} from './MusicLibraryVM'
+import type {MusicLibraryVM} from '../MusicLibraryVM'
+import {ContextMenu} from '../shared/ContextMenu'
 import {SongDetails} from './SongDetails'
-import {SongMenu} from './SongMenu'
 
 export const Songs = observer(({vm}: {vm: MusicLibraryVM}) => {
   const {musicLibrary, musicPlayer} = vm.rootStore
@@ -56,7 +56,7 @@ export const Songs = observer(({vm}: {vm: MusicLibraryVM}) => {
         {musicLibrary.filteredSongs.length === 0 && <i className="txt-muted pad-h-1">No songs</i>}
       </div>
 
-      <SongMenu vm={vm} />
+      <ContextMenu dialog={vm.songMenuDialog} contextMenu={vm.songContextMenu} />
       <SongDetails vm={vm} />
     </>
   )

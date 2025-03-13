@@ -1,38 +1,39 @@
 import {Modal} from '@ui'
 import {observer} from 'mobx-react'
-import type {MusicLibraryVM} from './MusicLibraryVM'
+import type {MusicLibraryVM} from '../MusicLibraryVM'
 
 export const SongDetails = observer(({vm}: {vm: MusicLibraryVM}) => {
   const {musicLibrary} = vm.rootStore
-  const {indexedArtists, indexedAlbums} = musicLibrary
+  const {indexedArtists, indexedAlbums, songSelected} = musicLibrary
+  const song = musicLibrary.songs.find((song) => song.filePath === songSelected)
 
   return (
     <Modal modalVM={vm.songDetailsDialog} withCloseButton right className="pad-default" width="2x">
-      {vm.songContextMenu.song && (
+      {song && (
         <div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Title</span>
-            {vm.songContextMenu.song.title}
+            {song.title}
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Album</span>
-            {indexedAlbums[vm.songContextMenu.song.albumId].name}
+            {indexedAlbums[song.albumId].name}
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Artist</span>
-            {indexedArtists[vm.songContextMenu.song.artistId].name}
+            {indexedArtists[song.artistId].name}
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Track number</span>
-            {vm.songContextMenu.song.trackNumber}
+            {song.trackNumber}
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Year</span>
-            {vm.songContextMenu.song.year}
+            {song.year}
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">File path</span>
-            <span className="txt-right">{vm.songContextMenu.song.filePath}</span>
+            <span className="txt-right">{song.filePath}</span>
           </div>
         </div>
       )}
