@@ -9,7 +9,7 @@ export const Albums = observer(({vm}: {vm: MusicLibraryVM}) => {
   const needArtistDetails = filter !== null && musicLibrary.artistSelected === ''
 
   return (
-    <div className="library__col" onClick={vm.onAlbumClick}>
+    <div className="library__col" onClick={vm.onAlbumClick} data-album-col>
       {musicLibrary.filteredAlbums.map((album) => {
         return (
           <div

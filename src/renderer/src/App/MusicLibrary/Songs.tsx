@@ -12,7 +12,12 @@ export const Songs = observer(({vm}: {vm: MusicLibraryVM}) => {
 
   return (
     <>
-      <div className="library__col" onClick={vm.onSongClick} onContextMenu={vm.onSongContextMenu}>
+      <div
+        className="library__col"
+        onClick={vm.onSongClick}
+        onContextMenu={vm.onSongContextMenu}
+        data-song-col
+      >
         {vm.shouldGroupByAlbum
           ? vm.groupedSongsByAlbum.map(([album, songs]) => (
               <div key={album.id} className="margin-bottom-05">

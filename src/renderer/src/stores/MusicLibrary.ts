@@ -4,7 +4,7 @@ import type {Album, Artist, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
 import {debounce, groupBy} from 'lodash'
 import {keyBy} from 'lodash'
-import {action, makeAutoObservable} from 'mobx'
+import {type IReactionDisposer, action, autorun, makeAutoObservable, reaction} from 'mobx'
 import {getSongListFromFolder, sortSongsByDiskAndTrack} from './MusicLibrary.helpers'
 
 const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
@@ -27,12 +27,12 @@ export class MusicLibrary {
   songs: Song[] = []
   folderPath = ''
   filter: RegExp | null = null
-
+  stopUpdateAlbumCovers: IReactionDisposer
   scanProgress: ScanProgress = {completed: 0, total: 0, status: 'idle'}
 
   artistSelected = ''
   albumSelected = ''
-  // filePath of the song that is currently selected
+  /** filePath of the song that is currently selected */
   songSelected = ''
 
   artistPlaying: Artist | null = null
@@ -107,15 +107,7 @@ export class MusicLibrary {
   // Cleanup function for IPC listeners
   private cleanupListeners: (() => void) | null = null
 
-  selectAlbum(albumId: string) {
-    if (albumId === this.albumSelected && !this.filter && !this.artistSelected) {
-      // Avoid deselecting album when there is no filter
-      return
-    }
-    this.albumSelected = this.albumSelected === albumId ? '' : albumId
-  }
-
-  async updateAlbumCovers(albums: Album[]) {
+  private async _updateAlbumCovers(albums: Album[]) {
     for (const album of albums) {
       const song = this.songs.find((song) => song.albumId === album.id)
       if (song) {
@@ -129,31 +121,20 @@ export class MusicLibrary {
     this.assign({albums: this.albums.map((album) => indexedUpdatedAlbums[album.id] ?? album)})
   }
 
-  async selectArtist(artistId: string) {
-    if (artistId === this.artistSelected && !this.filter) {
-      // Avoid deselecting artist when there is no filter
-      this.assign({albumSelected: ''})
-      return
-    }
+  updateAlbumCovers = debounce((albums: Album[]) => this._updateAlbumCovers(albums), 200, {
+    trailing: true,
+  })
 
-    this.assign({
-      artistSelected: this.artistSelected === artistId ? '' : artistId,
-      albumSelected: '',
-    })
+  select(itemsSelected: {artistSelected?: string; albumSelected?: string; songSelected?: string}) {
+    this.assign(itemsSelected)
+  }
 
-    const artist = this.indexedArtists[artistId]
-    if (!artist) {
-      return
-    }
-    const albumsWithoutCover = artist.albums.reduce((acc: Album[], albumId) => {
-      const album = this.indexedAlbums[albumId]
-      if (!album.coverExtension) {
-        acc.push(album)
-      }
-      return acc
-    }, [])
+  selectArtist(artistId: string) {
+    this.assign({artistSelected: artistId, albumSelected: '', songSelected: ''})
+  }
 
-    this.updateAlbumCovers(albumsWithoutCover)
+  selectAlbum(albumId: string) {
+    this.assign({albumSelected: albumId, songSelected: ''})
   }
 
   selectSong(filePath: string) {
@@ -312,6 +293,7 @@ export class MusicLibrary {
     // Clean up listeners
     this.cleanupListeners?.()
     this.cleanupListeners = null
+    this.stopUpdateAlbumCovers()
 
     this.artists = []
     this.albums = []
@@ -330,5 +312,23 @@ export class MusicLibrary {
     makeAutoObservable(this, undefined, {deep: false, autoBind: true})
     this.assign = store.assignMethod<MusicLibrary>(this)
     this.setupScanProgressListener()
+
+    // Update album covers when the artist selected changes
+    this.stopUpdateAlbumCovers = reaction(
+      () => this.artistSelected,
+      (artistSelected) => {
+        if (artistSelected) {
+          const artist = this.indexedArtists[artistSelected]
+          if (artist) {
+            const albumsWithoutCover = artist.albums.reduce((acc: Album[], albumId) => {
+              const album = this.indexedAlbums[albumId]
+              !album.coverExtension && acc.push(album)
+              return acc
+            }, [])
+            this.updateAlbumCovers(albumsWithoutCover)
+          }
+        }
+      }
+    )
   }
 }

@@ -41,7 +41,7 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
     <div className="playlist" onClick={handlePlaySongFromPlaylist}>
       <div className="margin-bottom-1">
         {/* biome-ignore lint/a11y/useAltText: We do not have text description of each cover */}
-        <img className="playlist__cover" src={coverPath} onClick={rootStore.revealArtistPlaying} />
+        <img className="playlist__cover" src={coverPath} onClick={rootStore.revealSongPlaying} />
         <b>{song.title}</b>
         <div>
           <span className="txt-unit">by</span> {song.artist} <span className="txt-unit">on</span>{' '}

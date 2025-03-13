@@ -1,6 +1,7 @@
 import * as store from '@lib/mobx/store.helpers'
 import {getDatasetValue} from '@rootsrc/lib/dom/getDatasetValue'
 import type {Album, Song} from '@rootsrc/types/MusicLibrary.types'
+import {revealByPriority} from '@src/lib/musicLibrary'
 import type {RootStore} from '@src/stores'
 import type {DialogVM, IconName} from '@ui'
 import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'
@@ -49,7 +50,9 @@ export class MusicLibraryVM {
   }
 
   /**
-   * Handle artist clicks - single click selects the artist, double click plays all songs by the artist
+   * Handle artist clicks
+   * - single click selects the artist
+   * - double click plays all songs by the artist
    */
   onArtistClick(event: React.MouseEvent<HTMLDivElement>) {
     const {musicLibrary, musicPlayer} = this.rootStore
@@ -59,15 +62,19 @@ export class MusicLibraryVM {
       return
     }
     if (clickCount === 1) {
-      musicLibrary.selectArtist(artistId)
+      const artistSelected =
+        musicLibrary.filter && musicLibrary.artistSelected === artistId ? '' : artistId
+      musicLibrary.assign({artistSelected, albumSelected: '', songSelected: ''})
     } else if (clickCount === 2) {
-      musicLibrary.artistSelected !== artistId && musicLibrary.selectArtist(artistId)
+      musicLibrary.assign({artistSelected: artistId, albumSelected: '', songSelected: ''})
       musicPlayer.replacePlaylistAndPlay(musicLibrary.getArtistSongs(artistId))
     }
   }
 
   /**
-   * Handle album clicks - single click selects the album, double click plays all songs in the album
+   * Handle album clicks
+   * - single click selects the album
+   * - double click plays all songs in the album
    */
   onAlbumClick(event: React.MouseEvent<HTMLDivElement>) {
     const {musicLibrary, musicPlayer} = this.rootStore
@@ -77,15 +84,18 @@ export class MusicLibraryVM {
       return
     }
     if (clickCount === 1) {
-      musicLibrary.selectAlbum(albumId)
+      const albumSelected = albumId === musicLibrary.albumSelected ? '' : albumId
+      musicLibrary.assign({albumSelected, songSelected: ''})
     } else if (clickCount === 2) {
-      musicLibrary.albumSelected !== albumId && musicLibrary.selectAlbum(albumId)
+      musicLibrary.assign({albumSelected: albumId, songSelected: ''})
       musicPlayer.replacePlaylistAndPlay(musicLibrary.getAlbumSongs(albumId))
     }
   }
 
   /**
-   * Handle song clicks - single click selects the song, double click plays the song
+   * Handle song clicks
+   * - single click selects the song
+   * - double click plays the song
    */
   onSongClick(event: React.MouseEvent<HTMLDivElement>) {
     const {musicLibrary, musicPlayer} = this.rootStore
@@ -95,14 +105,11 @@ export class MusicLibraryVM {
       return
     }
     if (clickCount === 1) {
-      musicLibrary.selectSong(filePath)
+      const songSelected = filePath === musicLibrary.songSelected ? '' : filePath
+      musicLibrary.assign({songSelected})
     } else if (clickCount === 2) {
+      musicLibrary.assign({songSelected: filePath})
       musicPlayer.replacePlaylistAndPlay(musicLibrary.getSong(filePath))
-      const {song} = musicPlayer
-      if (song) {
-        const album = musicLibrary.indexedAlbums[song.albumId]
-        album && !album.coverExtension && musicLibrary.updateAlbumCovers([album])
-      }
     }
   }
 
@@ -144,9 +151,10 @@ export class MusicLibraryVM {
     makeAutoObservable(this, {rootStore: false}, {autoBind: true, deep: false})
     this.songDetailsDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
     this.songMenuDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
+
     this.stopRevealArtist = reaction(
       () => this.rootStore.musicLibrary.filter,
-      () => setTimeout(() => this.rootStore.revealArtist(), 200)
+      (filter) => setTimeout(() => !filter && revealByPriority(this.rootStore), 200)
     )
     document.addEventListener('click', this.onDocumentClick)
   }

@@ -1,5 +1,6 @@
 import * as store from '@lib/mobx/store.helpers'
-import {makeAutoObservable} from 'mobx'
+import {revealLibraryItem} from '@src/lib/musicLibrary'
+import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'
 import {MusicLibrary} from './MusicLibrary'
 import {MusicPlayer} from './MusicPlayer'
 import {SettingsDataStore, SettingsStore} from './Settings'
@@ -16,42 +17,19 @@ export class RootStore {
   coverPath = ''
   storage: {settings: SettingsDataStore}
   unexpectedError: Error | null = null
+  stopRefreshSongPlayingCover: IReactionDisposer
 
   /**
-   * Scrolls to the artist node and selects it if it's not already selected
+   * Scrolls to the artist, album, song node of the song playing
    */
-  revealArtist(toArtistId?: string) {
-    const {musicLibrary, musicPlayer} = this
-    const artistsDomNode = document.querySelector('[data-artist-col="true"]')
-    if (!artistsDomNode) {
-      return
-    }
-    const artistId = toArtistId || musicLibrary.artistSelected || musicPlayer.song?.artistId
-    if (!artistId) {
-      return
-    }
-    const artistNode = artistsDomNode.querySelector(`[data-artist-id="${artistId}"]`)
-    if (artistNode) {
-      setTimeout(() => {
-        artistNode.scrollIntoView({behavior: 'smooth', block: 'center'})
-        if (musicLibrary.artistSelected !== artistId) {
-          musicLibrary.selectArtist(artistId)
-        }
-      }, 10)
-    }
-  }
-
-  /**
-   * Scrolls to the artist node of the song playing and selects it if it's not already selected
-   */
-  revealArtistPlaying() {
+  revealSongPlaying() {
     const {musicPlayer} = this
-    const artistId = musicPlayer.song?.artistId
-    if (!artistId) {
+    const {song} = musicPlayer
+    if (!song) {
       return
     }
-    this.musicLibrary.setFilterDebounced('')
-    this.revealArtist(artistId)
+    this.musicLibrary.setFilter('')
+    revealLibraryItem(song, this)
   }
 
   async init() {
@@ -81,18 +59,28 @@ export class RootStore {
   }
 
   constructor() {
+    this.set = store.setMethod<RootStore>(this)
     this.settings = new SettingsStore()
     this.storage = {
       settings: new SettingsDataStore(this.settings),
     }
-
     this.uiStore = new UIStore(this)
-
-    this.set = store.setMethod<RootStore>(this)
     makeAutoObservable(
       this,
       {musicLibrary: false, settings: false, storage: false, uiStore: false},
       {deep: false, autoBind: true}
+    )
+    this.stopRefreshSongPlayingCover = reaction(
+      () => this.musicPlayer.song,
+      (song) => {
+        if (song) {
+          // Check for album cover so it can be shown for the song playing
+          const {musicLibrary} = this
+          const album = musicLibrary.indexedAlbums[song.albumId]
+          album && !album.coverExtension && musicLibrary.updateAlbumCovers([album])
+        }
+      },
+      {name: 'refresh-song-playing-cover'}
     )
   }
 }
