@@ -1,3 +1,4 @@
+import {getAlbumCover} from '@rootsrc/renderer/src/config'
 import {observer} from 'mobx-react'
 import type {MusicLibraryVM} from '../MusicLibraryVM'
 import {ContextMenu} from '../shared/ContextMenu'
@@ -22,6 +23,13 @@ export const Songs = observer(({vm}: {vm: MusicLibraryVM}) => {
           ? vm.groupedSongsByAlbum.map(([album, songs]) => (
               <div key={album.id} className="margin-bottom-05">
                 <div className="nowrap">
+                  {!!musicLibrary.albumSelected && (
+                    // biome-ignore lint/a11y/useAltText: No description for covers
+                    <img
+                      width="100%"
+                      src={getAlbumCover(musicLibrary.indexedAlbums[musicLibrary.albumSelected])}
+                    />
+                  )}
                   <h3 className="album__header">{album.name}</h3>
                 </div>
                 {songs.map((song) => (

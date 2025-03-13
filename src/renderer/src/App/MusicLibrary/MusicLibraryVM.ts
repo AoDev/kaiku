@@ -83,9 +83,7 @@ export class MusicLibraryVM {
   }
 
   get shouldGroupByAlbum() {
-    return (
-      !!this.rootStore.musicLibrary.artistSelected && !this.rootStore.musicLibrary.albumSelected
-    )
+    return !!this.rootStore.musicLibrary.artistSelected
   }
 
   get groupedSongsByAlbum(): [Album, Song[]][] {
