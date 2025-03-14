@@ -22,7 +22,12 @@ export const Header = observer(({vm}: {vm: HeaderVM}) => {
         </Button>
         <Icon name="magnifier" size={18} />
         <div className="flex-row-center pos-rel">
-          <InputX vm={vm} name="iSearch" placeholder="artist, album, song …" />
+          <InputX
+            vm={vm}
+            name="iSearch"
+            data-id="library-search"
+            placeholder="artist, album, song …"
+          />
           <InputClearButton vm={vm} prop="iSearch" />
         </div>
         {/* {musicLibrary.folderPath && <p>Selected: {musicLibrary.folderPath}</p>} */}
