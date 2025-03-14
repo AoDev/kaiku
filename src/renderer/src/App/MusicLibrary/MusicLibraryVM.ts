@@ -158,6 +158,7 @@ export class MusicLibraryVM {
   onSongContextMenu(event: React.MouseEvent<HTMLDivElement>) {
     // Prevent default behavior to avoid opening the default context menu
     event.preventDefault()
+    this.hideAllContextMenus()
     const {musicLibrary} = this.rootStore
     const filePath = getDatasetValue(event, 'filePath')
 
@@ -166,7 +167,7 @@ export class MusicLibraryVM {
     }
 
     if (musicLibrary.songSelected !== filePath) {
-      musicLibrary.selectSong(filePath)
+      musicLibrary.assign({songSelected: filePath})
     }
     // Find the song by file path
     const song = musicLibrary.songs.find((s) => s.filePath === filePath)
@@ -179,13 +180,14 @@ export class MusicLibraryVM {
   onAlbumContextMenu(event: React.MouseEvent<HTMLDivElement>) {
     // Prevent default behavior to avoid opening the default context menu
     event.preventDefault()
+    this.hideAllContextMenus()
     const {musicLibrary} = this.rootStore
     const albumId = getDatasetValue(event, 'albumId')
     if (!albumId) {
       return
     }
     if (musicLibrary.albumSelected !== albumId) {
-      musicLibrary.selectAlbum(albumId)
+      musicLibrary.assign({albumSelected: albumId, songSelected: ''})
     }
     const album = musicLibrary.indexedAlbums[albumId]
     if (album) {
@@ -197,13 +199,14 @@ export class MusicLibraryVM {
   onArtistContextMenu(event: React.MouseEvent<HTMLDivElement>) {
     // Prevent default behavior to avoid opening the default context menu
     event.preventDefault()
+    this.hideAllContextMenus()
     const {musicLibrary} = this.rootStore
     const artistId = getDatasetValue(event, 'artistId')
     if (!artistId) {
       return
     }
     if (musicLibrary.artistSelected !== artistId) {
-      musicLibrary.selectArtist(artistId)
+      musicLibrary.assign({artistSelected: artistId})
     }
     const artist = musicLibrary.indexedArtists[artistId]
     if (artist) {
@@ -212,7 +215,7 @@ export class MusicLibraryVM {
     }
   }
 
-  onDocumentClick() {
+  hideAllContextMenus() {
     this.songMenuDialog.visible && this.songMenuDialog.hide()
     this.albumMenuDialog.visible && this.albumMenuDialog.hide()
     this.artistMenuDialog.visible && this.artistMenuDialog.hide()
@@ -226,7 +229,7 @@ export class MusicLibraryVM {
       this.albumMenuDialog,
       this.artistMenuDialog,
     ])
-    document.removeEventListener('click', this.onDocumentClick)
+    document.removeEventListener('click', this.hideAllContextMenus)
   }
 
   constructor({rootStore}: {rootStore: RootStore}) {
@@ -244,6 +247,6 @@ export class MusicLibraryVM {
       () => this.rootStore.musicLibrary.filter,
       (filter) => setTimeout(() => !filter && revealByPriority(this.rootStore), 200)
     )
-    document.addEventListener('click', this.onDocumentClick)
+    document.addEventListener('click', this.hideAllContextMenus)
   }
 }
