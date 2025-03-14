@@ -125,22 +125,6 @@ export class MusicLibrary {
     trailing: true,
   })
 
-  select(itemsSelected: {artistSelected?: string; albumSelected?: string; songSelected?: string}) {
-    this.assign(itemsSelected)
-  }
-
-  selectArtist(artistId: string) {
-    this.assign({artistSelected: artistId, albumSelected: '', songSelected: ''})
-  }
-
-  selectAlbum(albumId: string) {
-    this.assign({albumSelected: albumId, songSelected: ''})
-  }
-
-  selectSong(filePath: string) {
-    this.songSelected = filePath
-  }
-
   setFilter(filter: string) {
     if (filter.length < 2) {
       this.filter = null
