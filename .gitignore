@@ -16,3 +16,5 @@ out
 
 # TypeScript build info
 *.tsbuildinfo
+
+tmp

@@ -1,5 +1,6 @@
 import type {RootStore} from '@renderer/stores/RootStore'
 import type {Song} from '@rootsrc/types/MusicLibrary.types'
+import kaikuCover from '@src/assets/images/kaiku-album.jpg'
 import {getAlbumCover} from '@src/config'
 import {observer} from 'mobx-react'
 
@@ -34,7 +35,7 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
   }
 
   const album = musicLibrary.albums.find((album) => album.id === musicPlayer.song?.albumId)
-  const coverPath = getAlbumCover(album)
+  const coverPath = album ? getAlbumCover(album) : kaikuCover
   const song: Song = musicPlayer.song ?? dummySong
 
   return (
