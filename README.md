@@ -34,6 +34,7 @@ I'm rewriting this [music player](https://github.com/AoDev/kaiku-music-player) I
 - [electronjs](https://www.electronjs.org/)
 - [electron-rsbuild](https://github.com/electron-rsbuild/electron-rsbuild)
 - [biome](https://biomejs.dev/)
+- [music-metadata](https://github.com/Borewit/music-metadata)
 
 ## Get started
 
