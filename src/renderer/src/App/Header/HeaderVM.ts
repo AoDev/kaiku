@@ -9,22 +9,8 @@ export class HeaderVM {
   iSearch = ''
   stopFilterReaction: IReactionDisposer
 
-  // Focus the search input when CMD+F is pressed
-  triggerSearchHotkey(event: KeyboardEvent) {
-    // Check for CMD+F (Mac) or CTRL+F (Windows/Linux)
-    if ((event.metaKey || event.ctrlKey) && event.key === 'f') {
-      event.preventDefault()
-      const searchInput = document.querySelector('[data-id="library-search"]')
-      if (searchInput instanceof HTMLInputElement) {
-        searchInput.focus()
-        searchInput.select()
-      }
-    }
-  }
-
   destroyVM() {
     this.stopFilterReaction()
-    window.removeEventListener('keydown', this.triggerSearchHotkey)
   }
 
   constructor({rootStore}: {rootStore: RootStore}) {
@@ -35,7 +21,5 @@ export class HeaderVM {
     this.stopFilterReaction = autorun(() => {
       this.rootStore.musicLibrary.setFilterDebounced(this.iSearch)
     })
-
-    window.addEventListener('keydown', this.triggerSearchHotkey)
   }
 }
