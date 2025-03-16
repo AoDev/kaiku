@@ -34,9 +34,11 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
     }
   }
 
-  const album = musicLibrary.albums.find((album) => album.id === musicPlayer.song?.albumId)
-  const coverPath = album ? getAlbumCover(album) : kaikuCover
   const song: Song = musicPlayer.song ?? dummySong
+  const album = song.albumId
+    ? musicLibrary.albums.find((album) => album.id === song.albumId)
+    : undefined
+  const coverPath = album ? getAlbumCover(album) : kaikuCover
 
   return (
     <div className="playlist" onClick={handlePlaySongFromPlaylist}>
