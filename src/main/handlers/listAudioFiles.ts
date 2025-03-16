@@ -120,9 +120,9 @@ export async function listAudioFiles(
       audioFiles,
       async (file) => {
         const metadata = await parseFile(file, {skipCovers: true})
-        const artistName = metadata.common.artist ?? 'Unknown Artist'
-        const albumName = metadata.common.album ?? 'Unknown Album'
-        const year = metadata.common.year ?? 0
+        const artistName = metadata.common.artist || 'Unknown Artist'
+        const albumName = metadata.common.album || 'Unknown Album'
+        const year = metadata.common.year || 0
 
         // Get the parent folder path
         const parentFolder = dirname(file)
@@ -147,7 +147,7 @@ export async function listAudioFiles(
         }
 
         // Store album if new
-        if (albumName && !albumsMap.has(albumId)) {
+        if (!albumsMap.has(albumId)) {
           // Use the current artist's ID directly
           albumsMap.set(albumId, {
             artistId,

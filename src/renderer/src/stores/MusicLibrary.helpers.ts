@@ -1,4 +1,4 @@
-import type {AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
+import type {Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
 
 /**
  * Comparison function for sorting songs by disk number and track number
@@ -40,3 +40,9 @@ export async function getSongListFromFolder(): Promise<
     return {folderPath: '', songs: [], artists: [], albums: []}
   }
 }
+
+/**
+ * Compare artist names in a case-insensitive manner
+ */
+const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
+export const sortArtistsByName = (a: Artist, b: Artist) => compareArtistName(a.name, b.name)

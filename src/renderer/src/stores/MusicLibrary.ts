@@ -5,9 +5,11 @@ import type {ScanProgress} from '@rootsrc/types/ScanProgress'
 import {debounce, groupBy} from 'lodash'
 import {keyBy} from 'lodash'
 import {type IReactionDisposer, action, makeAutoObservable, reaction} from 'mobx'
-import {getSongListFromFolder, sortSongsByDiskAndTrack} from './MusicLibrary.helpers'
-
-const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
+import {
+  getSongListFromFolder,
+  sortArtistsByName,
+  sortSongsByDiskAndTrack,
+} from './MusicLibrary.helpers'
 
 // This list is there to be able to ignore variants of characters in searches.
 const CHAR_RANGES = {
@@ -207,61 +209,62 @@ export class MusicLibrary {
 
   async loadFromFolder() {
     this.setupScanProgressListener()
-
-    // Reset scan progress
     this.scanProgress = {completed: 0, total: 0, status: 'idle'}
+
+    const stats = {
+      before: {
+        artistCount: this.artists.length,
+        albumCount: this.albums.length,
+        songCount: this.songs.length,
+      },
+      after: {
+        artistCount: 0,
+        albumCount: 0,
+        songCount: 0,
+      },
+    }
 
     const {folderPath, songs, artists, albums} = await getSongListFromFolder()
     this.folderPath = folderPath
 
-    // Create indexes using plain objects
-    const songIndex: Record<string, Song> = {}
-    const artistIndex: Record<string, Artist> = {}
-    const albumIndex: Record<string, Album> = {}
+    const newArtistsMap = new Map(artists.map((artist) => [artist.id, artist]))
+    const newAlbumsMap = new Map(albums.map((album) => [album.id, album]))
 
-    // Index existing items
+    // Keep songs that are outside the folder that was scanned
     for (const song of this.songs) {
-      songIndex[song.filePath] = song
+      if (!song.filePath.startsWith(folderPath)) {
+        songs.push(song)
+        if (!newArtistsMap.has(song.artistId)) {
+          newArtistsMap.set(song.artistId, this.indexedArtists[song.artistId])
+        }
+        if (!newAlbumsMap.has(song.albumId)) {
+          newAlbumsMap.set(song.albumId, this.indexedAlbums[song.albumId])
+        }
+      }
     }
 
-    for (const artist of this.artists) {
-      artistIndex[artist.id] = artist
-    }
+    // Convert to sorted arrays and update state
+    const sortedArtists = Array.from(newArtistsMap.values()).sort(sortArtistsByName)
+    const sortedAlbums = Array.from(newAlbumsMap.values()).sort((a, b) => a.year - b.year)
+    const artistSelected = sortedArtists[0]?.id ?? ''
 
-    for (const album of this.albums) {
-      albumIndex[album.id] = album
-    }
-
-    // Update with new items
-    for (const song of songs) {
-      songIndex[song.filePath] = song
-    }
-
-    for (const artist of artists) {
-      artistIndex[artist.id] = artist
-    }
-
-    for (const album of albums) {
-      albumIndex[album.id] = album
-    }
-
-    const artistsUpdated = Object.values(artistIndex).sort((a, b) =>
-      compareArtistName(a.name, b.name)
-    )
-    const artistSelected = artistsUpdated[0]?.id ?? ''
+    stats.after.artistCount = sortedArtists.length
+    stats.after.albumCount = sortedAlbums.length
+    stats.after.songCount = songs.length
 
     this.assign({
-      songs: Object.values(songIndex),
-      artists: artistsUpdated,
-      albums: Object.values(albumIndex).sort((a, b) => a.year - b.year),
+      songs,
+      artists: sortedArtists,
+      albums: sortedAlbums,
       artistSelected,
       albumSelected: '',
       songSelected: '',
     })
 
+    // Update album covers for the selected artist
     if (artistSelected) {
       setTimeout(() => {
-        const albumsWithoutCover = this.albums.filter(
+        const albumsWithoutCover = sortedAlbums.filter(
           (album) => album.artistId === artistSelected && !album.coverExtension
         )
         this.updateAlbumCovers(albumsWithoutCover)
@@ -306,13 +309,18 @@ export class MusicLibrary {
           if (artist) {
             const albumsWithoutCover = artist.albums.reduce((acc: Album[], albumId) => {
               const album = this.indexedAlbums[albumId]
-              !album.coverExtension && acc.push(album)
+              if (album) {
+                !album.coverExtension && acc.push(album)
+              } else {
+                console.error('album not found for cover update', {albumId, artistSelected, artist})
+              }
               return acc
             }, [])
             this.updateAlbumCovers(albumsWithoutCover)
           }
         }
-      }
+      },
+      {name: 'updateAlbumCovers'}
     )
   }
 }
