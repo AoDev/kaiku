@@ -11,12 +11,14 @@ export const Header = observer(({vm}: {vm: HeaderVM}) => {
   return (
     <div className="header">
       <div className="flex-row-center gap-1">
-        <Button className="nowrap" variant="blackwhite" onClick={musicLibrary.loadFromFolder}>
+        <Button
+          isLoading={musicLibrary.scanProgress.status === 'scanning'}
+          className="nowrap"
+          variant="blackwhite"
+          onClick={musicLibrary.loadFromFolder}
+        >
           Add Songs
         </Button>
-        {/* <Button variant="icon" onClick={uiStore.settingsDialog.show}>
-          <Icon name="settings" size={18} color="var(--color-txt-muted)" />
-        </Button> */}
         <Button variant="icon" onClick={settings.switchTheme}>
           <Icon name={themeIcons[settings.theme]} size={18} />
         </Button>
@@ -30,7 +32,6 @@ export const Header = observer(({vm}: {vm: HeaderVM}) => {
           />
           <InputClearButton vm={vm} prop="iSearch" />
         </div>
-        {/* {musicLibrary.folderPath && <p>Selected: {musicLibrary.folderPath}</p>} */}
       </div>
       <div className="justify-self-end">
         <Player rootStore={vm.rootStore} />
