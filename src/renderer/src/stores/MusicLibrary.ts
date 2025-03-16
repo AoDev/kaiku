@@ -225,6 +225,12 @@ export class MusicLibrary {
     }
 
     const {folderPath, songs, artists, albums} = await getSongListFromFolder()
+
+    if (!folderPath) {
+      // User cancelled the dialog probably
+      return
+    }
+
     this.folderPath = folderPath
 
     const newArtistsMap = new Map(artists.map((artist) => [artist.id, artist]))
