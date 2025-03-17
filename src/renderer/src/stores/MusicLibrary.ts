@@ -254,6 +254,13 @@ export class MusicLibrary {
     const sortedAlbums = Array.from(newAlbumsMap.values()).sort((a, b) => a.year - b.year)
     const artistSelected = sortedArtists[0]?.id ?? ''
 
+    // Remove albums that don't exist anymore in the Unknown Artist
+    // eg: tags were updated and now what was unknown album / artist is known
+    const unknownArtist = sortedArtists.find((artist) => artist.name === 'Unknown Artist')
+    if (unknownArtist) {
+      unknownArtist.albums = unknownArtist.albums.filter((albumId) => newAlbumsMap.has(albumId))
+    }
+
     stats.after.artistCount = sortedArtists.length
     stats.after.albumCount = sortedAlbums.length
     stats.after.songCount = songs.length
