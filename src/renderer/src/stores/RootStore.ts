@@ -8,6 +8,7 @@ import {UIStore} from './UIStore'
 
 export class RootStore {
   set: store.SetMethod<RootStore>
+  assign: store.AssignMethod<RootStore>
 
   appIsLoading = true
   musicLibrary = new MusicLibrary()
@@ -17,6 +18,7 @@ export class RootStore {
   coverPath = ''
   storage: {settings: SettingsDataStore}
   unexpectedError: Error | null = null
+  errorInfo: React.ErrorInfo | null = null
   stopRefreshSongPlayingCover: IReactionDisposer
 
   /**
@@ -46,20 +48,24 @@ export class RootStore {
     // Listen for uncaught errors
     window.addEventListener('error', ({error}) => {
       this.set('unexpectedError', error)
-      this.uiStore.unexpectedErrorDialog.show()
     })
 
     window.addEventListener('unhandledrejection', ({reason}) => {
       this.set('unexpectedError', reason)
-      this.uiStore.unexpectedErrorDialog.show()
     })
     this.set('appIsLoading', false)
 
     return true
   }
 
+  setErrorFromReactBoundary(unexpectedError: Error, errorInfo: React.ErrorInfo) {
+    this.assign({unexpectedError, errorInfo})
+  }
+
   constructor() {
     this.set = store.setMethod<RootStore>(this)
+    this.assign = store.assignMethod<RootStore>(this)
+
     this.settings = new SettingsStore()
     this.storage = {
       settings: new SettingsDataStore(this.settings),

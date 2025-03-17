@@ -1,0 +1,27 @@
+.app-error {
+  background-color: var(--color-body-bg);
+  width: 100dvw;
+  height: 100dvh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+
+  @media @screen-min-2x {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  }
+}
+
+.app-error-img {
+  .border-rounded;
+  overflow: hidden;
+  max-width: 100%;
+
+  @media @screen-min-2x {
+    max-width: 400px;
+  }
+}

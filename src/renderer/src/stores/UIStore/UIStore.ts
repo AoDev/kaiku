@@ -9,7 +9,6 @@ export class UIStore {
   rootStore: RootStore
   media = new MediaQuery()
   dialogs = new DialogStore()
-  unexpectedErrorDialog: DialogVM
   settingsDialog: DialogVM
 
   get theme() {
@@ -31,10 +30,6 @@ export class UIStore {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore
-    this.unexpectedErrorDialog = this.dialogs.create({
-      id: 'appUnexpectedError',
-      transition: zoomTransition,
-    })
     this.settingsDialog = this.dialogs.create({
       id: 'appSettings',
       transition: zoomTransition,
