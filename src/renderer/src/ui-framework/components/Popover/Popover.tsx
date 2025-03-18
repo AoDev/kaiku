@@ -78,6 +78,6 @@ export function Popover({
   )
 }
 
-export default inject(({uiStore}: {uiStore: UIStore}) => ({uiStore}))(
+export const PopoverX = inject(({uiStore}: {uiStore: UIStore}) => ({uiStore}))(
   observer(Popover)
 ) as unknown as FC<Omit<IPopoverProps, 'uiStore'>>
