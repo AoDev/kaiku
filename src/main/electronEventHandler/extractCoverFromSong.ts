@@ -40,6 +40,7 @@ export async function extractCoverFromSong(song: {
     const ext = mimeTypes[pic.format]
     if (!ext) {
       console.error(`Unsupported image format: ${pic.format} ${song.filePath}`)
+      return null
     }
     const fileExtension = ext || pic.format
     const filePath = join(COVER_FOLDER, `${song.albumId}.${fileExtension}`)
