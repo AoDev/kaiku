@@ -1,8 +1,8 @@
 import {electronApp, optimizer} from '@electron-toolkit/utils'
 import {BrowserWindow, app} from 'electron'
-import {createCoverFolder} from './handlers/extractCoverFromSong'
-import {setupFileSystemHandlers} from './handlers/fileSystemHandlers'
-import {setupProtocolHandler} from './handlers/protocolHandler'
+import {setupHandlers} from './electronEventHandler'
+import {createCoverFolder} from './electronEventHandler/extractCoverFromSong'
+import {setupProtocolHandler} from './electronEventHandler/protocolHandler'
 import {createWindow} from './window'
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -18,7 +18,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  setupFileSystemHandlers()
+  setupHandlers()
   setupProtocolHandler()
   createWindow()
   createCoverFolder()

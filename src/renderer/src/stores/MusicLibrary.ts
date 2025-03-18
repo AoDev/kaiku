@@ -1,6 +1,6 @@
 import * as store from '@lib/mobx/store.helpers'
 import {isAlbumCoverDetails} from '@rootsrc/types/Cover'
-import type {Album, Artist, Song} from '@rootsrc/types/MusicLibrary.types'
+import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
 import {debounce, groupBy} from 'lodash'
 import {keyBy} from 'lodash'
@@ -207,6 +207,48 @@ export class MusicLibrary {
     }
   }
 
+  /**
+   * Save the current music library to a JSON file
+   */
+  async saveLibrary(): Promise<boolean> {
+    try {
+      const library = {
+        artists: this.artists,
+        albums: this.albums,
+        songs: this.songs,
+      }
+      return await window.electron.ipcRenderer.invoke('saveMusicLibrary', library)
+    } catch (error) {
+      console.error('Failed to save music library:', error)
+      return false
+    }
+  }
+
+  /**
+   * Load the music library from a JSON file
+   */
+  async loadLibrary(): Promise<boolean> {
+    // TODO: need to look into typesafety of electron messages
+    const library: AudioLibrary | null =
+      await window.electron.ipcRenderer.invoke('loadMusicLibrary')
+
+    if (!library) {
+      console.log('No saved music library found')
+      return false
+    }
+
+    this.assign({
+      artists: library.artists,
+      albums: library.albums,
+      songs: library.songs,
+      artistSelected: library.artists.length > 0 ? library.artists[0].id : '',
+      albumSelected: '',
+      songSelected: '',
+    })
+
+    return true
+  }
+
   async loadFromFolder() {
     this.setupScanProgressListener()
     this.scanProgress = {completed: 0, total: 0, status: 'idle'}
@@ -274,15 +316,8 @@ export class MusicLibrary {
       songSelected: '',
     })
 
-    // Update album covers for the selected artist
-    if (artistSelected) {
-      setTimeout(() => {
-        const albumsWithoutCover = sortedAlbums.filter(
-          (album) => album.artistId === artistSelected && !album.coverExtension
-        )
-        this.updateAlbumCovers(albumsWithoutCover)
-      }, 250)
-    }
+    // Save the library after loading from folder
+    this.saveLibrary()
   }
 
   resetProgress() {

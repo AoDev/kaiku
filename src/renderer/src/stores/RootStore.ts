@@ -1,10 +1,13 @@
 import * as store from '@lib/mobx/store.helpers'
+import {sleep} from '@rootsrc/lib/async'
 import {revealLibraryItem} from '@src/lib/musicLibrary'
 import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'
 import {MusicLibrary} from './MusicLibrary'
 import {MusicPlayer} from './MusicPlayer'
 import {SettingsDataStore, SettingsStore} from './Settings'
 import {UIStore} from './UIStore'
+
+type AppStatus = 'init' | 'loading-library' | 'ready'
 
 export class RootStore {
   set: store.SetMethod<RootStore>
@@ -20,6 +23,7 @@ export class RootStore {
   unexpectedError: Error | null = null
   errorInfo: React.ErrorInfo | null = null
   stopRefreshSongPlayingCover: IReactionDisposer
+  appStatus: AppStatus = 'init'
 
   /**
    * Scrolls to the artist, album, song node of the song playing
@@ -35,6 +39,15 @@ export class RootStore {
   }
 
   async init() {
+    // Listen for uncaught errors
+    window.addEventListener('error', ({error}) => {
+      this.set('unexpectedError', error)
+    })
+
+    window.addEventListener('unhandledrejection', ({reason}) => {
+      this.set('unexpectedError', reason)
+    })
+
     try {
       const coverPath = await window.electron.ipcRenderer.invoke('getCoverFolderPath')
       this.set('coverPath', coverPath)
@@ -44,17 +57,12 @@ export class RootStore {
 
     await this.storage.settings.init()
     this.uiStore.init()
-
-    // Listen for uncaught errors
-    window.addEventListener('error', ({error}) => {
-      this.set('unexpectedError', error)
-    })
-
-    window.addEventListener('unhandledrejection', ({reason}) => {
-      this.set('unexpectedError', reason)
-    })
     this.set('appIsLoading', false)
 
+    this.set('appStatus', 'loading-library')
+    await this.musicLibrary.loadLibrary()
+    await sleep(1000) // Fake delay to show loading state
+    this.set('appStatus', 'ready')
     return true
   }
 

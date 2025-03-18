@@ -1,17 +1,12 @@
-import {BrowserWindow, type IpcMainInvokeEvent, dialog, ipcMain} from 'electron'
+import {BrowserWindow, type IpcMainInvokeEvent, ipcMain} from 'electron'
 import type {AudioLibrary} from '../../types/MusicLibrary.types'
 import type {ScanProgress} from '../../types/ScanProgress'
 import {COVER_FOLDER} from '../config'
 import {extractCoverFromSong} from './extractCoverFromSong'
 import {listAudioFiles} from './listAudioFiles'
-
-/**
- * Use the native OS dialog to select a directory
- */
-async function selectDirectory() {
-  const result = await dialog.showOpenDialog({properties: ['openDirectory']})
-  return result.filePaths[0]
-}
+import {saveMusicLibrary} from './musicLibrary'
+import {loadMusicLibrary} from './musicLibrary'
+import {selectDirectory} from './selectDirectory'
 
 /**
  * List all audio files in the given directory
@@ -24,19 +19,19 @@ export async function handleListAudioFiles(
   const window = event.sender ? BrowserWindow.fromWebContents(event.sender) || undefined : undefined
 
   const reportProgress = window
-    ? (arg: ScanProgress) => {
-        window.webContents.send('scan-progress-update', arg)
-      }
+    ? (arg: ScanProgress) => window.webContents.send('scan-progress-update', arg)
     : undefined
 
   return listAudioFiles(path, reportProgress)
 }
 
-export function setupFileSystemHandlers(): void {
+export function setupHandlers(): void {
   ipcMain.handle('selectDirectory', selectDirectory)
   ipcMain.handle('listAudioFiles', handleListAudioFiles)
+  ipcMain.handle('getCoverFolderPath', () => COVER_FOLDER)
+  ipcMain.handle('saveMusicLibrary', (_, library: AudioLibrary) => saveMusicLibrary(library))
+  ipcMain.handle('loadMusicLibrary', loadMusicLibrary)
   ipcMain.handle('extractCoverFromSong', (_, song: {albumId: string; filePath: string}) =>
     extractCoverFromSong(song)
   )
-  ipcMain.handle('getCoverFolderPath', () => COVER_FOLDER)
 }
