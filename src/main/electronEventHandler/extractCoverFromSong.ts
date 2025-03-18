@@ -10,6 +10,7 @@ const mimeTypes = {
   'image/gif': 'gif',
   'image/webp': 'webp',
   'image/jpg': 'jpg',
+  'image/bmp': 'bmp',
 }
 
 export async function createCoverFolder() {
