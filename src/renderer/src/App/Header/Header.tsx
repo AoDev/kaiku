@@ -2,23 +2,16 @@ import {InputX} from '@renderer/ui-framework'
 import {themeIcons} from '@src/config/appConfig'
 import {Button, Icon, InputClearButton} from '@ui'
 import {observer} from 'mobx-react'
+import {AppMenu} from './AppMenu'
 import type {HeaderVM} from './HeaderVM'
 import {Player} from './Player'
-
 export const Header = observer(({vm}: {vm: HeaderVM}) => {
-  const {musicLibrary, settings} = vm.rootStore
+  const {settings} = vm.rootStore
 
   return (
     <div className="header">
       <div className="flex-row-center gap-1">
-        <Button
-          isLoading={musicLibrary.scanProgress.status === 'scanning'}
-          className="nowrap"
-          variant="blackwhite"
-          onClick={musicLibrary.loadFromFolder}
-        >
-          Add Songs
-        </Button>
+        <AppMenu vm={vm} />
         <Button variant="icon" onClick={settings.switchTheme}>
           <Icon name={themeIcons[settings.theme]} size={18} />
         </Button>

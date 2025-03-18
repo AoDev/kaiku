@@ -10,7 +10,7 @@ const rootStore = new RootStore()
 rootStore.init()
 
 createRoot(document.getElementById('root') as HTMLElement).render(
-  <Provider rootStore={rootStore}>
+  <Provider rootStore={rootStore} uiStore={rootStore.uiStore}>
     <App />
   </Provider>
 )

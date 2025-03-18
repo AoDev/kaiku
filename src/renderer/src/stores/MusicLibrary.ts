@@ -37,10 +37,6 @@ export class MusicLibrary {
   /** filePath of the song that is currently selected */
   songSelected = ''
 
-  artistPlaying: Artist | null = null
-  albumPlaying: Album | null = null
-  songPlaying: Song | null = null
-
   get indexedAlbums() {
     return keyBy(this.albums, 'id')
   }
@@ -320,8 +316,23 @@ export class MusicLibrary {
     this.saveLibrary()
   }
 
+  /**
+   * Reset the scan progress
+   */
   resetProgress() {
     this.scanProgress = {completed: 0, total: 0, status: 'idle'}
+  }
+
+  clearLibrary() {
+    this.artists = []
+    this.albums = []
+    this.songs = []
+    this.folderPath = ''
+    this.artistSelected = ''
+    this.albumSelected = ''
+    this.songSelected = ''
+    this.resetProgress()
+    this.saveLibrary()
   }
 
   destroy() {
@@ -337,9 +348,6 @@ export class MusicLibrary {
     this.artistSelected = ''
     this.albumSelected = ''
     this.songSelected = ''
-    this.artistPlaying = null
-    this.albumPlaying = null
-    this.songPlaying = null
     this.resetProgress()
   }
 
