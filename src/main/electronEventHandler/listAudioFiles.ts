@@ -128,7 +128,7 @@ export async function listAudioFiles(
         const parentFolder = dirname(file)
 
         // Check if the parent folder is a CD folder (CD1, CD2, Disc 1, etc.)
-        const cdPattern = /[\/\\](CD|Disc|Disk)\s*\d+$/i
+        const cdPattern = /[\/\\]((CD|Disc|Disk)\s*\d+|Bonus(?:\s*\d+)?)$/i
         let albumFolder = parentFolder
 
         if (cdPattern.test(parentFolder)) {
