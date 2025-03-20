@@ -28,10 +28,10 @@ export function revealLibraryItem(
   musicLibrary.assign({artistSelected: artistId, albumSelected: albumId, songSelected: filePath})
 
   if (artistId) {
-    setTimeout(() => revealInCol('[data-artist-col="true"]', `[data-artist-id="${artistId}"]`), 600)
+    setTimeout(() => revealInCol('[data-artist-col="true"]', `[data-artist-id="${artistId}"]`), 400)
   }
   if (albumId) {
-    setTimeout(() => revealInCol('[data-album-col="true"]', `[data-album-id="${albumId}"]`), 300)
+    setTimeout(() => revealInCol('[data-album-col="true"]', `[data-album-id="${albumId}"]`), 250)
   }
   if (filePath) {
     setTimeout(() => revealInCol('[data-song-col="true"]', `[data-file-path="${filePath}"]`), 10)
