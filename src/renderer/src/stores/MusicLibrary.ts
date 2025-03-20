@@ -278,8 +278,15 @@ export class MusicLibrary {
     for (const song of this.songs) {
       if (!song.filePath.startsWith(folderPath)) {
         songs.push(song)
-        if (!newArtistsMap.has(song.artistId)) {
+        const updatedArtist = newArtistsMap.get(song.artistId)
+        if (!updatedArtist) {
           newArtistsMap.set(song.artistId, this.indexedArtists[song.artistId])
+        } else {
+          // Preserve existing artist albums
+          const currentArtist = this.indexedArtists[song.artistId]
+          if (currentArtist && !updatedArtist.albums.includes(song.albumId)) {
+            updatedArtist.albums.push(song.albumId)
+          }
         }
         if (!newAlbumsMap.has(song.albumId)) {
           newAlbumsMap.set(song.albumId, this.indexedAlbums[song.albumId])
