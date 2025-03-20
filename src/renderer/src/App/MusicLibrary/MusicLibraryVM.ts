@@ -2,14 +2,17 @@ import * as store from '@lib/mobx/store.helpers'
 import {getDatasetValue} from '@rootsrc/lib/dom/getDatasetValue'
 import type {Album, Artist, Song} from '@rootsrc/types/MusicLibrary.types'
 import {revealByPriority} from '@src/lib/musicLibrary'
-import type {RootStore} from '@src/stores'
+import type {MusicLibrary, RootStore} from '@src/stores'
 import type {DialogVM} from '@ui'
 import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'
 import {zoomTransition} from '../../config'
 import type {ContextMenuState} from './shared/ContextMenu'
 
+type ItemClickEvent = React.MouseEvent<HTMLDivElement>
+
 export class MusicLibraryVM {
   rootStore: RootStore
+  musicLibrary: MusicLibrary
   set: store.SetMethod<MusicLibraryVM>
   assign: store.AssignMethod<MusicLibraryVM>
   stopRevealArtist: IReactionDisposer
@@ -17,6 +20,37 @@ export class MusicLibraryVM {
   songMenuDialog: DialogVM
   albumMenuDialog: DialogVM
   artistMenuDialog: DialogVM
+  clickTimers: {[key: string]: NodeJS.Timeout} = {}
+
+  // Define item click configurations
+  private clickHandlers = {
+    artist: {
+      getIdFromEvent: (event: ItemClickEvent) => getDatasetValue(event, 'artistId'),
+      isSelected: (id: string) => this.musicLibrary.artistSelected === id,
+      onSelect: (id: string) =>
+        this.musicLibrary.assign({artistSelected: id, albumSelected: '', songSelected: ''}),
+      onDeselect: () =>
+        this.musicLibrary.assign({artistSelected: '', albumSelected: '', songSelected: ''}),
+      onPlay: (id: string) =>
+        this.rootStore.musicPlayer.replacePlaylistAndPlay(this.musicLibrary.getArtistSongs(id)),
+    },
+    album: {
+      getIdFromEvent: (event: ItemClickEvent) => getDatasetValue(event, 'albumId'),
+      isSelected: (id: string) => this.musicLibrary.albumSelected === id,
+      onSelect: (id: string) => this.musicLibrary.assign({albumSelected: id, songSelected: ''}),
+      onDeselect: () => this.musicLibrary.assign({albumSelected: '', songSelected: ''}),
+      onPlay: (id: string) =>
+        this.rootStore.musicPlayer.replacePlaylistAndPlay(this.musicLibrary.getAlbumSongs(id)),
+    },
+    song: {
+      getIdFromEvent: (event: ItemClickEvent) => getDatasetValue(event, 'filePath'),
+      isSelected: (id: string) => this.musicLibrary.songSelected === id,
+      onSelect: (id: string) => this.musicLibrary.assign({songSelected: id}),
+      onDeselect: () => this.musicLibrary.assign({songSelected: ''}),
+      onPlay: (id: string) =>
+        this.rootStore.musicPlayer.replacePlaylistAndPlay(this.musicLibrary.getSong(id)),
+    },
+  }
 
   songContextMenu: ContextMenuState<Song> = {
     x: 0,
@@ -92,70 +126,64 @@ export class MusicLibraryVM {
   }
 
   /**
-   * Handle artist clicks
-   * - single click selects the artist
-   * - double click plays all songs by the artist
+   * Generic click handler to manage single/double click behavior consistently
+   * - single click selects the artist, album, or song
+   * - double click plays songs by the artist, album, or song
    */
-  onArtistClick(event: React.MouseEvent<HTMLDivElement>) {
-    const {musicLibrary, musicPlayer} = this.rootStore
-    const artistId = getDatasetValue(event, 'artistId')
-    const clickCount = event.detail
-    if (!artistId) {
+  private onItemClick(event: React.MouseEvent<HTMLDivElement>, type: 'artist' | 'album' | 'song') {
+    const handler = this.clickHandlers[type]
+    const id = handler.getIdFromEvent(event)
+    if (!id) {
       return
     }
-    if (clickCount === 1) {
-      const artistSelected =
-        musicLibrary.filter && musicLibrary.artistSelected === artistId ? '' : artistId
-      musicLibrary.assign({artistSelected, albumSelected: '', songSelected: ''})
-    } else if (clickCount === 2) {
-      musicLibrary.assign({artistSelected: artistId, albumSelected: '', songSelected: ''})
-      musicPlayer.replacePlaylistAndPlay(musicLibrary.getArtistSongs(artistId))
+
+    const isSelected = handler.isSelected(id)
+    const timerKey = `${type}-${id}`
+    const clickCount = event.detail
+
+    // For double clicks, always select and play
+    if (clickCount === 2) {
+      if (this.clickTimers[timerKey]) {
+        clearTimeout(this.clickTimers[timerKey])
+        delete this.clickTimers[timerKey]
+      }
+      handler.onSelect(id)
+      handler.onPlay(id)
+      return
+    }
+
+    // For single clicks on already selected item, use delayed execution
+    if (isSelected) {
+      // If there's already a timer, don't set another one
+      if (this.clickTimers[timerKey]) {
+        return
+      }
+
+      // Set a timer to handle the single click if no double click occurs
+      this.clickTimers[timerKey] = setTimeout(() => {
+        // Deselect after delay if it was a genuine single click
+        handler.onDeselect()
+        delete this.clickTimers[timerKey]
+      }, 300) // Wait for potential double click
+    } else {
+      // Item is not selected yet, so select it immediately
+      handler.onSelect(id)
     }
   }
 
-  /**
-   * Handle album clicks
-   * - single click selects the album
-   * - double click plays all songs in the album
-   */
-  onAlbumClick(event: React.MouseEvent<HTMLDivElement>) {
-    const {musicLibrary, musicPlayer} = this.rootStore
-    const albumId = getDatasetValue(event, 'albumId')
-    const clickCount = event.detail
-    if (!albumId) {
-      return
-    }
-    if (clickCount === 1) {
-      const albumSelected = albumId === musicLibrary.albumSelected ? '' : albumId
-      musicLibrary.assign({albumSelected, songSelected: ''})
-    } else if (clickCount === 2) {
-      musicLibrary.assign({albumSelected: albumId, songSelected: ''})
-      musicPlayer.replacePlaylistAndPlay(musicLibrary.getAlbumSongs(albumId))
-    }
+  onArtistClick(event: ItemClickEvent) {
+    this.onItemClick(event, 'artist')
   }
 
-  /**
-   * Handle song clicks
-   * - single click selects the song
-   * - double click plays the song
-   */
-  onSongClick(event: React.MouseEvent<HTMLDivElement>) {
-    const {musicLibrary, musicPlayer} = this.rootStore
-    const filePath = getDatasetValue(event, 'filePath')
-    const clickCount = event.detail
-    if (!filePath) {
-      return
-    }
-    if (clickCount === 1) {
-      const songSelected = filePath === musicLibrary.songSelected ? '' : filePath
-      musicLibrary.assign({songSelected})
-    } else if (clickCount === 2) {
-      musicLibrary.assign({songSelected: filePath})
-      musicPlayer.replacePlaylistAndPlay(musicLibrary.getSong(filePath))
-    }
+  onAlbumClick(event: ItemClickEvent) {
+    this.onItemClick(event, 'album')
   }
 
-  onSongContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+  onSongClick(event: ItemClickEvent) {
+    this.onItemClick(event, 'song')
+  }
+
+  onSongContextMenu(event: ItemClickEvent) {
     // Prevent default behavior to avoid opening the default context menu
     event.preventDefault()
     this.hideAllContextMenus()
@@ -177,7 +205,7 @@ export class MusicLibraryVM {
     }
   }
 
-  onAlbumContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+  onAlbumContextMenu(event: ItemClickEvent) {
     // Prevent default behavior to avoid opening the default context menu
     event.preventDefault()
     this.hideAllContextMenus()
@@ -196,7 +224,7 @@ export class MusicLibraryVM {
     }
   }
 
-  onArtistContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+  onArtistContextMenu(event: ItemClickEvent) {
     // Prevent default behavior to avoid opening the default context menu
     event.preventDefault()
     this.hideAllContextMenus()
@@ -234,9 +262,10 @@ export class MusicLibraryVM {
 
   constructor({rootStore}: {rootStore: RootStore}) {
     this.rootStore = rootStore
+    this.musicLibrary = rootStore.musicLibrary
     this.set = store.setMethod<MusicLibraryVM>(this)
     this.assign = store.assignMethod<MusicLibraryVM>(this)
-    makeAutoObservable(this, {rootStore: false}, {autoBind: true, deep: false})
+    makeAutoObservable(this, {rootStore: false, musicLibrary: false}, {autoBind: true, deep: false})
 
     this.songDetailsDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
     this.songMenuDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
