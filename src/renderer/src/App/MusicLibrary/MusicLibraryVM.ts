@@ -117,12 +117,19 @@ export class MusicLibraryVM {
   }
 
   get shouldGroupByAlbum() {
-    return !!this.rootStore.musicLibrary.artistSelected
+    const {artistSelected, albumSelected} = this.rootStore.musicLibrary
+    return (!!artistSelected && !albumSelected) || !!albumSelected
   }
 
   get groupedSongsByAlbum(): [Album, Song[]][] {
     const {musicLibrary} = this.rootStore
-    return this.shouldGroupByAlbum ? musicLibrary.getSongsByAlbum(musicLibrary.artistSelected) : []
+    if (!this.shouldGroupByAlbum) {
+      return []
+    }
+    if (musicLibrary.albumSelected) {
+      return musicLibrary.getAlbumAndSongs(musicLibrary.albumSelected)
+    }
+    return musicLibrary.getArtistSongsByAlbum(musicLibrary.artistSelected)
   }
 
   /**

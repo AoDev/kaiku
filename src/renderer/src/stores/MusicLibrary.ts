@@ -50,6 +50,19 @@ export class MusicLibrary {
     return filter ? this.artists.filter((artist) => filter.test(artist.name)) : this.artists
   }
 
+  /**
+   * Returns a map of album ids to sorted songs
+   * Songs are already sorted by disk number and track number
+   * `{[albumId]: [song1, song2, ...]}`
+   */
+  get indexedSongsByAlbum(): Record<string, Song[]> {
+    const byAlbum = groupBy(this.songs, 'albumId')
+    for (const album of this.albums) {
+      byAlbum[album.id] = byAlbum[album.id].sort(sortSongsByDiskAndTrack)
+    }
+    return byAlbum
+  }
+
   get filteredSongs() {
     if (this.albumSelected) {
       return this.getAlbumSongs(this.albumSelected)
@@ -158,10 +171,10 @@ export class MusicLibrary {
   }
 
   getAlbumSongs(albumId: string) {
-    return this.songs.filter((song) => song.albumId === albumId).sort(sortSongsByDiskAndTrack)
+    return this.indexedSongsByAlbum[albumId]
   }
 
-  getArtistSongs(artistId: string) {
+  getArtistSongs(artistId: string): Song[] {
     const songsByAlbum = groupBy(
       this.songs.filter((song) => song.artistId === artistId).sort(sortSongsByDiskAndTrack),
       'albumId'
@@ -172,19 +185,25 @@ export class MusicLibrary {
   }
 
   /**
-   * Get songs grouped by album for an artist
+   * Get songs grouped by album for an artist, sorted by album year
    */
-  getSongsByAlbum(artistId: string): [Album, Song[]][] {
-    const songs = this.artistSelected === artistId ? this.filteredSongs : this.songs
-    const songsByAlbum = groupBy(
-      songs.filter((song) => song.artistId === artistId).sort(sortSongsByDiskAndTrack),
-      'albumId'
-    )
+  getArtistSongsByAlbum(artistId: string): [Album, Song[]][] {
+    const artist = this.indexedArtists[artistId]
+    return artist
+      ? artist.albums
+          .sort((a, b) => this.indexedAlbums[a].year - this.indexedAlbums[b].year)
+          .map((albumId) => [
+            this.indexedAlbums[albumId],
+            this.indexedSongsByAlbum[albumId].filter((song) => song.artistId === artistId),
+          ])
+      : []
+  }
 
-    // Sort albums by year
-    return Object.keys(songsByAlbum)
-      .sort((a, b) => this.indexedAlbums[a].year - this.indexedAlbums[b].year)
-      .map((albumId) => [this.indexedAlbums[albumId], songsByAlbum[albumId]])
+  /**
+   * Used when the filter is active and an album is selected
+   */
+  getAlbumAndSongs(albumId: string): [Album, Song[]][] {
+    return [[this.indexedAlbums[albumId], this.indexedSongsByAlbum[albumId]]]
   }
 
   // Setup IPC listeners for scan progress updates
