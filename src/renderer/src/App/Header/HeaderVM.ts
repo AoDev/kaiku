@@ -1,5 +1,6 @@
 import * as store from '@lib/mobx/store.helpers'
 import type {RootStore} from '@renderer/stores/RootStore'
+import {zoomTransition} from '@src/config'
 import type {DialogVM} from '@ui'
 import {type IReactionDisposer, autorun, makeAutoObservable} from 'mobx'
 
@@ -32,7 +33,7 @@ export class HeaderVM {
     this.rootStore = rootStore
     this.set = store.setMethod<HeaderVM>(this)
     makeAutoObservable(this, {rootStore: false}, {autoBind: true, deep: false})
-    this.menuDialog = rootStore.uiStore.dialogs.create({id: 'app-menu'})
+    this.menuDialog = rootStore.uiStore.dialogs.create({id: 'app-menu', transition: zoomTransition})
 
     this.stopFilterReaction = autorun(() => {
       this.rootStore.musicLibrary.setFilterDebounced(this.iSearch)

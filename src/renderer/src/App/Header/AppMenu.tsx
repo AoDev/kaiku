@@ -6,8 +6,14 @@ export const AppMenu = observer(({vm}: {vm: HeaderVM}) => {
   const {menuDialog, rootStore} = vm
   const {musicLibrary} = rootStore
 
-  const menuContent = (
-    <div>
+  const trigger = (
+    <Button variant="blackwhite" onClick={menuDialog.toggle}>
+      Menu
+    </Button>
+  )
+
+  return (
+    <PopoverX trigger={trigger} dialogVM={menuDialog} className="pad-05" fullscreen1x>
       <ButtonMenu
         isLoading={musicLibrary.scanProgress.status === 'scanning'}
         icon="vinyl"
@@ -15,29 +21,11 @@ export const AppMenu = observer(({vm}: {vm: HeaderVM}) => {
         label="Add Songs"
       />
       <ButtonMenu
-        isLoading={musicLibrary.scanProgress.status === 'scanning'}
+        disabled={musicLibrary.scanProgress.status === 'scanning'}
         icon="eraser"
         onClick={vm.askClearLibrary}
         label="Clear Library"
       />
-    </div>
-  )
-  return (
-    <PopoverX
-      className="app-menu"
-      body={menuContent}
-      isOpen={menuDialog.visible}
-      onOuterAction={menuDialog.hide}
-      fullscreen1x
-      close={menuDialog.hide}
-    >
-      {/* <Button variant="blackwhite" round className="pad-0" onClick={menuDialog.toggle}>
-        <Icon name="menubars" size={18} />
-      </Button> */}
-
-      <Button variant="blackwhite" onClick={menuDialog.toggle}>
-        Menu
-      </Button>
     </PopoverX>
   )
 })

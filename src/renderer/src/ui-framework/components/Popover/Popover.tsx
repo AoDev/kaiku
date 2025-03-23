@@ -1,83 +1,60 @@
-import type {UIStore} from '@src/stores'
-import {inject, observer} from 'mobx-react'
-import type {FC, ReactNode} from 'react'
-import ReactPopover, {type PopoverPlace} from 'react-popover'
-import {Portal} from 'react-portal'
+import type {UIStore} from '@src/stores/UIStore'
+import {observer} from 'mobx-react'
+import {inject} from 'mobx-react'
+import type {FC} from 'react'
+import {createPortal} from 'react-dom'
 import {Button} from '../Button'
+import {PopoverBasic, type PopoverBasicProps} from './PopoverBasic'
 
-const variantClasses = {
-  primary: 'Popover-primary',
-  white: 'Popover-white',
-}
-
-export interface IPopoverProps {
-  body: ReactNode // Content of the popover
-  children?: ReactNode // Button or other element that triggers the popover
-  className?: string
-  close?: (arg?: any) => void
-  enterExitTransitionDurationMs?: number
-  isOpen: boolean
-  onOuterAction?: () => any
-  place?: PopoverPlace
-  preferPlace?: PopoverPlace
-  tipSize?: number
-  variant?: 'primary' | 'white'
-  uiStore: UIStore
+export type IPopoverProps = PopoverBasicProps & {
   fullscreen1x?: boolean
+  uiStore: UIStore
+  className?: string
 }
 
 /**
- * A generic popover component useful to display tooltips and context menus.
- *
- * Example:
- * ```tsx
- * <Popover
- *   body={"Hello, world!"}
- *   isOpen={true|false}
- * >
- *   <Button onClick={uiStore.togglePopover}>
- *     "Click me!"
- *   </Button>
+ * Popover with some styles by default and support for responsivefullscreen mode
+ * @example
+ * const trigger = <Button>Open Popover</Button>
+ * const hideDialog = () => setIsOpen(false)
+ * <Popover fullscreen1x trigger={trigger} isOpen={isOpen} hide={hideDialog}>
+ *   <div>Popover content</div>
  * </Popover>
- * ```
  */
-export function Popover({
-  variant = 'white',
-  className = '',
-  enterExitTransitionDurationMs = 200,
-  tipSize = 10,
+const PopoverComponent: FC<IPopoverProps> = ({
   fullscreen1x = false,
   uiStore,
-  close,
+  className = '',
+  isOpen,
+  hide,
   ...otherProps
-}: IPopoverProps) {
-  const cssClasses = `${variantClasses[variant]} ${className}`
+}) => {
+  // Type narrowing based on dialogVM presence
+  const isFullscreen = fullscreen1x && uiStore.media.screen1x && isOpen
+  const cssClasses = `${isFullscreen ? 'popover--fullscreen' : 'popover--floating'} ${className}`
 
-  if (fullscreen1x && uiStore.media.screen1x && otherProps.isOpen) {
+  if (isFullscreen) {
     return (
-      <Portal>
-        <div className={`Popover--fullscreen pad-default zoom-in ${className}`}>
-          <div className="flex-col height-100p">
-            <div className="flex-fill">{otherProps.body}</div>
-            <Button className="flex-col-end" variant="link" onClick={close}>
-              Close
-            </Button>
-          </div>
-        </div>
-      </Portal>
+      <>
+        {otherProps.trigger}
+        {createPortal(
+          <div className={`popover--fullscreen pad-default ${cssClasses}`}>
+            <div className="flex-col height-100p">
+              <div className="flex-fill">{otherProps.children}</div>
+              <Button className="flex-col-end" variant="link" onClick={hide}>
+                Close
+              </Button>
+            </div>
+          </div>,
+          document.body
+        )}
+      </>
     )
   }
 
-  return (
-    <ReactPopover
-      enterExitTransitionDurationMs={enterExitTransitionDurationMs}
-      tipSize={tipSize}
-      {...otherProps}
-      className={cssClasses}
-    />
-  )
+  return <PopoverBasic {...otherProps} isOpen={isOpen} hide={hide} className={cssClasses} />
 }
 
-export const PopoverX = inject(({uiStore}: {uiStore: UIStore}) => ({uiStore}))(
-  observer(Popover)
+export const Popover = inject(({uiStore}: {uiStore: UIStore}) => ({uiStore}))(
+  observer(PopoverComponent)
 ) as unknown as FC<Omit<IPopoverProps, 'uiStore'>>

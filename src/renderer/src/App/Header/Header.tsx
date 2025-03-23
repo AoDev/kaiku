@@ -5,6 +5,7 @@ import {observer} from 'mobx-react'
 import {AppMenu} from './AppMenu'
 import type {HeaderVM} from './HeaderVM'
 import {Player} from './Player'
+
 export const Header = observer(({vm}: {vm: HeaderVM}) => {
   const {settings} = vm.rootStore
 

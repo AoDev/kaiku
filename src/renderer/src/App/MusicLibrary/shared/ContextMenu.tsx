@@ -1,7 +1,7 @@
 import {ButtonMenu} from '@ui'
 import type {DialogVM, IconName} from '@ui'
 import {observer} from 'mobx-react'
-import {Portal} from 'react-portal'
+import {createPortal} from 'react-dom'
 
 export type ContextMenuState<T> = {
   x: number
@@ -24,20 +24,19 @@ export const ContextMenu = observer(function ContextMenu<T>({
     return null
   }
 
-  return (
-    <Portal>
-      <div
-        className={`context-menu ${dialog.dialogClassName}`}
-        style={{
-          position: 'fixed',
-          top: `${contextMenu.y}px`,
-          left: `${contextMenu.x}px`,
-        }}
-      >
-        {contextMenu.items.map((item) => (
-          <ButtonMenu key={item.label} {...item} />
-        ))}
-      </div>
-    </Portal>
+  return createPortal(
+    <div
+      className={`context-menu ${dialog.dialogClassName}`}
+      style={{
+        position: 'fixed',
+        top: `${contextMenu.y}px`,
+        left: `${contextMenu.x}px`,
+      }}
+    >
+      {contextMenu.items.map((item) => (
+        <ButtonMenu key={item.label} {...item} />
+      ))}
+    </div>,
+    document.body
   )
 })

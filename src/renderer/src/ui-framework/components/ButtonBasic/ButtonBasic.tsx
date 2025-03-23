@@ -13,7 +13,7 @@ export interface IButtonBasicProps<V> extends Omit<AllHTMLAttributes<HTMLButtonE
   preventDefault?: boolean
   scrollToOnMount?: boolean
   value?: V
-  // ref?: any // TODO: wrong but dont know how to solve
+  ref?: React.Ref<HTMLButtonElement>
 }
 
 /**
@@ -40,15 +40,28 @@ export const ButtonBasic = memo(function ButtonBasic<V>(props: IButtonBasicProps
     scrollToOnMount,
     type = 'button',
     value,
+    ref,
     ...otherProps
   } = props
 
-  const btnRef = useRef<HTMLButtonElement | null>(null)
+  const innerRef = useRef<HTMLButtonElement | null>(null)
+
+  // Combine the internal ref functionality with the external ref
+  const btnRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      innerRef.current = node
+      // Handle external ref if provided
+      if (typeof ref === 'function') {
+        ref(node)
+      }
+    },
+    [ref]
+  )
 
   useEffect(() => {
-    if (btnRef.current) {
-      focusOnMount && btnRef.current.focus()
-      scrollToOnMount && btnRef.current.scrollIntoView({behavior: 'smooth', block: 'center'})
+    if (innerRef.current) {
+      focusOnMount && innerRef.current.focus()
+      scrollToOnMount && innerRef.current.scrollIntoView({behavior: 'smooth', block: 'center'})
     }
   }, [focusOnMount, scrollToOnMount])
 

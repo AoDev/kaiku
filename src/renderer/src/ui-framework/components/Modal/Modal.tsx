@@ -1,6 +1,6 @@
 import {observer} from 'mobx-react'
 import type {ReactNode} from 'react'
-import {Portal} from 'react-portal'
+import {createPortal} from 'react-dom'
 import {ConfirmDialogVM, type DialogVM} from '../..'
 import {Button, type ButtonVariant} from '../Button'
 
@@ -49,8 +49,8 @@ export const Modal = observer((props: IModalProps) => {
     ? {height: `${props.height}px`, top: `calc(45% - ${props.height}px / 2)`}
     : {}
 
-  return (
-    <Portal>
+  return createPortal(
+    <>
       <div className={cssClasses} style={style}>
         <div className="flex-col height-100p">
           <div className={`flex-fill ${scrollable ? 'scrollbar-discreet-y' : ''}`}>
@@ -85,6 +85,7 @@ export const Modal = observer((props: IModalProps) => {
         </div>
       </div>
       <div className={overlayClasses} onClick={modalVM.onOverlayClick} />
-    </Portal>
+    </>,
+    document.body
   )
 })
