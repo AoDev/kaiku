@@ -33,7 +33,8 @@
     "rules": {
       "recommended": true,
       "style": {
-        "useNumberNamespace": "off"
+        "useNumberNamespace": "off",
+        "noDefaultExport": "info"
       },
       "suspicious": {
         "noGlobalIsFinite": "off",

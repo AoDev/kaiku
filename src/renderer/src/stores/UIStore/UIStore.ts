@@ -2,8 +2,8 @@ import {zoomTransition} from '@src/config/dialogConfig'
 import type {RootStore} from '@src/stores'
 import type {DialogVM} from '@ui'
 import {autorun, makeAutoObservable} from 'mobx'
-import DialogStore from './DialogStore'
-import MediaQuery from './MediaQuery'
+import {DialogStore} from './DialogStore'
+import {MediaQuery} from './MediaQuery'
 
 export class UIStore {
   rootStore: RootStore

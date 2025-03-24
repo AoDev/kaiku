@@ -1,6 +1,6 @@
 import {type CSSProperties, memo} from 'react'
 import {Icon} from '../Icon'
-import Loader from '../Loader'
+import {Loader} from '../Loader'
 import {ButtonBasic, type IButtonBasicProps} from './ButtonBasic'
 
 export type ButtonVariant =

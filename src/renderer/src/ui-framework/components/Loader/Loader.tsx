@@ -14,7 +14,7 @@ interface ILoaderProps {
   style?: CSSProperties
 }
 
-export default function Loader(props: ILoaderProps) {
+export function Loader(props: ILoaderProps) {
   const {top, left, label, className, small, inline, bar, dot, style = {}, visible = true} = props
 
   if (!visible) {

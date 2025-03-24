@@ -100,7 +100,7 @@ function getComponentDisplayName<T>(Component: ComponentType<IComponentWithVMPro
  * @param Component
  * @param VM local vm using mobx observables
  */
-export default function withVM<T extends IViewModel, P extends {rootStore: any}>(
+export function withVM<T extends IViewModel, P extends {rootStore: any}>(
   Component: ComponentType<IComponentWithVMProps<T>>,
   VM: Constructable<T, P>
 ) {

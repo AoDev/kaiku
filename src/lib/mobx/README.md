@@ -50,7 +50,7 @@ export class FeatureVM {
 Feature is a React component.
 
 ```ts
-import withVM from '@lib/mobx/withVM'
+import {withVM} from '@lib/mobx/withVM'
 import {Feature} from './Feature'
 import {FeatureVM} from './FeatureVM'
 export default withVM(Feature, FeatureVM)

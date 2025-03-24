@@ -11,7 +11,7 @@ enum breakPoints {
 /**
  * Observable screen media queries.
  */
-export default class MediaQuery {
+export class MediaQuery {
   public viewPort = new ObservableViewport()
 
   get screen1x() {

@@ -4,7 +4,7 @@ import {makeAutoObservable} from 'mobx'
 /**
  * Allows to control dialogs with the browser history and escape key
  */
-export default class DialogStore {
+export class DialogStore {
   dialogs: DialogVM[] = []
 
   create(opts: IDialogOptions): DialogVM {

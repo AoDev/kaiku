@@ -44,7 +44,7 @@ interface IAsyncData<T> {
  ```
  */
 
-export default class AsyncData<T> implements IAsyncData<T> {
+export class AsyncData<T> implements IAsyncData<T> {
   pending = false
   loaded = false
   value: T
