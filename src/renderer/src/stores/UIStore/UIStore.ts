@@ -10,6 +10,7 @@ export class UIStore {
   media = new MediaQuery()
   dialogs = new DialogStore()
   settingsDialog: DialogVM
+  handledErrorDialog: DialogVM
 
   get theme() {
     return this.rootStore.settings.theme
@@ -30,9 +31,11 @@ export class UIStore {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore
-    this.settingsDialog = this.dialogs.create({
-      id: 'appSettings',
+    this.settingsDialog = this.dialogs.create({id: 'appSettings', transition: zoomTransition})
+    this.handledErrorDialog = this.dialogs.create({
+      id: 'expectedError',
       transition: zoomTransition,
+      onHide: () => this.rootStore.assign({handledError: null}),
     })
     makeAutoObservable(this, undefined, {deep: false, autoBind: true})
   }

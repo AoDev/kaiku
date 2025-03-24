@@ -1,4 +1,4 @@
-import type {Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
+import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
 
 /**
  * Comparison function for sorting songs by disk number and track number
@@ -46,3 +46,24 @@ export async function getSongListFromFolder(): Promise<
  */
 const compareArtistName = new Intl.Collator('en', {sensitivity: 'base'}).compare
 export const sortArtistsByName = (a: Artist, b: Artist) => compareArtistName(a.name, b.name)
+
+/**
+ * Get songs from which we'll extract the cover, and albums that don't have a song (unexpected)
+ */
+export function getSongsToExtractCoverFrom(
+  albums: Album[],
+  indexedSongsByAlbum: Record<string, Song[]>
+) {
+  return albums.reduce(
+    (acc: {songs: Song[]; albumsMissingSongs: Album[]}, album) => {
+      const song = indexedSongsByAlbum[album.id][0]
+      if (song) {
+        acc.songs.push(song)
+      } else {
+        acc.albumsMissingSongs.push(album)
+      }
+      return acc
+    },
+    {songs: [], albumsMissingSongs: []}
+  )
+}

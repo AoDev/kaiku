@@ -1,5 +1,6 @@
 import {promises as fs} from 'node:fs'
 import path from 'node:path'
+import {normalizeError} from '../../src/lib/error'
 
 async function listFiles(srcFolder: string): Promise<string[]> {
   try {
@@ -11,7 +12,7 @@ async function listFiles(srcFolder: string): Promise<string[]> {
 
     return svgFiles
   } catch (err) {
-    throw new Error(`Error reading folder: ${err instanceof Error ? err.message : String(err)}`)
+    throw new Error(`Error reading folder: ${normalizeError(err)}`)
   }
 }
 

@@ -2,7 +2,7 @@ import {BrowserWindow, type IpcMainInvokeEvent, ipcMain} from 'electron'
 import type {AudioLibrary} from '../../types/MusicLibrary.types'
 import type {ScanProgress} from '../../types/ScanProgress'
 import {COVER_FOLDER} from '../config'
-import {extractCoverFromSong} from './extractCoverFromSong'
+import {extractCoverFromSongs} from './extractCoverFromSong'
 import {listAudioFiles} from './listAudioFiles'
 import {saveMusicLibrary} from './musicLibrary'
 import {loadMusicLibrary} from './musicLibrary'
@@ -31,7 +31,7 @@ export function setupHandlers(): void {
   ipcMain.handle('getCoverFolderPath', () => COVER_FOLDER)
   ipcMain.handle('saveMusicLibrary', (_, library: AudioLibrary) => saveMusicLibrary(library))
   ipcMain.handle('loadMusicLibrary', loadMusicLibrary)
-  ipcMain.handle('extractCoverFromSong', (_, song: {albumId: string; filePath: string}) =>
-    extractCoverFromSong(song)
+  ipcMain.handle('extractCoverFromSongs', (_, songs: {albumId: string; filePath: string}[]) =>
+    extractCoverFromSongs(songs)
   )
 }

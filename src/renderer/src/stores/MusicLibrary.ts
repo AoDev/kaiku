@@ -1,5 +1,5 @@
 import * as store from '@lib/mobx/store.helpers'
-import {isAlbumCoverDetails} from '@rootsrc/types/Cover'
+import type {CoverExtractResult} from '@rootsrc/types/Cover'
 import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
 import {debounce, groupBy} from 'lodash'
@@ -7,9 +7,11 @@ import {keyBy} from 'lodash'
 import {type IReactionDisposer, action, makeAutoObservable, reaction} from 'mobx'
 import {
   getSongListFromFolder,
+  getSongsToExtractCoverFrom,
   sortArtistsByName,
   sortSongsByDiskAndTrack,
 } from './MusicLibrary.helpers'
+import type {RootStore} from './RootStore'
 
 // This list is there to be able to ignore variants of characters in searches.
 const CHAR_RANGES = {
@@ -36,6 +38,7 @@ export class MusicLibrary {
   albumSelected = ''
   /** filePath of the song that is currently selected */
   songSelected = ''
+  rootStore: RootStore
 
   get indexedAlbums() {
     return keyBy(this.albums, 'id')
@@ -118,18 +121,43 @@ export class MusicLibrary {
   // Cleanup function for IPC listeners
   private cleanupListeners: (() => void) | null = null
 
+  /**
+   * Update the cover of the given albums
+   */
   private async _updateAlbumCovers(albums: Album[]) {
-    for (const album of albums) {
-      const song = this.songs.find((song) => song.albumId === album.id)
-      if (song) {
-        const cover = await window.electron.ipcRenderer.invoke('extractCoverFromSong', song)
-        if (isAlbumCoverDetails(cover)) {
-          album.coverExtension = cover.fileExtension
-        }
-      }
+    const {songs, albumsMissingSongs} = getSongsToExtractCoverFrom(albums, this.indexedSongsByAlbum)
+
+    if (albumsMissingSongs.length > 0) {
+      console.error('No song found for albums', albumsMissingSongs)
     }
-    const indexedUpdatedAlbums = keyBy(albums, 'id')
+
+    // Request covers to be extracted from the songs (TODO: typesafety electron messages)
+    const results: CoverExtractResult[] = await window.electron.ipcRenderer.invoke(
+      'extractCoverFromSongs',
+      songs
+    )
+
+    // Update the albums with the new cover
+    const indexedUpdatedAlbums = results.reduce((acc: Record<string, Album>, coverResult) => {
+      const {cover, albumId} = coverResult
+      if (cover) {
+        acc[albumId] = {...this.indexedAlbums[albumId], coverExtension: cover.fileExtension}
+      } else if (coverResult.error) {
+        console.error('Failed to extract cover for album', albumId, coverResult.error)
+      }
+      return acc
+    }, {})
+
     this.assign({albums: this.albums.map((album) => indexedUpdatedAlbums[album.id] ?? album)})
+
+    const erroredAlbums = results.find((album) => !!album.error)
+    if (erroredAlbums) {
+      this.rootStore.showHandledError({
+        title: 'Failed to update album covers',
+        description: '',
+        error: erroredAlbums.error,
+      })
+    }
   }
 
   updateAlbumCovers = debounce((albums: Album[]) => this._updateAlbumCovers(albums), 200, {
@@ -377,8 +405,9 @@ export class MusicLibrary {
     this.resetProgress()
   }
 
-  constructor() {
+  constructor(rootStore: RootStore) {
     makeAutoObservable(this, undefined, {deep: false, autoBind: true})
+    this.rootStore = rootStore
     this.assign = store.assignMethod<MusicLibrary>(this)
     this.setupScanProgressListener()
 

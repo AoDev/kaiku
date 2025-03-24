@@ -1,10 +1,16 @@
 import fs from 'node:fs/promises'
 import {join} from 'node:path'
 import {parseFile} from 'music-metadata'
-import type {AlbumCoverDetails} from '../../types/Cover'
+import {normalizeError} from '../../lib/error'
+import type {AlbumCoverDetails, CoverExtractResult} from '../../types/Cover'
 import {COVER_FOLDER} from '../config'
 
-const mimeTypes = {
+type SongProps = {
+  albumId: string
+  filePath: string
+}
+
+const mimeTypes: Record<string, string> = {
   'image/jpeg': 'jpg',
   'image/png': 'png',
   'image/gif': 'gif',
@@ -29,23 +35,41 @@ export async function createCoverFolder() {
 /**
  * Given a song data, try to extract the album cover from its file metadata
  */
-export async function extractCoverFromSong(song: {
-  albumId: string
-  filePath: string
-}): Promise<AlbumCoverDetails | null> {
+export async function extractCoverFromSong(song: SongProps): Promise<AlbumCoverDetails | null> {
   const songMetadata = await parseFile(song.filePath)
   const pic = songMetadata.common.picture?.[0]
 
   if (pic) {
-    const ext = mimeTypes[pic.format]
-    if (!ext) {
-      console.error(`Unsupported image format: ${pic.format} ${song.filePath}`)
-      return null
+    const fileExtension = mimeTypes[pic.format]
+    if (!fileExtension) {
+      throw new Error(`Unsupported image format: ${pic.format} ${song.filePath}`)
     }
-    const fileExtension = ext || pic.format
     const filePath = join(COVER_FOLDER, `${song.albumId}.${fileExtension}`)
     await fs.writeFile(filePath, pic.data)
     return {fileExtension, filePath}
   }
   return null
+}
+
+/**
+ * Process a single song and return its cover extraction result
+ */
+async function tryExtractCover(song: SongProps): Promise<CoverExtractResult> {
+  try {
+    const cover = await extractCoverFromSong(song)
+    return {albumId: song.albumId, cover, error: null}
+  } catch (err) {
+    return {albumId: song.albumId, cover: null, error: normalizeError(err)}
+  }
+}
+
+/**
+ * Given multiple song data, try to extract the album cover from their file metadata
+ */
+export async function extractCoverFromSongs(songs: SongProps[]): Promise<CoverExtractResult[]> {
+  const results: CoverExtractResult[] = []
+  for (const song of songs) {
+    results.push(await tryExtractCover(song))
+  }
+  return results
 }

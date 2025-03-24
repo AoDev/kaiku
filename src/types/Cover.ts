@@ -11,3 +11,9 @@ export function isAlbumCoverDetails(details: unknown): details is AlbumCoverDeta
     'filePath' in details
   )
 }
+
+export type CoverExtractResult = {
+  albumId: string
+  cover: AlbumCoverDetails | null
+  error: Error | null
+}

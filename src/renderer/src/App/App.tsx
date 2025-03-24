@@ -1,8 +1,9 @@
 import {ErrorBoundary} from '@src/lib/react'
 import {Modal} from '@ui'
 import {observer} from 'mobx-react'
-import {AppError} from './AppError'
+import {AppHandledError} from './AppHandledError'
 import AppSettings from './AppSettings'
+import {AppUnexpectedError} from './AppUnexpectedError'
 import type {AppVM} from './AppVM'
 import {AppWelcome} from './AppWelcome'
 import Footer from './Footer'
@@ -14,7 +15,7 @@ export const App = observer(({vm}: {vm: AppVM}) => {
   return (
     <ErrorBoundary
       onError={vm.rootStore.setErrorFromReactBoundary}
-      fallback={() => <AppError rootStore={vm.rootStore} />}
+      fallback={() => <AppUnexpectedError rootStore={vm.rootStore} />}
     >
       <div className="app-top">
         <div className="app">
@@ -32,8 +33,9 @@ export const App = observer(({vm}: {vm: AppVM}) => {
           <AppSettings />
         </Modal>
       </div>
+      <AppHandledError rootStore={vm.rootStore} />
       <AppWelcome vm={vm} />
-      <AppError rootStore={vm.rootStore} />
+      <AppUnexpectedError rootStore={vm.rootStore} />
     </ErrorBoundary>
   )
 })
