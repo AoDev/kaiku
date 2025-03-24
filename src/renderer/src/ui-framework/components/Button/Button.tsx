@@ -1,7 +1,7 @@
 import {type CSSProperties, memo} from 'react'
-import {ButtonBasic, type IButtonBasicProps} from '../ButtonBasic'
 import {Icon} from '../Icon'
 import Loader from '../Loader'
+import {ButtonBasic, type IButtonBasicProps} from './ButtonBasic'
 
 export type ButtonVariant =
   | 'blackwhite'

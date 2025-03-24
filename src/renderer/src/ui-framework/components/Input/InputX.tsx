@@ -1,7 +1,7 @@
 import type {NonFunctionKeys} from '@lib/mobx/store.helpers'
 import {observer} from 'mobx-react'
 import {Input} from '../Input'
-import type {IInputBasicProp} from '../InputBasic'
+import type {IInputBasicProp} from './InputBasic'
 
 interface IProps<T> extends IInputBasicProp {
   id?: string
@@ -11,7 +11,7 @@ interface IProps<T> extends IInputBasicProp {
   }
 }
 
-export function InputX<vm>({vm, name, id, ...otherProps}: IProps<vm>) {
+export const InputX = observer(function InputX<vm>({vm, name, id, ...otherProps}: IProps<vm>) {
   return (
     <Input
       id={id || name || undefined}
@@ -21,6 +21,4 @@ export function InputX<vm>({vm, name, id, ...otherProps}: IProps<vm>) {
       {...otherProps}
     />
   )
-}
-
-export default observer(InputX)
+})

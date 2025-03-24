@@ -1,5 +1,5 @@
-import {type IInputBasicProp, InputBasic, type InputType} from '../InputBasic'
-
+import {type IInputBasicProp, InputBasic} from './InputBasic'
+import type {InputType} from './input.types'
 /**
  * We have specific css class for appearance of input types,
  * but not all are handled, default is text
