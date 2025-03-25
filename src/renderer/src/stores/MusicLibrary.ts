@@ -33,6 +33,7 @@ export class MusicLibrary {
   filter: RegExp | null = null
   stopUpdateAlbumCovers: IReactionDisposer
   scanProgress: ScanProgress = {completed: 0, total: 0, status: 'idle'}
+  saveAfterCoverUpdateTimer: NodeJS.Timeout | null = null
 
   artistSelected = ''
   albumSelected = ''
@@ -122,6 +123,23 @@ export class MusicLibrary {
   private cleanupListeners: (() => void) | null = null
 
   /**
+   * Schedule a save of the library after cover updates
+   * Cover can update often so it's a compromise because we currently always send the entire library to the main process for saving
+   * TODO: we should improve this process
+   */
+  private scheduleSaveAfterCoverUpdate() {
+    if (this.saveAfterCoverUpdateTimer) {
+      clearTimeout(this.saveAfterCoverUpdateTimer)
+    }
+    this.saveAfterCoverUpdateTimer = setTimeout(
+      () => {
+        this.saveLibrary()
+      },
+      5 * 60 * 1000
+    )
+  }
+
+  /**
    * Update the cover of the given albums
    */
   private async _updateAlbumCovers(albums: Album[]) {
@@ -158,6 +176,8 @@ export class MusicLibrary {
         error: erroredAlbums.error,
       })
     }
+
+    this.scheduleSaveAfterCoverUpdate()
   }
 
   updateAlbumCovers = debounce((albums: Album[]) => this._updateAlbumCovers(albums), 200, {
