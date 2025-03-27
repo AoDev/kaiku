@@ -4,6 +4,7 @@ import type {ScanProgress} from '../../types/ScanProgress'
 import {COVER_FOLDER} from '../config'
 import {extractCoverFromSongs} from './extractCoverFromSong'
 import {listAudioFiles} from './listAudioFiles'
+import {handleLoadAudioFile} from './loadAudioFile'
 import {saveMusicLibrary} from './musicLibrary'
 import {loadMusicLibrary} from './musicLibrary'
 import {selectDirectory} from './selectDirectory'
@@ -31,6 +32,7 @@ export function setupHandlers(): void {
   ipcMain.handle('getCoverFolderPath', () => COVER_FOLDER)
   ipcMain.handle('saveMusicLibrary', (_, library: AudioLibrary) => saveMusicLibrary(library))
   ipcMain.handle('loadMusicLibrary', loadMusicLibrary)
+  ipcMain.handle('loadAudioFile', handleLoadAudioFile)
   ipcMain.handle('extractCoverFromSongs', (_, songs: {albumId: string; filePath: string}[]) =>
     extractCoverFromSongs(songs)
   )

@@ -3,7 +3,7 @@ import {sleep} from '@rootsrc/lib/async'
 import {revealLibraryItem} from '@src/lib/musicLibrary'
 import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'
 import {MusicLibrary} from './MusicLibrary'
-import {MusicPlayer} from './MusicPlayer'
+import {MusicPlayer} from './MusicPlayerWaveSurfer'
 import {SettingsDataStore, SettingsStore} from './Settings'
 import {UIStore} from './UIStore'
 

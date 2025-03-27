@@ -64,6 +64,7 @@
     "react-dom": "19.0.0",
     "rsbuild-plugin-svg-icons": "0.1.1",
     "typescript": "5.8.2",
-    "vitest": "3.0.9"
+    "vitest": "3.0.9",
+    "wavesurfer.js": "7.9.4"
   }
 }
