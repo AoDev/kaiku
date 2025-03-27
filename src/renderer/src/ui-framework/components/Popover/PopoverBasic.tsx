@@ -43,13 +43,15 @@ export function PopoverBasic({
   const dismiss = useDismiss(context)
   const {getReferenceProps, getFloatingProps} = useInteractions([dismiss])
   const triggerWithProps = cloneElement(trigger, {ref: refs.setReference, ...getReferenceProps()})
+  // modals have z-index 5, so we need to be above that, if the popover is inside a modal
+  const styles = {...floatingStyles, zIndex: 6}
 
   return (
     <>
       {triggerWithProps}
       {isOpen && (
         <FloatingPortal>
-          <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+          <div ref={refs.setFloating} style={styles} {...getFloatingProps()}>
             <div className={className}>{children}</div>
           </div>
         </FloatingPortal>
