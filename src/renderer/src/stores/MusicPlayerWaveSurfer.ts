@@ -1,7 +1,7 @@
 import {percentage} from '@lib/math'
 import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import {debounce} from 'lodash'
-import {action, autorun, makeAutoObservable} from 'mobx'
+import {action, makeAutoObservable} from 'mobx'
 import WaveSurfer from 'wavesurfer.js'
 
 function isNumber(value: unknown): value is number {
@@ -57,17 +57,11 @@ export class MusicPlayer {
 
   addToPlaylist(songs: Song[]) {
     this.playlist = this.playlist.concat(songs)
-    console.log('addToPlaylist', {
-      songs,
-      thisPlaylist: this.playlist,
-      thisPlaylistIndex: this.playlistIndex,
-    })
   }
 
   replacePlaylist(songs: Song[]) {
     this.playlist = songs
     this.playlistIndex = 0
-    console.log('replacePlaylist', {songs, thisPlaylistIndex: this.playlistIndex})
   }
 
   async play(newIndex?: number) {
@@ -188,7 +182,6 @@ export class MusicPlayer {
     (position: number) => {
       this.wavesurfer?.seekTo(position / this.duration)
       this.positionTracking = true
-      console.log('setPositionDebounced', {position, positionTracking: true})
     },
     200,
     {trailing: true}
@@ -204,7 +197,6 @@ export class MusicPlayer {
     this.position = position
     this.positionTracking = false
     this.setPositionDebounced(position)
-    console.log('setPositionFromPercent', {position, positionTracking: false})
   }
 
   setVolume(volume: number) {
@@ -216,9 +208,6 @@ export class MusicPlayer {
     makeAutoObservable(this, undefined, {autoBind: true, deep: false})
     this.container = document.createElement('div')
     this.positionTimer = setInterval(this.updatePositionFromWaveSurfer, 100)
-    autorun(() => {
-      console.log('playlistIndexTracking', this.playlistIndex)
-    })
   }
 
   destroy() {
