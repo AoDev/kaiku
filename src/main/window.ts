@@ -21,6 +21,16 @@ export function createWindow(): BrowserWindow {
 
   const mainWindow = new BrowserWindow(windowOptions)
 
+  // Set CSP header to prevent clickjacking
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': ["frame-ancestors 'none'"],
+      },
+    })
+  })
+
   // If screen dimensions are larger than our limits, center the window
   if (screenWidth > 1600 || screenHeight > 900) {
     mainWindow.center()
