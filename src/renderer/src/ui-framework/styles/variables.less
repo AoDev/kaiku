@@ -67,6 +67,10 @@
 :root {
   --bg-body: #f4f8fa;
   --border-radius-default: 22px;
+  --color-action--hover: #8e7aff;
+  --color-action: #5e54e9;
+  --color-active-bg: #5e54e9;
+  --color-active-txt: #fff;
   --color-bg-alternative: #ffffff;
   --color-bg-blue-soft: #009ddb08;
   --color-bg-default: #fff;
@@ -80,14 +84,12 @@
   --color-blue-aim: #1a7fd0;
   --color-blue-hover: #009dff;
   --color-body-bg: #f4f8fa;
-  --color-btn-disabled-txt: #67868e;
   --color-btn-disabled-bg: #dde3e7;
+  --color-btn-disabled-txt: #67868e;
   --color-gray-aim: #68757f;
   --color-green-aim: #00a881;
   --color-green-hover: #02c395;
   --color-green-vivid: #02c395;
-  --color-action: #5e54e9;
-  --color-action--hover: #8e7aff;
   --color-header-bg: #fff;
   --color-input-bg: rgb(123 137 147 / 8%);
   --color-line-separator: #dee4e8;
@@ -110,8 +112,11 @@
 }
 
 :root[theme='dark'] {
-  --color-txt-max-contrast: #000;
   --bg-body: @bg-body-gradient-dark-colored;
+  --color-action--hover: var(--color-green-hover);
+  --color-action: var(--color-green-vivid);
+  --color-active-bg: #5e54e9;
+  --color-active-txt: #fff;
   --color-bg-alternative: #3abfcd26;
   --color-bg-blue-soft: #009ddb20;
   --color-bg-default: transparent;
@@ -125,19 +130,16 @@
   --color-blue-aim: #27afff;
   --color-blue-hover: #b1d0ff;
   --color-body-bg: #1f1f23;
-  --color-btn-disabled-txt: #7c819c;
   --color-btn-disabled-bg: #282d44;
+  --color-btn-disabled-txt: #7c819c;
   --color-gray-aim: #f5f5f5;
   --color-gray-hover: #f5f5f5;
   --color-green-aim: #25ef9b;
   --color-green-hover: #2dff88;
   --color-green-vivid: #00dba7;
-  --color-action: var(--color-green-vivid);
-  --color-action--hover: var(--color-green-hover);
   --color-header-bg: transparent;
   --color-input-bg: rgb(123 137 147 / 8%);
-  --color-line-separator: #222225;
-  // --color-line-separator: #6b54e9;
+  --color-line-separator: #27272a;
   --color-menu-btn-txt: var(--color-txt-default);
   --color-neutral-aim: #f5f5f5;
   --color-neutral-hover: #e0dede;
@@ -150,8 +152,10 @@
   --color-table-separator: #020d0f;
   --color-txt-default: #ededed;
   --color-txt-inverse: #192d44;
+  --color-txt-max-contrast: #000;
   --color-txt-muted: #b5c9d8;
   --color-txt-placeholder: #798894;
+  // --color-line-separator: #6b54e9;
 }
 
 @media @screen-min-2x {

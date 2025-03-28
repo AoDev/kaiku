@@ -167,15 +167,16 @@ button {
   display: block;
   width: 100%;
   text-align: left;
+  transition: none;
 
   &.focus,
   &:hover,
   &:focus {
     border: 0;
-    border-radius: 8px;
+    border-radius: 12px; // looks better with the rounding of the container
     box-shadow: none;
-    color: var(--color-txt-default);
-    background-color: var(--color-bg-alternative);
+    color: var(--color-active-txt);
+    background-color: var(--color-active-bg);
   }
 
   &.active,
