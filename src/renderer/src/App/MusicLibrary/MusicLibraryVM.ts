@@ -52,6 +52,31 @@ export class MusicLibraryVM {
     },
   }
 
+  // Define context menu configurations
+  private contextMenuHandlers = {
+    artist: {
+      getIdFromEvent: (event: ItemClickEvent) => getDatasetValue(event, 'artistId'),
+      getData: (id: string) => this.musicLibrary.indexedArtists[id],
+      onSelect: (id: string) => this.musicLibrary.assign({artistSelected: id}),
+      menuState: () => this.artistContextMenu,
+      dialog: () => this.artistMenuDialog,
+    },
+    song: {
+      getIdFromEvent: (event: ItemClickEvent) => getDatasetValue(event, 'filePath'),
+      getData: (id: string) => this.musicLibrary.songs.find((s) => s.filePath === id),
+      onSelect: (id: string) => this.musicLibrary.assign({songSelected: id}),
+      menuState: () => this.songContextMenu,
+      dialog: () => this.songMenuDialog,
+    },
+    album: {
+      getIdFromEvent: (event: ItemClickEvent) => getDatasetValue(event, 'albumId'),
+      getData: (id: string) => this.musicLibrary.indexedAlbums[id],
+      onSelect: (id: string) => this.musicLibrary.assign({albumSelected: id, songSelected: ''}),
+      menuState: () => this.albumContextMenu,
+      dialog: () => this.albumMenuDialog,
+    },
+  }
+
   songContextMenu: ContextMenuState<Song> = {
     x: 0,
     y: 0,
@@ -190,64 +215,38 @@ export class MusicLibraryVM {
     this.onItemClick(event, 'song')
   }
 
-  onSongContextMenu(event: ItemClickEvent) {
-    // Prevent default behavior to avoid opening the default context menu
+  /**
+   * Generic context menu handler to manage context menu behavior consistently
+   */
+  private onContextMenu(event: ItemClickEvent, type: 'artist' | 'album' | 'song') {
     event.preventDefault()
     this.hideAllContextMenus()
-    const {musicLibrary} = this.rootStore
-    const filePath = getDatasetValue(event, 'filePath')
 
-    if (!filePath) {
+    const handler = this.contextMenuHandlers[type]
+    const id = handler.getIdFromEvent(event)
+    if (!id) {
       return
     }
 
-    if (musicLibrary.songSelected !== filePath) {
-      musicLibrary.assign({songSelected: filePath})
+    handler.onSelect(id)
+
+    const data = handler.getData(id)
+    if (data) {
+      Object.assign(handler.menuState(), {x: event.clientX, y: event.clientY, data})
+      handler.dialog().show()
     }
-    // Find the song by file path
-    const song = musicLibrary.songs.find((s) => s.filePath === filePath)
-    if (song) {
-      Object.assign(this.songContextMenu, {x: event.clientX, y: event.clientY, data: song})
-      this.songMenuDialog.show()
-    }
+  }
+
+  onSongContextMenu(event: ItemClickEvent) {
+    this.onContextMenu(event, 'song')
   }
 
   onAlbumContextMenu(event: ItemClickEvent) {
-    // Prevent default behavior to avoid opening the default context menu
-    event.preventDefault()
-    this.hideAllContextMenus()
-    const {musicLibrary} = this.rootStore
-    const albumId = getDatasetValue(event, 'albumId')
-    if (!albumId) {
-      return
-    }
-    if (musicLibrary.albumSelected !== albumId) {
-      musicLibrary.assign({albumSelected: albumId, songSelected: ''})
-    }
-    const album = musicLibrary.indexedAlbums[albumId]
-    if (album) {
-      Object.assign(this.albumContextMenu, {x: event.clientX, y: event.clientY, data: album})
-      this.albumMenuDialog.show()
-    }
+    this.onContextMenu(event, 'album')
   }
 
   onArtistContextMenu(event: ItemClickEvent) {
-    // Prevent default behavior to avoid opening the default context menu
-    event.preventDefault()
-    this.hideAllContextMenus()
-    const {musicLibrary} = this.rootStore
-    const artistId = getDatasetValue(event, 'artistId')
-    if (!artistId) {
-      return
-    }
-    if (musicLibrary.artistSelected !== artistId) {
-      musicLibrary.assign({artistSelected: artistId})
-    }
-    const artist = musicLibrary.indexedArtists[artistId]
-    if (artist) {
-      Object.assign(this.artistContextMenu, {x: event.clientX, y: event.clientY, data: artist})
-      this.artistMenuDialog.show()
-    }
+    this.onContextMenu(event, 'artist')
   }
 
   hideAllContextMenus() {
