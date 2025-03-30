@@ -312,7 +312,18 @@ export class MusicLibrary {
     return true
   }
 
-  async loadFromFolder() {
+  async selectAndLoadFromFolder() {
+    const selectedPath: string = await window.electron.ipcRenderer.invoke('selectDirectory')
+    if (!selectedPath) {
+      return
+    }
+    await this.loadFromFolder(selectedPath)
+  }
+
+  async loadFromFolder(selectedPath: string, selectedArtistId?: string) {
+    if (!selectedPath) {
+      return
+    }
     this.setupScanProgressListener()
     this.scanProgress = {completed: 0, total: 0, status: 'idle'}
 
@@ -329,7 +340,7 @@ export class MusicLibrary {
       },
     }
 
-    const {folderPath, songs, artists, albums} = await getSongListFromFolder()
+    const {folderPath, songs, artists, albums} = await getSongListFromFolder(selectedPath)
 
     if (!folderPath) {
       // User cancelled the dialog probably
@@ -364,7 +375,10 @@ export class MusicLibrary {
     // Convert to sorted arrays and update state
     const sortedArtists = Array.from(newArtistsMap.values()).sort(sortArtistsByName)
     const sortedAlbums = Array.from(newAlbumsMap.values()).sort((a, b) => a.year - b.year)
-    const artistSelected = sortedArtists[0]?.id ?? ''
+    const artistSelected =
+      selectedArtistId && newArtistsMap.has(selectedArtistId)
+        ? selectedArtistId
+        : sortedArtists[0]?.id || ''
 
     // Remove albums that don't exist anymore in the Unknown Artist
     // eg: tags were updated and now what was unknown album / artist is known

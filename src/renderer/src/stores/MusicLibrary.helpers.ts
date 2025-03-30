@@ -19,22 +19,17 @@ export function sortSongsByDiskAndTrack(a: Song, b: Song): number {
   return a.trackNumber - b.trackNumber
 }
 
-export async function getSongListFromFolder(): Promise<
+export async function getSongListFromFolder(selectedPath: string): Promise<
   AudioLibrary & {
     folderPath: string
   }
 > {
   try {
-    const selectedPath: string = await window.electron.ipcRenderer.invoke('selectDirectory')
-    if (selectedPath) {
-      // Automatically list files after selection
-      const audioLibrary: AudioLibrary = await window.electron.ipcRenderer.invoke(
-        'listAudioFiles',
-        selectedPath
-      )
-      return {folderPath: selectedPath, ...audioLibrary}
-    }
-    return {folderPath: '', songs: [], artists: [], albums: []}
+    const audioLibrary: AudioLibrary = await window.electron.ipcRenderer.invoke(
+      'listAudioFiles',
+      selectedPath
+    )
+    return {folderPath: selectedPath, ...audioLibrary}
   } catch (error) {
     console.error('Error selecting directory:', error)
     return {folderPath: '', songs: [], artists: [], albums: []}

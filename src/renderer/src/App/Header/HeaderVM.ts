@@ -13,7 +13,7 @@ export class HeaderVM {
   menuDialog: DialogVM
 
   addSongs() {
-    this.rootStore.musicLibrary.loadFromFolder()
+    this.rootStore.musicLibrary.selectAndLoadFromFolder()
     this.menuDialog.hide()
   }
 

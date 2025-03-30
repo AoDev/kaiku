@@ -27,7 +27,7 @@ export const AppWelcome = observer(({vm}: {vm: AppVM}) => {
               isLoading={scanProgress.status === 'scanning'}
               className="nowrap zoom-in"
               variant="blackwhite"
-              onClick={vm.rootStore.musicLibrary.loadFromFolder}
+              onClick={vm.rootStore.musicLibrary.selectAndLoadFromFolder}
             >
               Add Songs
             </Button>

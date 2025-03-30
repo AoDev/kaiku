@@ -12,7 +12,7 @@ export interface IModalProps {
   closeText?: string
   confirmText?: string
   fullscreen?: boolean
-  height?: number
+  height?: React.CSSProperties['height']
   modalVM: ConfirmDialogVM | DialogVM
   right?: boolean
   scrollable?: boolean
@@ -21,6 +21,15 @@ export interface IModalProps {
   withCloseButton?: boolean
 }
 
+/**
+ * Modal component
+ * @example
+ * <Modal modalVM={modalVM} withCloseButton width="2x">
+ *   <div>
+ *     Modal content
+ *   </div>
+ * </Modal>
+ */
 export const Modal = observer((props: IModalProps) => {
   const {
     modalVM,
@@ -46,7 +55,9 @@ export const Modal = observer((props: IModalProps) => {
       : 'modal-overlay fade-out'
 
   const style = props.height
-    ? {height: `${props.height}px`, top: `calc(45% - ${props.height}px / 2)`}
+    ? typeof props.height === 'number'
+      ? {height: `${props.height}px`, top: `calc(45% - ${props.height}px / 2)`}
+      : {height: props.height}
     : {}
 
   return createPortal(

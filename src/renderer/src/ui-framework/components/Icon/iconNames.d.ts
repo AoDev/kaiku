@@ -26,6 +26,7 @@ export type IconName =
   | 'play'
   | 'plus'
   | 'previous'
+  | 'refresh'
   | 'settings'
   | 'star'
   | 'sun'

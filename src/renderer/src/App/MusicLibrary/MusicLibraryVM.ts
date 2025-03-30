@@ -1,7 +1,7 @@
 import * as store from '@lib/mobx/store.helpers'
 import {getDatasetValue} from '@rootsrc/lib/dom/getDatasetValue'
 import type {Album, Artist, Song} from '@rootsrc/types/MusicLibrary.types'
-import {revealByPriority} from '@src/lib/musicLibrary'
+import {findSongsFolders, revealByPriority} from '@src/lib/musicLibrary'
 import type {MusicLibrary, RootStore} from '@src/stores'
 import type {DialogVM} from '@ui'
 import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'
@@ -20,7 +20,13 @@ export class MusicLibraryVM {
   songMenuDialog: DialogVM
   albumMenuDialog: DialogVM
   artistMenuDialog: DialogVM
+  refreshDialog: DialogVM
   clickTimers: {[key: string]: NodeJS.Timeout} = {}
+  refresh = {
+    folders: [] as string[],
+    artistId: '',
+    folderSelected: '',
+  }
 
   // Define item click configurations
   private clickHandlers = {
@@ -138,6 +144,15 @@ export class MusicLibraryVM {
           this.artistMenuDialog.hide()
         },
       },
+      {
+        icon: 'refresh',
+        label: 'Refresh',
+        onClick: () => {
+          const {data} = this.artistContextMenu
+          data && this.showRefreshDialog(data)
+          this.artistMenuDialog.hide()
+        },
+      },
     ],
   }
 
@@ -155,6 +170,19 @@ export class MusicLibraryVM {
       return musicLibrary.getAlbumAndSongs(musicLibrary.albumSelected)
     }
     return musicLibrary.getArtistSongsByAlbum(musicLibrary.artistSelected)
+  }
+
+  showRefreshDialog(artist: Artist) {
+    const songs = this.rootStore.musicLibrary.getArtistSongs(artist.id)
+    const {artistFolder, parentFolders} = findSongsFolders(artist, songs)
+    this.assign({
+      refresh: {
+        folders: parentFolders,
+        folderSelected: artistFolder || parentFolders[1] || parentFolders[0],
+        artistId: artist.id,
+      },
+    })
+    this.refreshDialog.show()
   }
 
   /**
@@ -255,6 +283,20 @@ export class MusicLibraryVM {
     this.artistMenuDialog.visible && this.artistMenuDialog.hide()
   }
 
+  selectRefreshFolder(folderSelected: string) {
+    this.assign({refresh: {...this.refresh, folderSelected}})
+  }
+
+  refreshArtist() {
+    this.refreshDialog.hide(() => {
+      const {artistId} = this.refresh
+      if (this.musicLibrary.artistSelected === artistId) {
+        this.musicLibrary.assign({artistSelected: '', albumSelected: '', songSelected: ''})
+      }
+      this.rootStore.musicLibrary.loadFromFolder(this.refresh.folderSelected, artistId)
+    })
+  }
+
   destroyVM() {
     this.stopRevealArtist()
     this.rootStore.uiStore.dialogs.remove([
@@ -262,6 +304,7 @@ export class MusicLibraryVM {
       this.songMenuDialog,
       this.albumMenuDialog,
       this.artistMenuDialog,
+      this.refreshDialog,
     ])
     document.removeEventListener('click', this.hideAllContextMenus)
   }
@@ -277,6 +320,7 @@ export class MusicLibraryVM {
     this.songMenuDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
     this.albumMenuDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
     this.artistMenuDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
+    this.refreshDialog = rootStore.uiStore.dialogs.create({transition: zoomTransition})
 
     this.stopRevealArtist = reaction(
       () => this.rootStore.musicLibrary.filter,
