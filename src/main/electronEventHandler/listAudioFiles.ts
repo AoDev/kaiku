@@ -100,6 +100,19 @@ async function getAllAudioFiles(
   return result
 }
 
+/**
+ * Get the album name from the metadata or use the parent folder name as fallback
+ */
+function getAlbumName(albumMetadata: string | undefined, parentFolder: string): string {
+  if (albumMetadata) {
+    return albumMetadata
+  }
+  const pathComponents = parentFolder.split(/[/\\]/)
+  const parentFolderName = pathComponents[pathComponents.length - 1] || 'Unknown Album'
+  const grandParentFolderName = pathComponents[pathComponents.length - 2] || ''
+  return grandParentFolderName ? `${grandParentFolderName} - ${parentFolderName}` : parentFolderName
+}
+
 export async function listAudioFiles(
   path: string,
   onProgress?: (arg: ScanProgress) => void
@@ -121,11 +134,12 @@ export async function listAudioFiles(
       async (file) => {
         const metadata = await parseFile(file, {skipCovers: true})
         const artistName = metadata.common.artist || 'Unknown Artist'
-        const albumName = metadata.common.album || 'Unknown Album'
-        const year = metadata.common.year || 0
 
-        // Get the parent folder path
+        // Get the parent folder path and name
         const parentFolder = dirname(file)
+        const albumName = getAlbumName(metadata.common.album, parentFolder)
+
+        const year = metadata.common.year || 0
 
         // Check if the parent folder is a CD folder (CD1, CD2, Disc 1, etc.)
         const cdPattern = /[\/\\]((CD|Disc|Disk)\s*\d+|Bonus(?:\s*\d+)?)$/i
