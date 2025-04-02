@@ -1,4 +1,5 @@
 import type {RootStore} from '@renderer/stores/RootStore'
+import {getDatasetValue} from '@rootsrc/lib/dom/getDatasetValue'
 import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import kaikuCover from '@src/assets/images/kaiku-album.jpg'
 import {getAlbumCover} from '@src/config'
@@ -19,18 +20,15 @@ const dummySong: Song = {
 export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
   const {musicPlayer, musicLibrary} = rootStore
 
-  const handlePlaySongFromPlaylist = (event: React.MouseEvent<HTMLDivElement>) => {
-    const target = event.target as HTMLElement
+  const {playlistDialog} = rootStore.uiStore
 
+  const handlePlaySongFromPlaylist = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.detail !== 2) {
       return
     }
-
-    if (target.tagName === 'DIV') {
-      const songIndex = Number(target.dataset.songIndex)
-      if (isFinite(songIndex)) {
-        musicPlayer.play(songIndex)
-      }
+    const songIndex = Number(getDatasetValue(event, 'songIndex'))
+    if (isFinite(songIndex)) {
+      musicPlayer.play(songIndex)
     }
   }
 
@@ -41,14 +39,20 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
   const coverPath = album ? getAlbumCover(album) : kaikuCover
 
   return (
-    <div className="playlist" onClick={handlePlaySongFromPlaylist}>
+    <div
+      className={`playlist ${playlistDialog.visible ? 'visible' : ''}`}
+      onClick={handlePlaySongFromPlaylist}
+    >
       <div className="margin-bottom-1">
         {/* biome-ignore lint/a11y/useAltText: We do not have text description of each cover */}
         <img className="playlist__cover" src={coverPath} onClick={rootStore.revealSongPlaying} />
-        <b>{song.title}</b>
-        <div>
-          <span className="txt-unit">by</span> {song.artist} <span className="txt-unit">on</span>{' '}
-          {song.album}
+
+        <div className="playlist__song-playing">
+          <b>{song.title}</b>
+          <div>
+            <span className="txt-unit">by</span> {song.artist} <span className="txt-unit">on</span>{' '}
+            {song.album}
+          </div>
         </div>
       </div>
       {musicPlayer.playlist.map((song, index) => (

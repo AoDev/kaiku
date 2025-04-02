@@ -7,11 +7,13 @@ import {Songs} from './Songs'
 
 export const MusicLibrary = observer(({vm}: {vm: MusicLibraryVM}) => {
   return (
-    <div className="library">
-      <Artists vm={vm} />
-      <Albums vm={vm} />
-      <Songs vm={vm} />
-      <RefreshDialog vm={vm} />
+    <div className="library-wrapper">
+      <div className="library">
+        <Artists vm={vm} />
+        <Albums vm={vm} />
+        <Songs vm={vm} />
+        <RefreshDialog vm={vm} />
+      </div>
     </div>
   )
 })

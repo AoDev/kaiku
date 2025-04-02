@@ -17,22 +17,20 @@ export const App = observer(({vm}: {vm: AppVM}) => {
       onError={vm.rootStore.setErrorFromReactBoundary}
       fallback={() => <AppUnexpectedError rootStore={vm.rootStore} />}
     >
-      <div className="app-top">
-        <div className="app">
-          <Header />
-          <MusicLibrary />
-          <Footer />
-        </div>
+      <div className="app">
+        <Header />
+        <MusicLibrary />
         <Playlist rootStore={vm.rootStore} />
-        <Modal
-          modalVM={vm.rootStore.uiStore.settingsDialog}
-          fullscreen
-          className="pad-page"
-          withCloseButton
-        >
-          <AppSettings />
-        </Modal>
       </div>
+      <Footer />
+      <Modal
+        modalVM={vm.rootStore.uiStore.settingsDialog}
+        fullscreen
+        className="pad-page"
+        withCloseButton
+      >
+        <AppSettings />
+      </Modal>
       <AppHandledError rootStore={vm.rootStore} />
       <AppWelcome vm={vm} />
       <AppUnexpectedError rootStore={vm.rootStore} />

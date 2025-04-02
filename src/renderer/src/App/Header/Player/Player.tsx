@@ -32,7 +32,7 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
   }, [])
 
   return (
-    <div className="flex-row-center height-100p gap-1">
+    <div className="player">
       <div className="player__times">
         <div className="player__time">{formatTime(positionInMinSec)}</div>/
         <div className="player__time">{formatTime(durationInMinSec)}</div>
@@ -47,7 +47,7 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
         />
       </div>
 
-      <div className="flex-row-center">
+      <div className="player__controls flex-row-center">
         <Button
           variant="icon"
           className="player__btn"

@@ -11,6 +11,7 @@ export class UIStore {
   dialogs = new DialogStore()
   settingsDialog: DialogVM
   handledErrorDialog: DialogVM
+  playlistDialog: DialogVM
 
   get theme() {
     return this.rootStore.settings.theme
@@ -32,6 +33,7 @@ export class UIStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore
     this.settingsDialog = this.dialogs.create({id: 'appSettings', transition: zoomTransition})
+    this.playlistDialog = this.dialogs.create({id: 'playlistDialog'})
     this.handledErrorDialog = this.dialogs.create({
       id: 'expectedError',
       transition: zoomTransition,

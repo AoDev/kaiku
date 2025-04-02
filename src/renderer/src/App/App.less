@@ -1,15 +1,23 @@
-@import './Playlist.less';
+@import './Playlist/Playlist.less';
 @import './Header/Header.less';
 @import './Footer/Footer.less';
 @import './MusicLibrary/MusicLibrary.less';
 @import './AppUnexpectedError/AppUnexpectedError.less';
 
-.app-top {
+.app {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
-  gap: 16px;
   max-width: 1600px;
   margin: 0 auto;
+  width: 100%;
+  overflow: hidden;
+  gap: 16px;
+  height: 100dvh;
+
+  @media @screen-min-2x {
+    grid-template-rows: minmax(0, 80px) 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    width: auto;
+  }
 }
 
 .app {
@@ -30,6 +38,7 @@
   align-items: center;
   height: 100%;
   background-color: var(--color-body-bg);
+  z-index: 1;
 }
 
 .welcome-bg {

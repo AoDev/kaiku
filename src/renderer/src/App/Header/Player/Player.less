@@ -1,0 +1,44 @@
+.player {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: start;
+  gap: 4px;
+  justify-content: flex-end;
+
+  .player__times {
+    margin-left: 14px;
+  }
+}
+
+.player {
+  @media screen and (min-width: 1000px) {
+    height: 100%;
+    align-items: center;
+    flex-direction: row;
+    gap: @base-gap;
+  }
+}
+
+.player__times {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 4px;
+  font-size: 0.92em;
+  font-family: @font-mono;
+}
+
+.player__volume,
+.player__track {
+  position: relative;
+  top: 4px;
+}
+
+.player__volume {
+  width: 90px;
+  margin-left: 6px;
+}
+
+.player__track {
+  width: 200px;
+}

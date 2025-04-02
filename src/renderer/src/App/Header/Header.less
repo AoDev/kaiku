@@ -1,27 +1,19 @@
+@import './Player/Player.less';
+
 .header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 8px;
-}
-
-.player__times {
   display: flex;
+  padding: 8px;
+  width: 100%;
+  overflow: hidden;
+  height: 80px;
+  justify-content: space-between;
   align-items: center;
-  justify-content: end;
-  gap: 4px;
-}
 
-.player__volume,
-.player__track {
-  position: relative;
-  top: 4px;
-}
+  @media @screen-min-2x {
+    grid-column: span 2;
+  }
 
-.player__volume {
-  width: 90px;
-  margin-left: 6px;
-}
-
-.player__track {
-  width: 200px;
+  @media screen and (min-width: 1400px) {
+    grid-column: span 1;
+  }
 }
