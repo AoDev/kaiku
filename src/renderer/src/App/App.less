@@ -12,19 +12,26 @@
   overflow: hidden;
   gap: 16px;
   height: 100dvh;
+  grid-template-rows: minmax(0, 80px) 1fr;
+
+  grid-template-areas:
+    'header'
+    'library';
 
   @media @screen-min-2x {
-    grid-template-rows: minmax(0, 80px) 1fr;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
     width: auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    grid-template-rows: minmax(0, 80px) calc(100dvh - 110px);
+    grid-template-areas:
+      'header header'
+      'library playlist';
   }
-}
 
-.app {
-  display: grid;
-  grid-template-rows: minmax(0, 80px) 1fr;
-  width: 100%;
-  gap: 16px;
+  @media screen and (min-width: 1400px) {
+    grid-template-areas:
+      'header playlist'
+      'library playlist';
+  }
 }
 
 .welcome {
