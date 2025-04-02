@@ -21,7 +21,7 @@ export class RootStore {
 
   appIsLoading = true
   musicLibrary: MusicLibrary
-  musicPlayer = new MusicPlayer()
+  musicPlayer: MusicPlayer
   settings: SettingsStore
   uiStore: UIStore
   coverPath = ''
@@ -86,6 +86,14 @@ export class RootStore {
     this.uiStore.handledErrorDialog.show()
   }
 
+  showAudioFileError(_filePath: string, error: Error) {
+    this.showHandledError({
+      title: 'Error Loading Audio file',
+      description: 'There is an issue with the audio file you are trying to play.',
+      error,
+    })
+  }
+
   constructor() {
     this.set = store.setMethod<RootStore>(this)
     this.assign = store.assignMethod<RootStore>(this)
@@ -100,6 +108,9 @@ export class RootStore {
       {musicLibrary: false, settings: false, storage: false, uiStore: false},
       {deep: false, autoBind: true}
     )
+
+    this.musicPlayer = new MusicPlayer({onLoadAudioFileError: this.showAudioFileError})
+
     this.stopRefreshSongPlayingCover = reaction(
       () => this.musicPlayer.song,
       (song) => {

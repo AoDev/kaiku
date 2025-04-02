@@ -1,4 +1,5 @@
 import {percentage} from '@lib/math'
+import {normalizeError} from '@rootsrc/lib/error'
 import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import {debounce} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'
@@ -23,6 +24,10 @@ function getMimeType(filePath: string): string {
   return extension ? MIME_TYPES[extension] || 'audio/mpeg' : 'audio/mpeg'
 }
 
+type MusicPlayerOptions = {
+  onLoadAudioFileError?: (filePath: string, error: Error) => void
+}
+
 export class MusicPlayer {
   isPlaying = false
   position = 0
@@ -35,6 +40,7 @@ export class MusicPlayer {
   volume = 0.3
   positionTimer?: ReturnType<typeof setInterval>
   positionTracking = true
+  options: MusicPlayerOptions
   private container: HTMLDivElement
 
   get positionInPercent() {
@@ -134,6 +140,7 @@ export class MusicPlayer {
         this.wavesurfer.play()
       } catch (error) {
         console.error('Failed to load audio file:', error)
+        this.options?.onLoadAudioFileError?.(song.filePath, normalizeError(error))
         this.isPlaying = false
       }
     }
@@ -204,12 +211,6 @@ export class MusicPlayer {
     this.wavesurfer?.setVolume(volume)
   }
 
-  constructor() {
-    makeAutoObservable(this, undefined, {autoBind: true, deep: false})
-    this.container = document.createElement('div')
-    this.positionTimer = setInterval(this.updatePositionFromWaveSurfer, 100)
-  }
-
   destroy() {
     if (this.positionTimer) {
       clearInterval(this.positionTimer)
@@ -219,5 +220,12 @@ export class MusicPlayer {
       this.wavesurfer = undefined
     }
     this.container.remove()
+  }
+
+  constructor(options?: MusicPlayerOptions) {
+    this.options = options || {}
+    makeAutoObservable(this, {options: false}, {autoBind: true, deep: false})
+    this.container = document.createElement('div')
+    this.positionTimer = setInterval(this.updatePositionFromWaveSurfer, 100)
   }
 }
