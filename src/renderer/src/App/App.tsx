@@ -20,7 +20,7 @@ export const App = observer(({vm}: {vm: AppVM}) => {
       <div className="app">
         <Header />
         <MusicLibrary />
-        <Playlist rootStore={vm.rootStore} />
+        <Playlist vm={vm} />
       </div>
       <Footer />
       <Modal

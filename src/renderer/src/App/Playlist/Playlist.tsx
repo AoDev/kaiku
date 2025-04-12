@@ -1,9 +1,10 @@
-import type {RootStore} from '@renderer/stores/RootStore'
 import {getDatasetValue} from '@rootsrc/lib/dom/getDatasetValue'
 import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import kaikuCover from '@src/assets/images/kaiku-album.jpg'
 import {getAlbumCover} from '@src/config'
 import {observer} from 'mobx-react'
+import type {AppVM} from '../AppVM'
+import {PlaylistMenu} from './PlaylistMenu'
 
 const dummySong: Song = {
   album: 'Unknown Album',
@@ -17,10 +18,9 @@ const dummySong: Song = {
   disk: {no: 1, of: 1},
 }
 
-export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
-  const {musicPlayer, musicLibrary} = rootStore
-
-  const {playlistDialog} = rootStore.uiStore
+export const Playlist = observer(({vm}: {vm: AppVM}) => {
+  const {musicPlayer, musicLibrary} = vm.rootStore
+  const {playlistDialog} = vm.rootStore.uiStore
 
   const handlePlaySongFromPlaylist = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.detail !== 2) {
@@ -45,13 +45,18 @@ export const Playlist = observer(({rootStore}: {rootStore: RootStore}) => {
     >
       <div className="margin-bottom-1">
         {/* biome-ignore lint/a11y/useAltText: We do not have text description of each cover */}
-        <img className="playlist__cover" src={coverPath} onClick={rootStore.revealSongPlaying} />
+        <img className="playlist__cover" src={coverPath} onClick={vm.rootStore.revealSongPlaying} />
 
-        <div className="playlist__song-playing">
-          <b>{song.title}</b>
+        <div className="flex-row-center justify-between">
+          <div className="playlist__song-playing">
+            <b>{song.title}</b>
+            <div>
+              <span className="txt-unit">by</span> {song.artist}{' '}
+              <span className="txt-unit">on</span> {song.album}
+            </div>
+          </div>
           <div>
-            <span className="txt-unit">by</span> {song.artist} <span className="txt-unit">on</span>{' '}
-            {song.album}
+            <PlaylistMenu vm={vm} />
           </div>
         </div>
       </div>
