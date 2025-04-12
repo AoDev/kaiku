@@ -24,6 +24,11 @@ export class HeaderVM {
     this.menuDialog.hide()
   }
 
+  showSettings() {
+    this.rootStore.uiStore.settingsDialog.show()
+    this.menuDialog.hide()
+  }
+
   destroyVM() {
     this.stopFilterReaction()
     this.rootStore.uiStore.dialogs.remove([this.menuDialog])

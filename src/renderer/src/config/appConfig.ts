@@ -14,3 +14,7 @@ export const getAlbumCover = (album?: Album) => {
   }
   return DEFAULT_ALBUM_COVER
 }
+
+export const features = {
+  appSettings: false,
+} as const

@@ -1,3 +1,4 @@
+import {features} from '@src/config'
 import {Button, ButtonMenu, PopoverX} from '@ui'
 import {observer} from 'mobx-react'
 import type {HeaderVM} from './HeaderVM'
@@ -26,6 +27,9 @@ export const AppMenu = observer(({vm}: {vm: HeaderVM}) => {
         onClick={vm.askClearLibrary}
         label="Clear Library"
       />
+      {features.appSettings && (
+        <ButtonMenu icon="settings" onClick={vm.showSettings} label="Settings" />
+      )}
     </PopoverX>
   )
 })
