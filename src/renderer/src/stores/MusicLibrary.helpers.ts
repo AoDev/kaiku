@@ -51,7 +51,7 @@ export function getSongsToExtractCoverFrom(
 ) {
   return albums.reduce(
     (acc: {songs: Song[]; albumsMissingSongs: Album[]}, album) => {
-      const song = indexedSongsByAlbum[album.id][0]
+      const song = indexedSongsByAlbum[album.id]?.[0]
       if (song) {
         acc.songs.push(song)
       } else {

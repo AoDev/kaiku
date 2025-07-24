@@ -78,11 +78,11 @@ export function findSongsFolders(artist: Artist, songs: Song[]): ArtistFolderRes
     // Find the deepest level that has multiple folders
     for (const folder of allParentFolders) {
       const parts = folder.split(/[/\\]/)
-      for (let i = 0; i < parts.length; i++) {
-        if (!pathsByLevel.has(i)) {
-          pathsByLevel.set(i, new Set())
+      for (const [index, part] of parts.entries()) {
+        if (!pathsByLevel.has(index)) {
+          pathsByLevel.set(index, new Set())
         }
-        pathsByLevel.get(i)?.add(parts[i])
+        pathsByLevel.get(index)?.add(part)
       }
     }
 

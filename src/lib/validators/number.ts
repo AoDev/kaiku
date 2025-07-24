@@ -4,7 +4,7 @@
  */
 export function isNumber(val: unknown): val is number {
   // biome-ignore lint/suspicious/noGlobalIsNan: we check that type is number first
-  return typeof val === 'number' && !isNaN(val) && isFinite(val)
+  return typeof val === 'number' && !isNaN(val) && Number.isFinite(val)
 }
 
 export function isPositiveNumber(input: string): boolean {

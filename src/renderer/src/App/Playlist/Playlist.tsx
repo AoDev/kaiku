@@ -3,6 +3,7 @@ import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import kaikuCover from '@src/assets/images/kaiku-album.jpg'
 import {getAlbumCover} from '@src/config'
 import {observer} from 'mobx-react'
+import type {CSSProperties} from 'react'
 import type {AppVM} from '../AppVM'
 import {PlaylistMenu} from './PlaylistMenu'
 
@@ -18,6 +19,14 @@ const dummySong: Song = {
   disk: {no: 1, of: 1},
 }
 
+const albumRowStyle: CSSProperties = {
+  maxWidth: '180px',
+}
+
+function getArtists(songs: Song[]) {
+  return songs.reduce((acc: Set<string>, song) => acc.add(song.artist), new Set<string>())
+}
+
 export const Playlist = observer(({vm}: {vm: AppVM}) => {
   const {musicPlayer, musicLibrary} = vm.rootStore
   const {playlistDialog} = vm.rootStore.uiStore
@@ -27,7 +36,7 @@ export const Playlist = observer(({vm}: {vm: AppVM}) => {
       return
     }
     const songIndex = Number(getDatasetValue(event, 'songIndex'))
-    if (isFinite(songIndex)) {
+    if (Number.isFinite(songIndex)) {
       musicPlayer.play(songIndex)
     }
   }
@@ -37,6 +46,17 @@ export const Playlist = observer(({vm}: {vm: AppVM}) => {
     ? musicLibrary.albums.find((album) => album.id === song.albumId)
     : undefined
   const coverPath = album ? getAlbumCover(album) : kaikuCover
+  const needsAlbum =
+    musicPlayer.playlist
+      .map((song) => song.albumId)
+      .reduce((acc: Set<string>, albumId) => {
+        return acc.add(albumId)
+      }, new Set<string>()).size > 1
+
+  const needsAlbumNumber =
+    !needsAlbum && musicPlayer.playlist.some((song) => !!song.disk.no && song.disk.no > 1)
+
+  const needsArtist = !needsAlbum && !needsAlbumNumber && getArtists(musicPlayer.playlist).size > 2
 
   return (
     <div
@@ -67,7 +87,26 @@ export const Playlist = observer(({vm}: {vm: AppVM}) => {
           data-file-path={song.filePath}
           data-song-index={index}
         >
-          <span className="playlist__index">{index + 1}</span> {song.title}
+          <div className="flex-row-center justify-between gap-2">
+            <div>
+              <span className="playlist__index">{index + 1}</span> {song.title}
+            </div>
+            {needsAlbum && (
+              <span className="txt-muted nowrap-truncate" style={albumRowStyle}>
+                {song.album}
+              </span>
+            )}
+            {needsArtist && (
+              <span className="txt-muted nowrap-truncate" style={albumRowStyle}>
+                {song.artist}
+              </span>
+            )}
+            {needsAlbumNumber && (
+              <span className="txt-unit nowrap-truncate" style={albumRowStyle}>
+                CD{song.disk.no}
+              </span>
+            )}
+          </div>
         </div>
       ))}
       {musicPlayer.playlist.length === 0 && (

@@ -32,7 +32,8 @@ export const Albums = observer(({vm}: {vm: MusicLibraryVM}) => {
                   {album.name}
                   {needArtistDetails ? (
                     <div className="txt-muted">
-                      <span className="txt-unit">by</span> {indexedArtists[album.artistId].name}
+                      <span className="txt-unit">by</span>{' '}
+                      {indexedArtists[album.artistId]?.name || 'Artist not found'}
                     </div>
                   ) : null}
                 </div>

@@ -56,7 +56,7 @@ export const AppSettings = observer(({vm}: {vm: AppSettingsVM}) => {
               {albumsWithoutCover.map((album) => {
                 return (
                   <Fragment key={album.id}>
-                    <div>{musicLibrary.indexedArtists[album.artistId].name}</div>
+                    <div>{musicLibrary.indexedArtists[album.artistId]?.name || 'Missing Name'}</div>
                     <div className="label">{album.name}</div>
                   </Fragment>
                 )

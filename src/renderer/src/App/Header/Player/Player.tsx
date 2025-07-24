@@ -18,7 +18,7 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: musicPlayer is immutable
   const handlePositionChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const position = Number(event.target.value)
-    if (isFinite(position)) {
+    if (Number.isFinite(position)) {
       musicPlayer.setPositionFromPercent(position)
     }
   }, [])
@@ -26,7 +26,7 @@ export const Player = observer(({rootStore}: {rootStore: RootStore}) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: musicPlayer is immutable
   const handleVolumeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const volume = Number(event.target.value)
-    if (isFinite(volume)) {
+    if (Number.isFinite(volume)) {
       musicPlayer.setVolume(volume)
     }
   }, [])

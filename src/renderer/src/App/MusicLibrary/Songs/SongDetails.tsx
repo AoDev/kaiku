@@ -17,11 +17,11 @@ export const SongDetails = observer(({vm}: {vm: MusicLibraryVM}) => {
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Album</span>
-            {indexedAlbums[song.albumId].name}
+            {indexedAlbums[song.albumId]?.name || 'Not found album'}
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Artist</span>
-            {indexedArtists[song.artistId].name}
+            {indexedArtists[song.artistId]?.name || 'Not found artist'}
           </div>
           <div className="flex-row-center justify-between gap-2">
             <span className="label">Track number</span>

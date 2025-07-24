@@ -1,4 +1,5 @@
 import * as store from '@lib/mobx/store.helpers'
+import {hasOneItemMin} from '@rootsrc/lib/array'
 import type {CoverExtractResult} from '@rootsrc/types/Cover'
 import type {Album, Artist, AudioLibrary, Song} from '@rootsrc/types/MusicLibrary.types'
 import type {ScanProgress} from '@rootsrc/types/ScanProgress'
@@ -62,7 +63,11 @@ export class MusicLibrary {
   get indexedSongsByAlbum(): Record<string, Song[]> {
     const byAlbum = groupBy(this.songs, 'albumId')
     for (const album of this.albums) {
-      byAlbum[album.id] = byAlbum[album.id].sort(sortSongsByDiskAndTrack)
+      const songs = byAlbum[album.id] || []
+      if (songs.length > 0) {
+        console.warn('No songs found for album', album)
+      }
+      byAlbum[album.id] = songs.sort(sortSongsByDiskAndTrack)
     }
     return byAlbum
   }
@@ -90,9 +95,11 @@ export class MusicLibrary {
   }
 
   get filteredAlbums() {
-    if (this.artistSelected) {
-      return this.indexedArtists[this.artistSelected].albums
+    const artist = this.indexedArtists[this.artistSelected]
+    if (artist) {
+      return artist.albums
         .map((albumId) => this.indexedAlbums[albumId])
+        .filter((album) => !!album)
         .sort((a, b) => a.year - b.year)
     }
 
@@ -158,8 +165,9 @@ export class MusicLibrary {
     // Update the albums with the new cover
     const indexedUpdatedAlbums = results.reduce((acc: Record<string, Album>, coverResult) => {
       const {cover, albumId} = coverResult
-      if (cover) {
-        acc[albumId] = {...this.indexedAlbums[albumId], coverExtension: cover.fileExtension}
+      const album = this.indexedAlbums[albumId]
+      if (cover && album) {
+        acc[albumId] = {...album, coverExtension: cover.fileExtension}
       } else if (coverResult.error) {
         console.error('Failed to extract cover for album', albumId, coverResult.error)
       }
@@ -218,8 +226,12 @@ export class MusicLibrary {
     return song ? [song] : []
   }
 
-  getAlbumSongs(albumId: string) {
-    return this.indexedSongsByAlbum[albumId]
+  getAlbumSongs(albumId: string): Song[] {
+    const songs = this.indexedSongsByAlbum[albumId] || []
+    if (songs.length === 0) {
+      console.warn('No songs found for album', albumId)
+    }
+    return songs
   }
 
   getArtistSongs(artistId: string): Song[] {
@@ -228,8 +240,22 @@ export class MusicLibrary {
       'albumId'
     )
     return Object.entries(songsByAlbum)
-      .sort(([a], [b]) => this.indexedAlbums[a].year - this.indexedAlbums[b].year)
+      .sort(([a], [b]) => (this.indexedAlbums[a]?.year ?? 0) - (this.indexedAlbums[b]?.year ?? 0))
       .flatMap(([_, songs]) => songs)
+  }
+
+  getArtistAlbums(artistId: string): Album[] {
+    const artist = this.indexedArtists[artistId]
+    if (!artist) {
+      return []
+    }
+    return artist.albums.reduce((acc: Album[], albumId) => {
+      const album = this.indexedAlbums[albumId]
+      if (album) {
+        acc.push(album)
+      }
+      return acc
+    }, [])
   }
 
   /**
@@ -237,21 +263,24 @@ export class MusicLibrary {
    */
   getArtistSongsByAlbum(artistId: string): [Album, Song[]][] {
     const artist = this.indexedArtists[artistId]
-    return artist
-      ? artist.albums
-          .sort((a, b) => this.indexedAlbums[a].year - this.indexedAlbums[b].year)
-          .map((albumId) => [
-            this.indexedAlbums[albumId],
-            this.indexedSongsByAlbum[albumId].filter((song) => song.artistId === artistId),
-          ])
-      : []
+    if (!artist) {
+      return []
+    }
+    const artistAlbums = this.getArtistAlbums(artistId).sort((a, b) => a.year - b.year)
+    return artistAlbums.map((album) => [album, this.getAlbumSongs(album.id)])
   }
 
   /**
    * Used when the filter is active and an album is selected
    */
   getAlbumAndSongs(albumId: string): [Album, Song[]][] {
-    return [[this.indexedAlbums[albumId], this.indexedSongsByAlbum[albumId]]]
+    const album = this.indexedAlbums[albumId]
+    const songs = this.indexedSongsByAlbum[albumId] || []
+    if (!album) {
+      console.warn('No album found for albumId', album)
+      return []
+    }
+    return [[album, songs]]
   }
 
   // Setup IPC listeners for scan progress updates
@@ -304,7 +333,7 @@ export class MusicLibrary {
       artists: library.artists,
       albums: library.albums,
       songs: library.songs,
-      artistSelected: library.artists.length > 0 ? library.artists[0].id : '',
+      artistSelected: hasOneItemMin(library.artists) ? library.artists[0].id : '',
       albumSelected: '',
       songSelected: '',
     })
@@ -358,7 +387,10 @@ export class MusicLibrary {
         songs.push(song)
         const updatedArtist = newArtistsMap.get(song.artistId)
         if (!updatedArtist) {
-          newArtistsMap.set(song.artistId, this.indexedArtists[song.artistId])
+          const artist = this.indexedArtists[song.artistId]
+          if (artist) {
+            newArtistsMap.set(song.artistId, artist)
+          }
         } else {
           // Preserve existing artist albums
           const currentArtist = this.indexedArtists[song.artistId]
@@ -367,7 +399,10 @@ export class MusicLibrary {
           }
         }
         if (!newAlbumsMap.has(song.albumId)) {
-          newAlbumsMap.set(song.albumId, this.indexedAlbums[song.albumId])
+          const album = this.indexedAlbums[song.albumId]
+          if (album) {
+            newAlbumsMap.set(song.albumId, album)
+          }
         }
       }
     }

@@ -55,7 +55,11 @@ export function revealByPriority(rootStore: RootStore) {
       revealLibraryItem({artistId, albumId, filePath}, rootStore)
     }
   } else if (albumSelected) {
-    const {artistId} = musicLibrary.indexedAlbums[albumSelected]
+    const artistId = musicLibrary.indexedAlbums[albumSelected]?.artistId
+    if (!artistId) {
+      console.warn('No artist found for album', albumSelected)
+      return
+    }
     revealLibraryItem({artistId, albumId: albumSelected, filePath: ''}, rootStore)
   } else if (artistSelected) {
     revealLibraryItem({artistId: artistSelected, albumId: '', filePath: ''}, rootStore)

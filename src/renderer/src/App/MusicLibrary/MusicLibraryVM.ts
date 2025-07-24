@@ -178,7 +178,7 @@ export class MusicLibraryVM {
     this.assign({
       refresh: {
         folders: parentFolders,
-        folderSelected: artistFolder || parentFolders[1] || parentFolders[0],
+        folderSelected: artistFolder || parentFolders[1] || parentFolders[0] || '',
         artistId: artist.id,
       },
     })

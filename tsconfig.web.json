@@ -21,6 +21,8 @@
       "@lib/*": ["src/lib/*"],
       "@src/*": ["src/renderer/src/*"],
       "@ui": ["src/renderer/src/ui-framework"]
-    }
+    },
+    "useUnknownInCatchVariables": true,
+    "noUncheckedIndexedAccess": true
   }
 }

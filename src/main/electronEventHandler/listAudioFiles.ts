@@ -55,7 +55,9 @@ async function getAllAudioFiles(
 
           for (const entry of entries) {
             // Skip hidden files and directories (starting with .)
-            if (entry.name.startsWith('.')) continue
+            if (entry.name.startsWith('.')) {
+              continue
+            }
 
             const fullPath = join(dirPath, entry.name)
 

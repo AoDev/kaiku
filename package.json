@@ -26,7 +26,7 @@
     "rsbuild:build-preload": "rsbuild build rsbuild-preload.config.ts",
     "rsbuild:dev": "rsbuild dev",
     "start": "electron-rsbuild preview",
-    "test": "vitest --config vitest.config.ts"
+    "test": "vitest --config vitest.config.ts --run"
   },
   "dependencies": {
     "@electron-toolkit/preload": "3.0.1",

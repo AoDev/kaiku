@@ -30,7 +30,7 @@ export function buildFolderTree(folders: string[]): FolderNode[] {
     const parts = folder.split(/[/\\]/)
 
     // Create the current folder node
-    const name = parts[parts.length - 1]
+    const name = parts[parts.length - 1] || '' // TODO: handle this better
     // Calculate level relative to the root folder
     const level = parts.length - minDepth
     const node: FolderNode = {

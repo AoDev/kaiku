@@ -38,9 +38,16 @@ export async function asyncMapLimit<T, R>(
   async function processNext(): Promise<void> {
     while (nextIndex < items.length) {
       const currentIndex = nextIndex++
+      const currentItem = items[currentIndex]
+
+      if (currentItem === undefined) {
+        // This should not happen with a dense array and correct indexing.
+        throw new Error(`asyncMapLimit | Unexpected undefined item at index ${currentIndex}.`)
+      }
+
       try {
         // Process the item
-        results[currentIndex] = await fn(items[currentIndex], currentIndex)
+        results[currentIndex] = await fn(currentItem, currentIndex)
       } catch (error) {
         // Re-throw to be caught by the Promise.all below
         throw {error, index: currentIndex} as ProcessingError
@@ -103,9 +110,16 @@ export async function asyncMapLimitSettled<T, R>(
   async function processNext(): Promise<void> {
     while (nextIndex < items.length) {
       const currentIndex = nextIndex++
+      const currentItem = items[currentIndex]
+
+      if (currentItem === undefined) {
+        // This should not happen with a dense array and correct indexing.
+        throw new Error(`Unexpected undefined item at index ${currentIndex}.`)
+      }
+
       try {
         // Process the item
-        const value = await fn(items[currentIndex], currentIndex)
+        const value = await fn(currentItem, currentIndex)
         results[currentIndex] = {status: 'fulfilled', value}
       } catch (error) {
         // Store the rejection

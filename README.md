@@ -1,47 +1,46 @@
 # Kaiku (v2)
 
-Desktop music player for local files.
+Kaiku (v2) is a desktop music player for local audio files built with Electron, React, and TypeScript.
 
 <img width="400" src="https://github.com/user-attachments/assets/db58b334-e50e-4356-ae40-c7c263b055c8" />
 
-## It's WIP
+## Features
 
-* It works, if you have proper tags on your files.
-* At the moment I'm doing the bare minimum to suite my needs.
-* Feel free to open an issue if you are interested.
-* There is no downloadable version at the moment. You can clone the repo and run it locally.
+- A music library to manage all your local files.
+- Fast search across entire library
+- Column based UI layout: Artists, Albums, Songs, Playlist
+- Adapts to different screen sizes
+- Theme support: Dark/light mode available
 
 <img width="400" alt="Image" src="https://github.com/user-attachments/assets/b55e6c61-2827-4a0f-a733-1f04e3201355" />
 
+## Audio Format Support
 
-## Why
+The player should support main audio formats (mp3, ogg, flac, etc...)
+
+Results might differ depending on the file format. Open an issue if needed 😊
+
+## Status
+
+- ✅ Works with properly tagged audio files
+- ✅ Tested on macOS (Apple Silicon compatible)
+- ⚠️ Work in progress - doing the bare minimum to suit my needs
+- 🚧 No downloadable releases yet - clone and build/run locally
+- 💬 Feel free to open an issue if you're interested
+
+## Why building it
 
 It's 2025, kids probably don't know what an mp3 is and there are great online services. So...?
 
 Well, I like to manage my music.
 
-**It's a rewrite**
+## Quick start
 
-I'm rewriting this [music player](https://github.com/AoDev/kaiku-music-player) I made many years ago. It stopped working when I switched to an Apple Silicon computer. I'm using this as an opportunity to try some new things.
-
-
-## Tech
-
-- [react](https://react.dev/)
-- [mobx](https://mobx.js.org/)
-- [less](https://lesscss.org/)
-- [rsbuild](https://rsbuild.dev/)
-- [electronjs](https://www.electronjs.org/)
-- [electron-rsbuild](https://github.com/electron-rsbuild/electron-rsbuild)
-- [biome](https://biomejs.dev/)
-- [music-metadata](https://github.com/Borewit/music-metadata)
-
-## Get started
-
-I only tested it on OSX.
-
-```
-clone repo
-npm i
+```bash
+git clone git@github.com:AoDev/kaiku.git
+cd kaiku
+npm install
 npm run dev
 ```
+
+For more details about development, check [DEVELOPMENT.md](DEVELOPMENT.md)

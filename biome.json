@@ -34,14 +34,20 @@
       "recommended": true,
       "style": {
         "useNumberNamespace": "off",
-        "noDefaultExport": "info"
+        "noDefaultExport": "info",
+        "useBlockStatements": "error"
       },
       "suspicious": {
-        "noGlobalIsFinite": "off",
         "noExplicitAny": "warn"
       },
       "a11y": {
-        "useKeyWithClickEvents": "off"
+        "useKeyWithClickEvents": "off",
+        "noLabelWithoutControl": {
+          "level": "error",
+          "options": {
+            "inputComponents": ["Input", "InputX"]
+          }
+        }
       },
       "correctness": {
         "noUnusedVariables": "error",
