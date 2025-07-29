@@ -1,4 +1,5 @@
 import * as store from '@lib/mobx/store.helpers'
+import {NowPlayingService} from '@renderer/services/NowPlayingService'
 import {sleep} from '@rootsrc/lib/async'
 import {revealLibraryItem} from '@src/lib/musicLibrary'
 import {type IReactionDisposer, makeAutoObservable, reaction} from 'mobx'
@@ -33,6 +34,7 @@ export class RootStore {
   errorInfo: React.ErrorInfo | null = null
   stopRefreshSongPlayingCover: IReactionDisposer
   appStatus: AppStatus = 'init'
+  nowPlayingService: NowPlayingService
 
   /**
    * Scrolls to the artist, album, song node of the song playing
@@ -110,6 +112,7 @@ export class RootStore {
     )
 
     this.musicPlayer = new MusicPlayer({onLoadAudioFileError: this.showAudioFileError})
+    this.nowPlayingService = new NowPlayingService(this.musicPlayer, this.musicLibrary)
 
     this.stopRefreshSongPlayingCover = reaction(
       () => this.musicPlayer.song,

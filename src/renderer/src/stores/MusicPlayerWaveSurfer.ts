@@ -3,6 +3,7 @@ import {normalizeError} from '@rootsrc/lib/error'
 import type {Song} from '@rootsrc/types/MusicLibrary.types'
 import {debounce} from 'lodash'
 import {action, makeAutoObservable} from 'mobx'
+import {TypedEmitter} from 'tiny-typed-emitter'
 import WaveSurfer from 'wavesurfer.js'
 
 function isNumber(value: unknown): value is number {
@@ -28,6 +29,14 @@ type MusicPlayerOptions = {
   onLoadAudioFileError?: (filePath: string, error: Error) => void
 }
 
+interface MusicPlayerEvents {
+  songchanged: (song: Song) => void
+  play: () => void
+  pause: () => void
+  stop: () => void
+  end: () => void
+}
+
 export class MusicPlayer {
   isPlaying = false
   position = 0
@@ -41,6 +50,7 @@ export class MusicPlayer {
   positionTimer?: ReturnType<typeof setInterval>
   positionTracking = true
   options: MusicPlayerOptions
+  events = new TypedEmitter<MusicPlayerEvents>()
   private container: HTMLDivElement
 
   get positionInPercent() {
@@ -85,6 +95,7 @@ export class MusicPlayer {
       this.isPlaying = true
       this.position = 0
       this.positionTracking = true
+      this.events.emit('songchanged', song)
 
       this.wavesurfer = WaveSurfer.create({
         container: this.container,
@@ -96,7 +107,7 @@ export class MusicPlayer {
 
       try {
         // Load the audio file through IPC
-        const audioBuffer = await window.api.loadAudioFile(song.filePath)
+        const audioBuffer = await window.electron.ipcRenderer.invoke('loadAudioFile', song.filePath)
         // Create a blob from the buffer with the correct MIME type
         const mimeType = getMimeType(song.filePath)
         const blob = new Blob([audioBuffer], {type: mimeType})
@@ -119,6 +130,7 @@ export class MusicPlayer {
           'play',
           action(() => {
             this.isPlaying = true
+            this.events.emit('play')
           })
         )
 
@@ -126,6 +138,7 @@ export class MusicPlayer {
           'pause',
           action(() => {
             this.isPlaying = false
+            this.events.emit('pause')
           })
         )
 
@@ -134,6 +147,7 @@ export class MusicPlayer {
           action(() => {
             this.isPlaying = false
             this.next()
+            this.events.emit('end')
           })
         )
 
@@ -155,6 +169,7 @@ export class MusicPlayer {
     if (this.wavesurfer && this.isPlaying) {
       this.wavesurfer.stop()
       this.isPlaying = false
+      this.events.emit('stop')
     }
   }
 
