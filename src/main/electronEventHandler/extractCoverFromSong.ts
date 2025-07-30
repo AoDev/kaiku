@@ -67,9 +67,7 @@ async function tryExtractCover(song: SongProps): Promise<CoverExtractResult> {
  * Given multiple song data, try to extract the album cover from their file metadata
  */
 export async function extractCoverFromSongs(songs: SongProps[]): Promise<CoverExtractResult[]> {
-  const results: CoverExtractResult[] = []
-  for (const song of songs) {
-    results.push(await tryExtractCover(song))
-  }
+  const promises = songs.map((song) => tryExtractCover(song))
+  const results = await Promise.all(promises)
   return results
 }

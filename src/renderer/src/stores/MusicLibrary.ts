@@ -33,6 +33,7 @@ export class MusicLibrary {
   folderPath = ''
   filter: RegExp | null = null
   stopUpdateAlbumCovers: IReactionDisposer
+  isUpdatingCovers = false
   scanProgress: ScanProgress = {completed: 0, total: 0, status: 'idle'}
   saveAfterCoverUpdateTimer: NodeJS.Timeout | null = null
 
@@ -149,7 +150,12 @@ export class MusicLibrary {
   /**
    * Update the cover of the given albums
    */
-  private async _updateAlbumCovers(albums: Album[]) {
+  async updateAlbumCovers(albums: Album[]) {
+    if (this.isUpdatingCovers || albums.length === 0) {
+      return
+    }
+    this.isUpdatingCovers = true
+
     const {songs, albumsMissingSongs} = getSongsToExtractCoverFrom(albums, this.indexedSongsByAlbum)
 
     if (albumsMissingSongs.length > 0) {
@@ -186,11 +192,8 @@ export class MusicLibrary {
     }
 
     this.scheduleSaveAfterCoverUpdate()
+    this.isUpdatingCovers = false
   }
-
-  updateAlbumCovers = debounce((albums: Album[]) => this._updateAlbumCovers(albums), 200, {
-    trailing: true,
-  })
 
   setFilter(filter: string) {
     if (filter.length < 2) {
@@ -475,7 +478,7 @@ export class MusicLibrary {
   }
 
   constructor(rootStore: RootStore) {
-    makeAutoObservable(this, undefined, {deep: false, autoBind: true})
+    makeAutoObservable(this, {isUpdatingCovers: false}, {deep: false, autoBind: true})
     this.rootStore = rootStore
     this.assign = store.assignMethod<MusicLibrary>(this)
     this.setupScanProgressListener()
@@ -500,7 +503,7 @@ export class MusicLibrary {
           }
         }
       },
-      {name: 'updateAlbumCovers'}
+      {name: 'updateAlbumCovers', delay: 250}
     )
   }
 }
