@@ -64,7 +64,7 @@ export class MusicLibrary {
     const byAlbum = groupBy(this.songs, 'albumId')
     for (const album of this.albums) {
       const songs = byAlbum[album.id] || []
-      if (songs.length > 0) {
+      if (songs.length === 0) {
         console.warn('No songs found for album', album)
       }
       byAlbum[album.id] = songs.sort(sortSongsByDiskAndTrack)
